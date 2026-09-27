@@ -26,13 +26,21 @@ export const CATEGORIES = [
   "Design Inspiration",
 ] as const;
 
-export const STACKS = [
+export const FRAMEWORK_STACKS = [
   "React",
+  "Next.js",
   "Vue",
   "Svelte",
+  "SvelteKit",
   "Angular",
-  "Tailwind CSS",
+  "SolidJS",
+  "Astro",
   "Vanilla JS",
+] as const;
+
+export const STACKS = [
+  ...FRAMEWORK_STACKS,
+  "Tailwind CSS",
   "TypeScript",
 ] as const;
 
@@ -49,6 +57,7 @@ export const USE_CASES = [
 
 export type Category = (typeof CATEGORIES)[number];
 export type Stack = (typeof STACKS)[number];
+export const isFrameworkStack = (stack: Stack): boolean => (FRAMEWORK_STACKS as readonly string[]).includes(stack);
 export type UseCase = (typeof USE_CASES)[number];
 
 export interface Library {
@@ -104,7 +113,7 @@ export const libraries: Library[] = [
       "Beautifully designed, accessible components you copy into your project. Built on Radix UI and Tailwind CSS.",
     url: "https://ui.shadcn.com",
     category: "Component Library",
-    stacks: ["React", "Tailwind CSS", "TypeScript"],
+    stacks: ["React", "Next.js", "Astro", "Tailwind CSS", "TypeScript"],
     useCases: ["Dashboards", "Accessibility-first", "Rapid Prototyping"],
     tags: ["radix", "copy paste", "accessible"],
   },
@@ -115,7 +124,7 @@ export const libraries: Library[] = [
       "150+ free animated components and effects for landing pages, built with React, TypeScript and Tailwind.",
     url: "https://magicui.design",
     category: "Animation & Motion",
-    stacks: ["React", "Tailwind CSS", "TypeScript"],
+    stacks: ["React", "Next.js", "Tailwind CSS", "TypeScript"],
     useCases: ["Landing Pages", "Marketing Sites", "Micro-interactions"],
     tags: ["animated", "effects", "framer motion"],
   },
@@ -357,7 +366,7 @@ export const libraries: Library[] = [
       "The shadcn/ui experience, ported to Svelte — accessible, copy-and-paste components for Svelte apps.",
     url: "https://www.shadcn-svelte.com",
     category: "Component Library",
-    stacks: ["Svelte", "Tailwind CSS", "TypeScript"],
+    stacks: ["Svelte", "SvelteKit", "Tailwind CSS", "TypeScript"],
     useCases: ["Rapid Prototyping", "Dashboards"],
     tags: ["svelte", "copy paste"],
   },
@@ -458,7 +467,7 @@ export const libraries: Library[] = [
     description: "Headless, accessible components for React, Vue, Svelte, and Solid design systems.",
     url: "https://ark-ui.com",
     category: "Component Library",
-    stacks: ["React", "Vue", "Svelte", "TypeScript"],
+    stacks: ["React", "Vue", "Svelte", "SolidJS", "TypeScript"],
     useCases: ["Accessibility-first", "Dashboards"],
     tags: ["headless", "primitives", "solid"],
   },

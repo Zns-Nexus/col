@@ -83,7 +83,7 @@ export function DocsSidebar() {
   }, [pathname, restoreActiveHighlight]);
 
   return (
-    <nav aria-label="Documentation pages" className="docs-sidebar rounded-xl border p-4">
+    <nav aria-label="Documentation pages" className="docs-sidebar">
       <Button type="button" variant="ghost" className="docs-mobile-toggle theme-text min-h-11 w-full justify-between px-0 text-sm hover:bg-transparent" aria-expanded={open} onClick={() => setOpen((current) => !current)}>Documentation menu <ChevronDown className={`size-4 ${open ? "rotate-180" : ""}`} aria-hidden /></Button>
       <div className={`docs-sidebar-content ${open ? "docs-sidebar-content-open" : ""}`}>
       <div

@@ -18,7 +18,13 @@ export function LibraryDetail({ library, details }: LibraryDetailProps) {
   const gettingStarted = details.gettingStarted;
 
   return (
-    <article className="mx-auto w-full max-w-4xl px-5 pt-28 pb-28 sm:px-8 sm:pt-32">
+    <article className={`relative isolate mx-auto w-full px-5 pt-28 pb-28 sm:px-8 sm:pt-32 ${details.preview ? "max-w-6xl" : "max-w-4xl"}`}>
+      {details.preview && (
+        <div className="library-detail-backdrop" aria-hidden="true">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={details.preview.src} alt="" />
+        </div>
+      )}
       <Link
         href="/libraries"
         className="docs-text-link theme-muted inline-flex min-h-11 w-fit items-center gap-2 text-sm font-medium"
@@ -27,66 +33,58 @@ export function LibraryDetail({ library, details }: LibraryDetailProps) {
         All libraries
       </Link>
 
-      <header className="theme-border mt-4 border-b pb-8">
-        <div className="flex items-center gap-4">
-          <span className="theme-border grid size-12 shrink-0 place-items-center rounded-xl border bg-white/[0.035]">
-            <LibraryLogo url={library.url} name={library.name} size={30} />
-          </span>
-          <div className="min-w-0">
-            <h1 className="theme-text truncate text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">{library.name}</h1>
-            <p className="library-subtle mt-1 truncate text-sm">{hostname(library.url)}</p>
+      <div className="theme-border mt-4 border-b pb-10">
+        <header className={details.preview ? "max-w-xl" : ""}>
+          <div className="flex items-center gap-4">
+            <span className="theme-border grid size-12 shrink-0 place-items-center rounded-xl border bg-white/[0.035]">
+              <LibraryLogo url={library.url} name={library.name} size={30} />
+            </span>
+            <div className="min-w-0">
+              <h1 className="theme-text truncate text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">{library.name}</h1>
+              <p className="library-subtle mt-1 truncate text-sm">{hostname(library.url)}</p>
+            </div>
           </div>
-        </div>
 
-        <p className="theme-muted mt-6 max-w-[65ch] text-base leading-7">{library.description}</p>
+          <p className="theme-muted mt-6 max-w-[65ch] text-base leading-7">{library.description}</p>
 
-        <div className="mt-5 flex flex-wrap items-center gap-2">
-          <Badge variant="outline" className="library-chip px-2.5 py-1 text-xs">{library.category}</Badge>
-        </div>
-
-        <dl className="mt-4 space-y-3">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <dt className="library-subtle shrink-0 text-xs sm:w-24">Stacks</dt>
-            <dd className="flex flex-wrap gap-1.5">
-              {library.stacks.map((stack) => (
-                <Badge key={stack} variant="outline" className="library-chip px-2 py-0.5 text-[11px]">{stack}</Badge>
-              ))}
-            </dd>
+          <div className="mt-5 flex flex-wrap items-center gap-2">
+            <Badge variant="outline" className="library-chip px-2.5 py-1 text-xs">{library.category}</Badge>
           </div>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <dt className="library-subtle shrink-0 text-xs sm:w-24">Use cases</dt>
-            <dd className="flex flex-wrap gap-1.5">
-              {library.useCases.map((useCase) => (
-                <Badge key={useCase} variant="outline" className="library-chip px-2 py-0.5 text-[11px]">{useCase}</Badge>
-              ))}
-            </dd>
-          </div>
-        </dl>
 
-        <div className="mt-7 flex flex-wrap gap-3">
-          <a href={library.url} target="_blank" rel="noopener noreferrer" className="hero-cta hero-cta-primary">
-            Visit website <ArrowUpRight className="size-4" aria-hidden />
-          </a>
-          <a href={details.docsUrl} target="_blank" rel="noopener noreferrer" className="hero-cta hero-cta-secondary">
-            Documentation <BookOpen className="size-4" aria-hidden />
-          </a>
-          {details.repoUrl && (
-            <a href={details.repoUrl} target="_blank" rel="noopener noreferrer" className="hero-cta hero-cta-secondary">
-              Repository <GitBranch className="size-4" aria-hidden />
+          <dl className="mt-4 space-y-3">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              <dt className="library-subtle shrink-0 text-xs sm:w-24">Stacks</dt>
+              <dd className="flex flex-wrap gap-1.5">
+                {library.stacks.map((stack) => (
+                  <Badge key={stack} variant="outline" className="library-chip px-2 py-0.5 text-[11px]">{stack}</Badge>
+                ))}
+              </dd>
+            </div>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              <dt className="library-subtle shrink-0 text-xs sm:w-24">Use cases</dt>
+              <dd className="flex flex-wrap gap-1.5">
+                {library.useCases.map((useCase) => (
+                  <Badge key={useCase} variant="outline" className="library-chip px-2 py-0.5 text-[11px]">{useCase}</Badge>
+                ))}
+              </dd>
+            </div>
+          </dl>
+
+          <div className="mt-7 flex flex-wrap gap-3">
+            <a href={library.url} className="hero-cta hero-cta-primary">
+              Visit website <ArrowUpRight className="size-4" aria-hidden />
             </a>
-          )}
-        </div>
-      </header>
-
-      {details.preview && (
-        <section className="mt-10">
-          <h2 className="theme-text text-2xl font-semibold tracking-[-0.025em]">Preview</h2>
-          <figure className="theme-border mt-4 overflow-hidden rounded-xl border">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={details.preview.src} alt={details.preview.alt} loading="lazy" className="h-auto w-full" />
-          </figure>
-        </section>
-      )}
+            <a href={details.docsUrl} target="_blank" rel="noopener noreferrer" className="hero-cta hero-cta-secondary">
+              Documentation <BookOpen className="size-4" aria-hidden />
+            </a>
+            {details.repoUrl && (
+              <a href={details.repoUrl} target="_blank" rel="noopener noreferrer" className="hero-cta hero-cta-secondary">
+                Repository <GitBranch className="size-4" aria-hidden />
+              </a>
+            )}
+          </div>
+        </header>
+      </div>
 
       {install.length > 0 && (
         <section className="mt-10">

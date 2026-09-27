@@ -1,6 +1,5 @@
 import { DirectoryExplorer } from "@/components/DirectoryExplorer";
 import { Header } from "@/components/Header";
-import { SiteFooter } from "@/components/SiteFooter";
 
 export default async function LibrariesPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const { q = "" } = await searchParams;
@@ -11,7 +10,6 @@ export default async function LibrariesPage({ searchParams }: { searchParams: Pr
       <main className="w-full max-w-full overflow-x-clip">
         <DirectoryExplorer initialQuery={q} />
       </main>
-      <SiteFooter />
     </>
   );
 }

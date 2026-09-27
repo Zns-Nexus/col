@@ -7,7 +7,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
   return (
     <>
       <Header />
-      <main className="docs-page-shell grid min-h-screen gap-10 px-5 pt-24 pb-20 sm:px-8 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[16rem_minmax(0,1fr)_18rem] xl:gap-14">
+      <main className="docs-page-shell grid min-h-screen gap-10 px-5 pt-24 pb-20 sm:px-8 lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[14rem_minmax(0,1fr)_18rem] xl:gap-14">
         <aside className="min-w-0 lg:sticky lg:top-20 lg:self-start">
           <DocsSidebar />
         </aside>
