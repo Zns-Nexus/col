@@ -1,3 +1,4 @@
+// Magic UI Shimmer Button: https://magicui.design/docs/components/shimmer-button
 import React, { type ComponentPropsWithoutRef, type CSSProperties } from "react"
 import { cn } from "@/lib/utils"
 

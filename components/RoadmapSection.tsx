@@ -8,7 +8,7 @@ const items = [
 
 export function RoadmapSection() {
   return (
-    <section id="roadmap" aria-labelledby="roadmap-title" className="theme-border border-b bg-[#f7f7f5] px-5 py-24 dark:bg-black sm:px-8 sm:py-32">
+    <section id="roadmap" aria-labelledby="roadmap-title" className="theme-border border-b bg-[#f7f7f5] px-5 py-24 dark:bg-[#10181a] sm:px-8 sm:py-32">
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>

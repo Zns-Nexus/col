@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown, RotateCcw, Search } from "lucide-react";
+import { useRef, useState, type ReactNode } from "react";
+import { ChevronDown, RotateCcw, SlidersHorizontal } from "lucide-react";
 import { CATEGORIES, STACKS, USE_CASES, type Category, type Stack, type UseCase } from "@/data/libraries";
+import type { DirectoryFacetCounts } from "@/lib/directory";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +13,16 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  useSidebar,
+} from "@/components/ui/sidebar";
 
 interface FilterDropdownProps {
   label: string;
@@ -43,63 +54,240 @@ export function FilterDropdown({ label, value, items, onValueChange, className =
   );
 }
 
+interface FacetGroupProps<T extends string> {
+  label: string;
+  allLabel: string;
+  total: number;
+  id: string;
+  options: readonly T[];
+  selected: readonly T[];
+  counts: ReadonlyMap<T, number>;
+  onSelect: (value: T) => void;
+  onClear: () => void;
+  expanded: boolean;
+  onExpandedChange: () => void;
+  selectionMode: "single" | "multiple";
+}
+
+function FacetGroup<T extends string>({ label, allLabel, total, id, options, selected, counts, onSelect, onClear, expanded, onExpandedChange, selectionMode }: FacetGroupProps<T>) {
+  const allValue = "__all__";
+
+  return (
+    <SidebarGroup className="directory-facet-group">
+      <button
+        type="button"
+        className="directory-facet-heading"
+        aria-expanded={expanded}
+        aria-controls={id}
+        onClick={onExpandedChange}
+      >
+        <span className="flex min-w-0 items-center gap-2">
+          <ChevronDown className="directory-facet-heading-icon" aria-hidden />
+          <span className="truncate">{label}</span>
+        </span>
+        <span className="directory-facet-summary" aria-live="polite">
+          {selected.length > 0 ? `${selected.length} selected` : "All"}
+        </span>
+      </button>
+      <SidebarGroupContent id={id} className="directory-facet-collapse" data-expanded={expanded} aria-hidden={!expanded} inert={!expanded}>
+        <div className="directory-facet-collapse-inner">
+        {selectionMode === "single" ? (
+          <ToggleGroup
+            type="single"
+            value={selected[0] ?? allValue}
+            onValueChange={(value) => value === allValue || value === "" ? onClear() : onSelect(value as T)}
+            className="directory-facet-options directory-facet-options-single"
+            aria-label={`${label} options`}
+          >
+            <ToggleGroupItem value={allValue} className="directory-facet-option">
+              <span className="directory-facet-option-label">{allLabel}</span>
+              <span className="directory-facet-count">{total}</span>
+            </ToggleGroupItem>
+            {options.map((option) => {
+              const count = counts.get(option) ?? 0;
+              return (
+                <ToggleGroupItem key={option} value={option} disabled={count === 0 && selected[0] !== option} className={`directory-facet-option${count === 0 && selected[0] !== option ? " directory-facet-option-disabled" : ""}`}>
+                  <span className="directory-facet-option-label">{option}</span>
+                  <span className="directory-facet-count">{count}</span>
+                </ToggleGroupItem>
+              );
+            })}
+          </ToggleGroup>
+        ) : (
+          <div className="directory-facet-options" aria-label={`${label} options`}>
+            <label htmlFor={`${id}-all`} className="directory-facet-option">
+              <Checkbox id={`${id}-all`} checked={selected.length === 0} onCheckedChange={onClear} />
+              <span className="directory-facet-option-label">{allLabel}</span>
+              <span className="directory-facet-count">{total}</span>
+            </label>
+            {options.map((option) => {
+              const isActive = selected.includes(option);
+              const count = counts.get(option) ?? 0;
+              const optionId = `${id}-${option.toLowerCase().replaceAll(" ", "-")}`;
+              return (
+                <label key={option} htmlFor={optionId} className={`directory-facet-option${count === 0 && !isActive ? " directory-facet-option-disabled" : ""}`}>
+                  <Checkbox id={optionId} checked={isActive} disabled={count === 0 && !isActive} onCheckedChange={() => onSelect(option)} />
+                  <span className="directory-facet-option-label">{option}</span>
+                  <span className="directory-facet-count">{count}</span>
+                </label>
+              );
+            })}
+          </div>
+        )}
+        </div>
+      </SidebarGroupContent>
+    </SidebarGroup>
+  );
+}
+
+interface FilterPanelProps {
+  showSaved: boolean;
+  activeCategory: Category | null;
+  activeStacks: Stack[];
+  activeUseCases: UseCase[];
+  query: string;
+  onCategoryChange: (category: Category | null) => void;
+  onStackChange: (stack: Stack | null) => void;
+  onUseCaseChange: (useCase: UseCase | null) => void;
+  onClearAll: () => void;
+  facetCounts: DirectoryFacetCounts;
+  /** Keeps the two rendered copies of this panel from sharing element ids. */
+  idSuffix: string;
+  footer?: ReactNode;
+}
+
+/**
+ * Body of the filter panel, shared by the desktop sidebar and the mobile sheet
+ * so the two can never drift apart.
+ */
+function FilterPanel({ showSaved, activeCategory, activeStacks, activeUseCases, query, onCategoryChange, onStackChange, onUseCaseChange, onClearAll, facetCounts, idSuffix, footer }: FilterPanelProps) {
+  const hasFilters = showSaved || query.trim() !== "" || activeCategory !== null || activeStacks.length > 0 || activeUseCases.length > 0;
+
+  const [expandedGroups, setExpandedGroups] = useState(() => ({
+    category: true,
+    stack: activeStacks.length > 0,
+    useCase: activeUseCases.length > 0,
+  }));
+
+  return (
+    <>
+      <SidebarContent>
+        <FacetGroup
+          label="Category"
+          allLabel="All libraries"
+          total={facetCounts.total.category}
+          id={`directory-category-options${idSuffix}`}
+          options={CATEGORIES}
+          selected={activeCategory === null ? [] : [activeCategory]}
+          counts={facetCounts.category}
+          onSelect={(value) => onCategoryChange(activeCategory === value ? null : value)}
+          onClear={() => onCategoryChange(null)}
+          selectionMode="single"
+          expanded={expandedGroups.category}
+          onExpandedChange={() => setExpandedGroups((current) => ({ ...current, category: !current.category }))}
+        />
+        <FacetGroup
+          label="Stack"
+          allLabel="All stacks"
+          total={facetCounts.total.stack}
+          id={`directory-stack-options${idSuffix}`}
+          options={STACKS}
+          selected={activeStacks}
+          counts={facetCounts.stack}
+          onSelect={(value) => onStackChange(value)}
+          onClear={() => onStackChange(null)}
+          selectionMode="multiple"
+          expanded={expandedGroups.stack}
+          onExpandedChange={() => setExpandedGroups((current) => ({ ...current, stack: !current.stack }))}
+        />
+        <FacetGroup
+          label="Use case"
+          allLabel="All use cases"
+          total={facetCounts.total.useCase}
+          id={`directory-use-case-options${idSuffix}`}
+          options={USE_CASES}
+          selected={activeUseCases}
+          counts={facetCounts.useCase}
+          onSelect={(value) => onUseCaseChange(value)}
+          onClear={() => onUseCaseChange(null)}
+          selectionMode="multiple"
+          expanded={expandedGroups.useCase}
+          onExpandedChange={() => setExpandedGroups((current) => ({ ...current, useCase: !current.useCase }))}
+        />
+      </SidebarContent>
+
+      {hasFilters && (footer ?? <SidebarFooter>
+        <Button type="button" variant="outline" onClick={onClearAll} className="min-h-11 w-full">
+          <RotateCcw aria-hidden /> Clear filters
+        </Button>
+      </SidebarFooter>)}
+    </>
+  );
+}
+
 interface FilterBarProps {
   showSaved: boolean;
   activeCategory: Category | null;
   activeStacks: Stack[];
   activeUseCases: UseCase[];
   query: string;
-  onQueryChange: (query: string) => void;
+  facetCounts: DirectoryFacetCounts;
   onCategoryChange: (category: Category | null) => void;
   onStackChange: (stack: Stack | null) => void;
   onUseCaseChange: (useCase: UseCase | null) => void;
   onClearAll: () => void;
 }
 
-export function FilterBar({ showSaved, activeCategory, activeStacks, activeUseCases, query, onQueryChange, onCategoryChange, onStackChange, onUseCaseChange, onClearAll }: FilterBarProps) {
-  const [filtersOpen, setFiltersOpen] = useState(false);
+export function FilterBar({ showSaved, activeCategory, activeStacks, activeUseCases, query, onCategoryChange, onStackChange, onUseCaseChange, onClearAll, facetCounts }: FilterBarProps) {
+  const { openMobile, setOpenMobile } = useSidebar();
+  const filterTriggerRef = useRef<HTMLButtonElement>(null);
   const hasFilters = showSaved || query.trim() !== "" || activeCategory !== null || activeStacks.length > 0 || activeUseCases.length > 0;
 
+  const panelProps = {
+    showSaved,
+    activeCategory,
+    activeStacks,
+    activeUseCases,
+    query,
+    onCategoryChange,
+    onStackChange,
+    onUseCaseChange,
+    onClearAll,
+    facetCounts,
+  } satisfies Omit<FilterPanelProps, "idSuffix" | "footer">;
+
+  const handleMobileOpenChange = (nextOpen: boolean) => {
+    setOpenMobile(nextOpen);
+    if (!nextOpen && window.innerWidth < 1024) {
+      requestAnimationFrame(() => filterTriggerRef.current?.focus());
+    }
+  };
+
   return (
-    <aside aria-label="Library filters" className="theme-border h-fit space-y-5 border-r-0 px-5 py-4 sm:px-8 lg:sticky lg:top-[60px] lg:h-[calc(100dvh-60px)] lg:overflow-y-auto lg:border-r lg:p-6">
-      <div className="space-y-3">
-        <label className="relative block min-w-0">
-          <Search className="theme-muted pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" aria-hidden />
-          <Input id="library-search" value={query} onChange={(event) => onQueryChange(event.target.value)} placeholder="Libraries or components..." aria-label="Search libraries or components" className="coss-input h-11 w-full pr-9 pl-10" />
-          <kbd className="search-key-hint theme-muted theme-border pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 rounded border px-2 py-1 text-[10px]">/</kbd>
-        </label>
-      </div>
-      <Button type="button" variant="ghost" className="filter-mobile-toggle min-h-11 w-full justify-between px-0 text-sm hover:bg-transparent" aria-expanded={filtersOpen} aria-controls="directory-filters" onClick={() => setFiltersOpen((open) => !open)}>Filters{hasFilters ? " · Active" : ""} <ChevronDown className={`size-4 ${filtersOpen ? "rotate-180" : ""}`} aria-hidden /></Button>
-      <div id="directory-filters" className={`${filtersOpen ? "block" : "hidden"} space-y-6 lg:block`}>
-        <div className="space-y-2">
-          <h3 className="theme-muted text-xs font-medium">Category</h3>
-          <div className="flex flex-col gap-1" role="group" aria-label="Category">
-            <Button type="button" variant="ghost" aria-pressed={activeCategory === null} onClick={() => onCategoryChange(null)} className="filter-tab min-h-11 justify-start rounded-md px-3">All libraries</Button>
-            {CATEGORIES.map((category) => <Button key={category} type="button" variant="ghost" aria-pressed={activeCategory === category} onClick={() => onCategoryChange(category)} className="filter-tab min-h-11 justify-start rounded-md px-3">{category}</Button>)}
+    <>
+      <Button
+        type="button"
+        variant="outline"
+        className="directory-filter-trigger mx-5 mt-4 min-h-11 self-start lg:hidden"
+        ref={filterTriggerRef}
+        onClick={() => setOpenMobile(true)}
+        aria-label="Open filters"
+      >
+        <SlidersHorizontal aria-hidden /> Filters{hasFilters ? " · Active" : ""}
+      </Button>
+
+      <Sidebar collapsible="none" className="directory-sidebar directory-filter-panel hidden lg:flex" aria-label="Library filters">
+        <FilterPanel {...panelProps} idSuffix="" />
+      </Sidebar>
+
+      <Sheet open={openMobile} onOpenChange={handleMobileOpenChange}>
+        <SheetContent side="left" className="w-[16rem] gap-0 bg-sidebar p-0 lg:hidden">
+          <SheetTitle className="sr-only">Library filters</SheetTitle>
+          <div className="directory-filter-panel flex h-full min-h-0 flex-col pt-14">
+            <FilterPanel {...panelProps} idSuffix="-mobile" />
           </div>
-        </div>
-        <div className="space-y-2">
-          <h3 className="theme-muted text-xs font-medium">Stack</h3>
-          <FilterDropdown
-            label={activeStacks[0] ?? "All stacks"}
-            value={activeStacks[0] ?? "all"}
-            items={[{ label: "All stacks", value: "all" }, ...STACKS.map((stack) => ({ label: stack, value: stack }))]}
-            onValueChange={(value) => onStackChange(value === "all" ? null : value as Stack)}
-            className="w-full"
-          />
-        </div>
-        <div className="space-y-2">
-          <h3 className="theme-muted text-xs font-medium">Use case</h3>
-          <FilterDropdown
-            label={activeUseCases[0] ?? "All use cases"}
-            value={activeUseCases[0] ?? "all"}
-            items={[{ label: "All use cases", value: "all" }, ...USE_CASES.map((useCase) => ({ label: useCase, value: useCase }))]}
-            onValueChange={(value) => onUseCaseChange(value === "all" ? null : value as UseCase)}
-            className="w-full"
-          />
-        </div>
-        {hasFilters && <Button type="button" variant="outline" onClick={onClearAll} className="coss-trigger w-full"><RotateCcw aria-hidden /> Clear filters</Button>}
-      </div>
-    </aside>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }

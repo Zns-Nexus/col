@@ -1,4 +1,5 @@
 import type { Category, Library, Stack, UseCase } from "../data/libraries";
+import { isFrameworkStack } from "../data/libraries.ts";
 import type { ComponentIndex, LibraryComponent } from "../data/components";
 
 /**
@@ -17,6 +18,24 @@ export interface DirectoryQuery {
   useCases: readonly UseCase[];
   sort: DirectorySort;
 }
+
+export interface DirectoryFacetQuery {
+  query: string;
+  category: Category | null;
+  stacks: readonly Stack[];
+  useCases: readonly UseCase[];
+}
+
+export type DirectoryFacetCounts = {
+  category: ReadonlyMap<Category, number>;
+  stack: ReadonlyMap<Stack, number>;
+  useCase: ReadonlyMap<UseCase, number>;
+  total: {
+    category: number;
+    stack: number;
+    useCase: number;
+  };
+};
 
 export interface SearchResult {
   library: Library;
@@ -116,8 +135,11 @@ export function createDirectorySearch(
   components: ComponentIndex = {},
 ) {
   const index = buildIndex(registry, components);
+  const categoryOptions = [...new Set(registry.map(({ category }) => category))];
+  const stackOptions = [...new Set(registry.flatMap(({ stacks }) => stacks))];
+  const useCaseOptions = [...new Set(registry.flatMap(({ useCases }) => useCases))];
 
-  return function searchDirectory({
+  function searchDirectory({
     query,
     category,
     stacks,
@@ -133,7 +155,7 @@ export function createDirectorySearch(
           tokens.every((token) => haystack.includes(token)) &&
           (category === null || library.category === category) &&
           stacks.every((stack) => library.stacks.includes(stack)) &&
-          useCases.every((useCase) => library.useCases.includes(useCase))
+          (useCases.length === 0 || useCases.some((useCase) => library.useCases.includes(useCase)))
         );
       })
       .map((entry) => ({
@@ -165,5 +187,67 @@ export function createDirectorySearch(
       if (byRelevance !== 0) return byRelevance;
       return sort === "name" ? a.library.name.localeCompare(b.library.name) : 0;
     });
+  }
+
+  /**
+   * Counts each facet against the same matching set as the directory search.
+   * Category and use case counts clear their own facet. Stack counts keep
+   * compatible selections and replace the current framework when needed.
+   * Pass the saved slugs only when the Saved view is active.
+   */
+  searchDirectory.facetCounts = (
+    { query, category, stacks, useCases }: DirectoryFacetQuery,
+    saved?: ReadonlySet<string>,
+  ): DirectoryFacetCounts => {
+    const savedOnly = (results: SearchResult[]) =>
+      saved === undefined ? results : results.filter(({ library }) => saved.has(library.slug));
+    const matching = (filters: DirectoryFacetQuery) =>
+      savedOnly(searchDirectory({ ...filters, sort: "curated" }));
+
+    const categoryMatches = matching({ query, category: null, stacks, useCases });
+    const stackMatches = matching({ query, category, stacks: [], useCases });
+    const useCaseMatches = matching({ query, category, stacks, useCases: [] });
+
+    return {
+      category: new Map<Category, number>(
+        categoryOptions.map((option) => [
+          option,
+          categoryMatches.filter(({ library }) => library.category === option).length,
+        ]),
+      ),
+      stack: new Map<Stack, number>(
+        stackOptions.map((option) => [
+          option,
+          matching({
+            query,
+            category,
+            stacks: stacks.filter((selected) => selected !== option && !(isFrameworkStack(option) && isFrameworkStack(selected))),
+            useCases,
+          }).filter(({ library }) => library.stacks.includes(option)).length,
+        ]),
+      ),
+      useCase: new Map<UseCase, number>(
+        useCaseOptions.map((option) => [
+          option,
+          useCaseMatches.filter(({ library }) => library.useCases.includes(option)).length,
+        ]),
+      ),
+      total: {
+        category: categoryMatches.length,
+        stack: stackMatches.length,
+        useCase: useCaseMatches.length,
+      },
+    };
   };
+
+  return searchDirectory;
+}
+
+/** Keep one framework, while allowing compatible styling and language choices. */
+export function toggleStackSelection(current: readonly Stack[], stack: Stack | null): Stack[] {
+  if (stack === null) return [];
+  if (current.includes(stack)) return current.filter((value) => value !== stack);
+  return isFrameworkStack(stack)
+    ? [...current.filter((value) => !isFrameworkStack(value)), stack]
+    : [...current, stack];
 }

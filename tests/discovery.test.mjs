@@ -20,7 +20,7 @@ test("build emits complete discovery files", () => {
   assert.ok(robots.includes("Allow: /"));
   assert.ok(robots.includes("Sitemap: https://collection-of-libs.vercel.app/sitemap.xml"));
 
-  for (const route of ["/", "/libraries", "/docs", "/contributors"]) {
+  for (const route of ["/", "/libraries", "/docs", "/contributors", "/sponsors"]) {
     assert.ok(sitemap.includes(`<loc>https://collection-of-libs.vercel.app${route}</loc>`));
   }
   for (const library of libraries) {
@@ -29,7 +29,7 @@ test("build emits complete discovery files", () => {
       `Sitemap is missing /libraries/${library.slug}`,
     );
   }
-  assert.equal((sitemap.match(/<lastmod>/g) ?? []).length, 4 + libraries.length);
+  assert.equal((sitemap.match(/<lastmod>/g) ?? []).length, 5 + libraries.length);
 
   const entries = llms.split("\n## ").slice(1);
   assert.equal(entries.length, libraries.length);

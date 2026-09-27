@@ -1,3 +1,4 @@
+// Magic UI Rainbow Button: https://magicui.design/docs/components/rainbow-button
 import React from "react"
 import { Slot } from "radix-ui"
 import { cva, type VariantProps } from "class-variance-authority"

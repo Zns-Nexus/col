@@ -1,7 +1,6 @@
 import { LibraryExplorer } from "@/components/LibraryExplorer";
 import { Header } from "@/components/Header";
 import { RoadmapSection } from "@/components/RoadmapSection";
-import { SponsorsSection } from "@/components/SponsorsSection";
 import { SiteFooter } from "@/components/SiteFooter";
 import { WhatsInsideSection } from "@/components/WhatsInsideSection";
 
@@ -15,7 +14,6 @@ export default function Home() {
         <LibraryExplorer />
         <WhatsInsideSection />
         <RoadmapSection />
-        <SponsorsSection />
       </main>
       <SiteFooter />
     </>

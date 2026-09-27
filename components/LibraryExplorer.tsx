@@ -5,6 +5,7 @@ import Image from "next/image";
 import { BookOpen, GitFork, Layers3, LayoutGrid, Star } from "lucide-react";
 import { CATEGORIES, STACKS, libraries } from "@/data/libraries";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
+import { RainbowButton } from "@/components/ui/rainbow-button";
 import { LiquidButton } from "@/components/ui/liquid-glass-button";
 import { FlowButton } from "@/components/ui/flow-button";
 import { ScreenShader } from "./ScreenShader";
@@ -133,6 +134,9 @@ export function LibraryExplorer() {
                 Star on GitHub
               </a>
             </LiquidButton>
+            <RainbowButton asChild className="h-[52px] rounded-xl px-7 text-sm text-white! dark:text-black!">
+              <a href="https://github.com/screen-gd/Col/issues/new" target="_blank" rel="noopener noreferrer">Submit</a>
+            </RainbowButton>
           </div>
           <div className="animate-fade-up delay-2 mt-5 flex max-w-3xl flex-wrap items-center justify-start gap-2 text-sm">
             <span className="hero-popular mr-2 font-pixel text-xs tracking-[0.08em] uppercase">Popular</span>

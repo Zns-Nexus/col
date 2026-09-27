@@ -79,10 +79,11 @@ export function ThemeToggle() {
       ref={buttonRef}
       type="button"
       variant="ghost"
+      size="icon-sm"
       onClick={toggle}
       aria-label={`Use ${light ? "dark" : "light"} mode`}
       title={light ? "Dark mode" : "Light mode"}
-      className="theme-toggle grid size-11 place-items-center rounded-lg border"
+      className="theme-toggle grid size-9 place-items-center rounded-lg border"
     >
       {light ? <Moon className="size-4" aria-hidden /> : <Sun className="size-4" aria-hidden />}
     </Button>
