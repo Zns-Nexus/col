@@ -25,16 +25,17 @@ MinimalCard.displayName = "MinimalCard";
 const MinimalCardImage = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & {
-    src: string;
+    src?: string;
     alt: string;
     fallback?: React.ReactNode;
     loading?: "eager" | "lazy";
+    imageStyle?: React.CSSProperties;
   }
->(({ className, alt, src, fallback, loading = "lazy", ...props }, ref) => {
-  const [failed, setFailed] = React.useState(false);
+>(({ className, alt, src, fallback, loading = "lazy", imageStyle, ...props }, ref) => {
+  const [failed, setFailed] = React.useState(!src);
 
   React.useEffect(() => {
-    setFailed(false);
+    setFailed(!src);
   }, [src]);
 
   return (
@@ -57,6 +58,7 @@ const MinimalCardImage = React.forwardRef<
           height={200}
           loading={loading}
           onError={() => setFailed(true)}
+          style={imageStyle}
           className="absolute inset-0 h-full w-full rounded-xl object-cover"
         />
       )}

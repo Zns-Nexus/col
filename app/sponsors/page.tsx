@@ -12,7 +12,7 @@ export default function SponsorsPage() {
   return (
     <>
       <Header />
-      <main className="contributors-page min-h-screen pt-12">
+      <main className="contributors-page min-h-screen pt-(--site-header-height)">
         <SponsorsSection />
       </main>
       <SiteFooter />

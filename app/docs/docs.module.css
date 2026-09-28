@@ -1,0 +1,27 @@
+.sidebarColumn {
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .sidebarColumn {
+    min-height: calc(100vh - 6.5rem);
+  }
+
+  .sidebarFixed {
+    position: fixed;
+    z-index: 10;
+    top: 5rem;
+    left: max(1.25rem, calc((100vw - 80rem) / 2));
+    width: 14rem;
+    max-height: calc(100vh - 6.5rem);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(139, 229, 239, 0.28) transparent;
+  }
+}
+
+@media (max-width: 1023px) {
+  .sidebarColumn {
+    position: relative;
+  }
+}

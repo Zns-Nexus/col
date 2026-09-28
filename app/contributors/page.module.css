@@ -1,0 +1,173 @@
+.page {
+  position: relative;
+  isolation: isolate;
+}
+
+.intro {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.eyebrow {
+  color: var(--sidebar-primary);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.githubLink {
+  min-height: 2.75rem;
+  border-bottom: 1px solid rgba(139, 229, 239, 0.35);
+  white-space: nowrap;
+}
+
+.contributorGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  align-items: end;
+  gap: 1px;
+  margin-top: 6rem;
+  overflow: hidden;
+  border: 1px solid rgba(136, 213, 223, 0.14);
+  background: rgba(136, 213, 223, 0.14);
+}
+
+.contributor {
+  min-width: 0;
+  height: 100%;
+  background: #10181a;
+}
+
+.contributorLink {
+  display: flex;
+  min-height: 15rem;
+  height: 100%;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.25rem;
+  transition: background-color 200ms ease, transform 200ms ease;
+}
+
+.contributorLink:hover,
+.contributorLink:focus-visible {
+  background: rgba(43, 187, 205, 0.08);
+}
+
+.portraitWrap {
+  position: relative;
+  display: grid;
+  width: min(var(--portrait-size), 100%);
+  aspect-ratio: 1;
+  place-items: center;
+}
+
+.portrait {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(139, 229, 239, 0.28);
+  border-radius: 50%;
+  background: #172326;
+  object-fit: cover;
+  transition: border-color 200ms ease, transform 200ms ease;
+}
+
+.contributorLink:hover .portrait,
+.contributorLink:focus-visible .portrait {
+  border-color: var(--sidebar-primary);
+  transform: scale(1.035);
+}
+
+.rank {
+  position: absolute;
+  right: -0.2rem;
+  bottom: 0.25rem;
+  display: grid;
+  width: 1.7rem;
+  height: 1.7rem;
+  place-items: center;
+  border: 1px solid rgba(139, 229, 239, 0.32);
+  border-radius: 50%;
+  background: #10181a;
+  color: var(--sidebar-primary);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.58rem;
+}
+
+.contributorMeta {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.3rem;
+  overflow: hidden;
+}
+
+.contributorMeta span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.arrow {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1.25rem;
+}
+
+:global(html.light) .contributor {
+  background: #f7f7f5;
+}
+
+:global(html.light) .portrait {
+  border-color: rgba(8, 111, 127, 0.28);
+  background: #fff;
+}
+
+:global(html.light) .rank {
+  border-color: rgba(8, 111, 127, 0.28);
+  background: #f7f7f5;
+}
+
+:global(html.light) .contributorGrid {
+  border-color: rgba(17, 17, 17, 0.14);
+  background: rgba(17, 17, 17, 0.14);
+}
+
+@media (max-width: 639px) {
+  .intro {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .contributorGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 4rem;
+  }
+
+  .contributorLink {
+    min-height: 12rem;
+    padding: 1rem;
+  }
+
+  .portraitWrap {
+    width: min(calc(var(--portrait-size) * 0.72), 100%);
+  }
+
+  .arrow {
+    right: 1rem;
+    bottom: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contributorLink,
+  .portrait {
+    transition: none;
+  }
+}

@@ -10,6 +10,7 @@ import { MinimalCard, MinimalCardDescription, MinimalCardImage, MinimalCardTitle
 import { LibraryLogo } from "./LibraryLogo";
 import { hostname } from "@/lib/utils";
 import { libraryPath } from "@/lib/site";
+import { libraryPreviews } from "@/data/library-previews";
 
 interface LibraryCardProps {
   library: Library;
@@ -27,14 +28,22 @@ export function LibraryCard({ library, layout, matches, saved, onToggleSaved }: 
   };
 
   if (layout === "grid") {
+    const preview = libraryPreviews[library.slug];
+    const previewRatio = preview ? preview.width / preview.height : 0;
+
     return (
       <MinimalCard className="library-grid-card group relative flex min-w-0 flex-col">
         <MinimalCardImage
-          src={`https://www.google.com/s2/favicons?domain=${hostname(library.url)}&sz=128`}
-          alt=""
+          src={preview?.src}
+          alt={`${library.name} website preview`}
+          imageStyle={{
+            objectFit: previewRatio >= 1.4 ? "cover" : "contain",
+            padding: previewRatio >= 1.4 ? 0 : "1.5rem",
+          }}
           fallback={
-            <span aria-hidden className="absolute inset-0 grid place-items-center rounded-xl bg-neutral-200 text-5xl font-semibold text-neutral-500 dark:bg-neutral-700 dark:text-neutral-300">
-              {library.name.slice(0, 1).toUpperCase()}
+            <span role="img" aria-label={`Preview unavailable for ${library.name}`} className="library-card-fallback absolute inset-0 flex flex-col justify-end rounded-xl p-5">
+              <span className="text-lg font-semibold tracking-tight">{library.name}</span>
+              <span className="mt-1 text-xs opacity-70">{hostname(library.url)}</span>
             </span>
           }
           className="library-card-image mb-3 h-40 2xl:h-48"
@@ -42,10 +51,14 @@ export function LibraryCard({ library, layout, matches, saved, onToggleSaved }: 
         <Button type="button" size="icon-sm" variant="ghost" onClick={handleToggleSaved} aria-label={saved ? `Remove ${library.name} from saved` : `Save ${library.name}`} aria-pressed={saved} className="library-save library-grid-save absolute right-4 top-4 z-10 size-8 min-h-8 min-w-8 p-0">
           <Heart className="size-3.5" fill={saved ? "currentColor" : "none"} aria-hidden />
         </Button>
-        <div className="flex flex-wrap items-center gap-1.5 px-1">
+        <div className="library-card-heading flex flex-wrap items-center gap-1.5 px-1">
           <Link href={libraryPath(library.slug)} className="after:absolute after:inset-0 focus-visible:outline-2 focus-visible:outline-offset-2">
             <MinimalCardTitle className="mt-0 px-0">{library.name}</MinimalCardTitle>
           </Link>
+          <span className="library-card-category" aria-label={`Category: ${library.category}`}>
+            <span className="library-card-category-dot" aria-hidden />
+            {library.category}
+          </span>
           {matches.slice(0, 2).map((component) => (
             <a key={component.url} href={component.url} target="_blank" rel="noopener noreferrer" className="library-chip relative z-10 max-w-full rounded-md border px-1.5 py-0.5 text-[10px] break-words hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2">
               {component.name}
