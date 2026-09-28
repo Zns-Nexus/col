@@ -88,8 +88,8 @@ export function DirectoryExplorer({ initialQuery = "" }: { initialQuery?: string
       : "Try another keyword or clear the filters.";
 
   return (
-    <section className="directory-section min-h-screen w-full px-0 pt-12">
-      <SidebarProvider className="min-h-[calc(100dvh-48px)] flex-col lg:flex-row">
+    <section className="directory-section w-full px-0">
+      <SidebarProvider className="directory-layout min-h-[calc(100dvh-var(--site-header-height))] flex-col lg:flex-row">
         <FilterBar
           showSaved={showSaved}
           query={query}
@@ -103,9 +103,9 @@ export function DirectoryExplorer({ initialQuery = "" }: { initialQuery?: string
           onClearAll={clearFilters}
         />
 
-        <div className={`min-w-0 flex-1 px-5 py-4 sm:px-8 lg:px-8 lg:py-6 ${visibleResults.length ? "pb-40" : ""}`}>
-          <div className="theme-border space-y-3 border-b pb-4">
-            <label className="relative block w-full max-w-xl">
+        <div className={`directory-results-pane min-w-0 flex-1 px-5 py-4 sm:px-8 lg:px-8 lg:py-6 ${visibleResults.length ? "pb-40" : ""}`}>
+          <div className="directory-toolbar theme-border space-y-3 border-b pb-4">
+            <label className="directory-search-label relative block w-full max-w-xl">
               <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" aria-hidden />
               <input
                 id="library-search"
@@ -114,11 +114,11 @@ export function DirectoryExplorer({ initialQuery = "" }: { initialQuery?: string
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Libraries or components..."
                 aria-label="Search libraries or components"
-                className="theme-control h-11 w-full rounded-md border bg-transparent pr-4 pl-10 text-sm outline-none placeholder:text-current/50 focus-visible:ring-2"
+                className="directory-search theme-control h-11 w-full rounded-md border bg-transparent pr-4 pl-10 text-sm outline-none placeholder:text-current/50 focus-visible:ring-2"
               />
               <kbd className="search-key-hint pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 rounded border px-2 py-1 text-[10px]">/</kbd>
             </label>
-            <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="directory-toolbar-row flex flex-wrap items-center justify-between gap-3">
               <h1 className="theme-text text-xl font-semibold tracking-tight">{query || category || stacks.length || useCases.length ? "Results" : "All libraries"}</h1>
               <div className="flex flex-wrap items-center gap-2">
                 <p role="status" className="theme-muted whitespace-nowrap text-sm tabular-nums">{visibleResults.length} of {libraries.length}</p>
@@ -150,7 +150,7 @@ export function DirectoryExplorer({ initialQuery = "" }: { initialQuery?: string
           {query.trim() && <p className="theme-muted mt-3 text-xs leading-5">Component coverage is partial. Links below are verified matches, not a complete inventory.</p>}
 
           {visibleResults.length ? (
-            <div className={`mt-5 grid grid-cols-1 ${layout === "grid" ? "gap-4 sm:grid-cols-2 xl:grid-cols-4" : "gap-3"}`}>
+            <div className={`directory-gallery mt-5 grid grid-cols-1 ${layout === "grid" ? "gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4" : "gap-3"}`}>
               {visibleResults.map(({ library, components }) => (
                 <LibraryCard key={library.slug} layout={layout} library={library} matches={components} saved={saved.has(library.slug)} onToggleSaved={() => toggleSaved(library.slug)} />
               ))}

@@ -32,22 +32,36 @@ const headerBlurLayers = Array.from({ length: 5 }, (_, index): CSSProperties => 
   return { maskImage: mask, WebkitMaskImage: mask, backdropFilter: blur, WebkitBackdropFilter: blur };
 });
 
-export function Header() {
+export function Header({ variant = "default" }: { variant?: "default" | "library" }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [stars, setStars] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const linksRef = useRef<HTMLElement>(null);
   const highlightRef = useRef<HTMLSpanElement>(null);
   const pendingLinkRef = useRef<HTMLAnchorElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  // Only the home page header reacts to scrolling; other routes keep a solid header.
+  const isHome = pathname === "/";
 
   useEffect(() => {
     setMenuOpen(false);
     setSearchOpen(false);
     setSearchQuery("");
   }, [pathname]);
+
+  useEffect(() => {
+    if (!isHome) {
+      setScrolled(false);
+      return;
+    }
+    const syncScrollState = () => setScrolled(window.scrollY > 8);
+    syncScrollState();
+    window.addEventListener("scroll", syncScrollState, { passive: true });
+    return () => window.removeEventListener("scroll", syncScrollState);
+  }, [isHome]);
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
@@ -122,13 +136,13 @@ export function Header() {
     };
   }, [pathname, restoreActiveHighlight]);
 
-  const headerClass = "site-header";
+  const headerClass = `site-header${variant === "library" ? " site-header-library" : ""}${isHome ? "" : " site-header-solid"}`;
   const searchResults = searchQuery.trim()
     ? searchDirectory({ query: searchQuery, category: null, stacks: [], useCases: [], sort: "curated" }).slice(0, 5)
     : [];
 
   return (
-    <header className={headerClass}>
+    <header className={`${headerClass}${scrolled ? " site-header-scrolled" : ""}`} data-scrolled={scrolled}>
       <div className="site-header-blur" aria-hidden="true">
         {headerBlurLayers.map((style, index) => <span key={index} style={style} />)}
       </div>

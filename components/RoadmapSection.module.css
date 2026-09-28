@@ -1,0 +1,325 @@
+.section {
+  --roadmap-accent: #8bd5df;
+  --roadmap-accent-strong: #d7faff;
+  --roadmap-line: rgba(136, 213, 223, 0.2);
+  background: #10181a;
+  padding: 6rem 1.25rem 7rem;
+}
+
+.container {
+  width: min(100%, 80rem);
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.eyebrow,
+.index,
+.issue,
+.status,
+.openIssue {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+.eyebrow {
+  margin: 0 0 1.25rem;
+  color: var(--roadmap-accent);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 600;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+}
+
+.description {
+  max-width: 36rem;
+  margin: 1.25rem 0 0;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.allIssues {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.55rem;
+  flex: 0 0 auto;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 0.3rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: color 160ms ease, border-color 160ms ease;
+}
+
+.allIssues:hover,
+.allIssues:focus-visible,
+.itemLink:hover,
+.itemLink:focus-visible {
+  color: var(--roadmap-accent-strong);
+}
+
+.allIssues:focus-visible,
+.itemLink:focus-visible {
+  outline: 2px solid var(--roadmap-accent);
+  outline-offset: 4px;
+}
+
+.headerIcon,
+.linkIcon {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+}
+
+.timeline {
+  position: relative;
+  display: grid;
+  gap: 1.25rem;
+  margin: 4.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr);
+  gap: 1.25rem;
+}
+
+.rail {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.rail::before {
+  position: absolute;
+  top: 0;
+  bottom: -1.25rem;
+  width: 1px;
+  background: var(--roadmap-line);
+  content: "";
+}
+
+.item:last-child .rail::before {
+  bottom: 50%;
+}
+
+.marker {
+  position: relative;
+  z-index: 1;
+  width: 0.9rem;
+  height: 0.9rem;
+  margin-top: 1.45rem;
+  border: 1px solid var(--roadmap-accent);
+  border-radius: 999px;
+  background: #10181a;
+  box-shadow: 0 0 0 0.3rem #10181a;
+}
+
+.markerActive {
+  background: var(--roadmap-accent);
+  box-shadow: 0 0 0 0.3rem #10181a;
+}
+
+.card {
+  min-width: 0;
+  border: 1px solid rgba(136, 213, 223, 0.16);
+  border-radius: 0.75rem;
+  background: rgba(20, 28, 31, 0.72);
+  box-shadow: none;
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 3rem;
+  border-bottom: 1px solid rgba(136, 213, 223, 0.12);
+  padding: 0 1.35rem;
+}
+
+.index {
+  color: var(--roadmap-accent);
+  font-size: 0.69rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.issue {
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.statusDot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.statusActive {
+  color: var(--roadmap-accent-strong);
+}
+
+.statusPlanned {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.itemLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  min-height: 6.5rem;
+  padding: 1.3rem 1.35rem 1.4rem;
+  color: inherit;
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.openIssue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 0 0 auto;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.67rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: color 160ms ease;
+}
+
+.itemLink:hover .openIssue,
+.itemLink:focus-visible .openIssue {
+  color: currentColor;
+}
+
+:global(html.light) .section {
+  --roadmap-accent: #086f7f;
+  --roadmap-accent-strong: #075968;
+  --roadmap-line: rgba(8, 111, 127, 0.22);
+  background: #f7f7f5;
+}
+
+:global(html.light) .marker {
+  background: #f7f7f5;
+  box-shadow: 0 0 0 0.3rem #f7f7f5;
+}
+
+:global(html.light) .markerActive {
+  background: var(--roadmap-accent);
+  box-shadow: 0 0 0 0.3rem #f7f7f5;
+}
+
+:global(html.light) .card {
+  border-color: rgba(17, 17, 17, 0.12);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: none;
+}
+
+:global(html.light) .cardMeta {
+  border-color: rgba(17, 17, 17, 0.1);
+}
+
+:global(html.light) .issue,
+:global(html.light) .openIssue {
+  color: rgba(17, 17, 17, 0.52);
+}
+
+:global(html.light) .statusPlanned {
+  color: rgba(17, 17, 17, 0.54);
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: 5rem 1.25rem 5.5rem;
+  }
+
+  .header {
+    display: block;
+  }
+
+  .allIssues {
+    margin-top: 1.75rem;
+  }
+
+  .timeline {
+    gap: 1rem;
+    margin-top: 3.25rem;
+  }
+
+  .item {
+    grid-template-columns: 1.6rem minmax(0, 1fr);
+    gap: 0.8rem;
+  }
+
+  .marker {
+    width: 0.75rem;
+    height: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .cardMeta {
+    flex-wrap: wrap;
+    gap: 0.5rem 0.65rem;
+    min-height: 2.85rem;
+    padding: 0.65rem 1rem;
+  }
+
+  .status {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .itemLink {
+    display: block;
+    min-height: 0;
+    padding: 1.05rem 1rem 1.15rem;
+    font-size: 1.08rem;
+    line-height: 1.35;
+  }
+
+  .openIssue {
+    margin-top: 0.9rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .allIssues,
+  .itemLink,
+  .openIssue {
+    transition: none;
+  }
+}

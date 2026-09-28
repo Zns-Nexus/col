@@ -5,11 +5,11 @@ export default async function LibrariesPage({ searchParams }: { searchParams: Pr
   const { q = "" } = await searchParams;
 
   return (
-    <>
-      <Header />
-      <main className="w-full max-w-full overflow-x-clip">
+    <div className="library-page-shell">
+      <Header variant="library" />
+      <main className="library-page-main w-full max-w-full overflow-x-clip">
         <DirectoryExplorer initialQuery={q} />
       </main>
-    </>
+    </div>
   );
 }

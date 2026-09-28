@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { BookOpen, GitFork, Layers3, LayoutGrid, Star } from "lucide-react";
 import { CATEGORIES, STACKS, libraries } from "@/data/libraries";
-import { ShimmerButton } from "@/components/ui/shimmer-button";
-import { RainbowButton } from "@/components/ui/rainbow-button";
-import { LiquidButton } from "@/components/ui/liquid-glass-button";
+import { Button } from "@/components/ui/button";
 import { FlowButton } from "@/components/ui/flow-button";
 import { ScreenShader } from "./ScreenShader";
 import { ScreendevShader } from "./ScreendevShader";
@@ -128,30 +126,28 @@ export function LibraryExplorer() {
           </p>
           <div className="animate-fade-up delay-1 hero-actions mt-8 flex w-full flex-wrap justify-start gap-3">
             <FlowButton href="/libraries" text="Browse Libraries" className="hero-flow-button min-h-[52px] px-8" />
-            <LiquidButton asChild size="default" className="hero-liquid-github h-[52px] px-7">
+            <Button asChild variant="outline" size="lg" className="hero-liquid-github h-[52px] px-7">
               <a href="https://github.com/screen-gd/Col" target="_blank" rel="noopener noreferrer">
                 <Star className="size-4" aria-hidden />
                 Star on GitHub
               </a>
-            </LiquidButton>
-            <RainbowButton asChild className="h-[52px] rounded-xl px-7 text-sm text-white! dark:text-black!">
+            </Button>
+            <Button asChild variant="outline" size="lg" className="h-[52px] rounded-xl px-7 text-sm">
               <a href="https://github.com/screen-gd/Col/issues/new" target="_blank" rel="noopener noreferrer">Submit</a>
-            </RainbowButton>
+            </Button>
           </div>
           <div className="animate-fade-up delay-2 mt-5 flex max-w-3xl flex-wrap items-center justify-start gap-2 text-sm">
             <span className="hero-popular mr-2 font-pixel text-xs tracking-[0.08em] uppercase">Popular</span>
             {(["React", "Animation", "Tailwind", "Components", "Icons", "3D"] as const).map((filter) => (
-              <ShimmerButton
+              <Button
                 key={filter}
                 type="button"
+                variant="outline"
                 onClick={() => openLibrary(filter)}
-                shimmerColor="var(--popular-filter-shimmer)"
-                background="var(--popular-filter-background)"
-                shimmerDuration="6s"
                 className="popular-filter-button h-8 rounded-full px-4 py-0 text-xs font-medium shadow-none"
               >
                 {filter}
-              </ShimmerButton>
+              </Button>
             ))}
           </div>
         </div>
