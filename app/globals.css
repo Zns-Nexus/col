@@ -106,6 +106,14 @@ html.light .hero-liquid-github { border-color: rgba(17,17,17,.2); background: tr
 html.light .hero-liquid-github:hover { background: rgba(17,17,17,.06); }
 .hero-liquid-github [data-slot="liquid-glass-highlight"] { display: none; }
 
+.hero-artwork {
+  top: 5.5rem;
+  bottom: 7rem;
+  z-index: 2;
+  width: 45%;
+  pointer-events: none;
+}
+
 .hero-stat { border-color: rgba(255,255,255,.16); }
 .hero-stat-icon { border-color: rgba(255,255,255,.16); color: #fff; }
 .hero-stat-value { color: #fff; }
@@ -203,17 +211,18 @@ html.light .theme-toggle {
 }
 
 html.light .hero-wash {
-  background: #f7f7f5;
+  background: linear-gradient(180deg, #fff 0%, #f7f7f5 72%);
 }
 
 html.light .hero-wash::before {
-  background: rgba(247,247,245,.45);
+  background: linear-gradient(90deg, rgba(247,247,245,.54) 0%, rgba(247,247,245,.32) 38rem, transparent 64rem);
 }
 
 html.light .hero-wash::after {
-  background: rgba(247,247,245,.5);
+  background: linear-gradient(to bottom, transparent, rgba(247,247,245,.2) 25%, rgba(247,247,245,.78) 68%, #f7f7f5 100%);
 }
 
+html.light .hero-registers { opacity: 0.07; filter: invert(1); }
 html.light .brand-mark { filter: invert(1); }
 
 html.light .hero-headline { color: #111827; }
@@ -223,6 +232,12 @@ html.light .hero-description { color: #334155; }
 html.light .hero-stat-icon { border-color: rgba(17,24,39,.15); color: #111827; }
 html.light .hero-stat-value { color: #111827; }
 html.light .hero-stat-label { color: #475569; }
+
+.hero-shader-credit { color: rgba(255,255,255,.62); text-decoration: none; }
+.hero-shader-credit:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+.hero-shader-credit:focus-visible { outline: 2px solid var(--col-blue); outline-offset: 3px; }
+html.light .hero-shader-credit { color: rgba(17,17,17,.62); }
+html.light .hero-shader-credit:hover { color: #111; }
 
 .whats-inside-section {
   background: #10181a;
@@ -889,6 +904,37 @@ html.light [class~="border-white/12"],
 html.light [class~="border-white/15"] { border-color: rgba(17,17,17,.15); }
 
 html.light .hero-wash [class~="bg-white/35"] { background-color: rgba(17,17,17,.28); }
+
+.hero-registers {
+  position: absolute;
+  inset: 0;
+  opacity: 0.16;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cpath d='M80 76v8M76 80h8' stroke='%23fff' stroke-opacity='.45' stroke-width='.6'/%3E%3C/svg%3E");
+  mask-image: linear-gradient(to bottom, transparent 2%, black 18%, black 78%, transparent 98%);
+}
+
+@keyframes logo-float {
+  0%, 100% { transform: translate3d(0, -7px, 0); }
+  50% { transform: translate3d(0, 9px, 0); }
+}
+
+.hero-floating-logo {
+  animation: logo-float 7s ease-in-out infinite;
+  will-change: transform;
+}
+
+.hero-logo-card {
+  filter: drop-shadow(0 20px 36px rgba(0, 0, 0, 0.72));
+}
+
+html.light .hero-logo-card {
+  filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.2));
+}
+
+.hero-background-card {
+  opacity: .42;
+  filter: blur(3px) brightness(.85) saturate(0);
+}
 
 /* Entrance */
 @keyframes fade-up {
