@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { SiteFooter } from "@/components/SiteFooter";
 import { LibraryDetail } from "@/components/LibraryDetail";
 import { libraries } from "@/data/libraries";
 import { libraryDetails } from "@/data/library-details";
@@ -44,10 +43,5 @@ export default async function LibraryPage({ params }: LibraryPageProps) {
   const details = libraryDetails[slug];
   if (!library || !details) notFound();
 
-  return (
-    <>
-      <LibraryDetail library={library} details={details} />
-      <SiteFooter />
-    </>
-  );
+  return <LibraryDetail library={library} details={details} />;
 }
