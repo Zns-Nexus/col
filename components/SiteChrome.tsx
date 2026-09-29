@@ -9,6 +9,7 @@ import { libraries } from "@/data/libraries";
 import { componentIndex } from "@/data/components";
 import { createDirectorySearch } from "@/lib/directory";
 import { libraryPath } from "@/lib/site";
+import { directoryQuery, useDirectoryQuery } from "@/lib/directory-query";
 
 const compactNumber = new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 });
 const searchDirectory = createDirectorySearch(libraries, componentIndex);
@@ -72,6 +73,32 @@ export function SiteSearch({ className = "", collapsed = false }: { className?: 
     setOpen(false);
     setQuery("");
   }, [pathname]);
+
+  const directoryValue = useDirectoryQuery();
+
+  // On the directory the field filters the results in place instead of opening a dropdown.
+  if (pathname === "/libraries" && !collapsed) {
+    return (
+      <form role="search" className={`site-search ${className}`} onSubmit={(event) => event.preventDefault()}>
+        <Search aria-hidden="true" />
+        <input
+          data-directory-search=""
+          type="search"
+          value={directoryValue}
+          onChange={(event) => directoryQuery.set(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              if (directoryValue) directoryQuery.set("");
+              else event.currentTarget.blur();
+            }
+          }}
+          placeholder="Search libraries"
+          aria-label="Search libraries or components"
+        />
+        <kbd aria-hidden="true">/</kbd>
+      </form>
+    );
+  }
 
   if (collapsed) {
     return (
