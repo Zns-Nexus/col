@@ -88,7 +88,7 @@ export const libraries: Library[] = [
     name: "React Bits",
     slug: "react-bits",
     description:
-      "A collection of animated, interactive React components — text effects, backgrounds, and micro-interactions.",
+      "Animated, interactive React components, from text effects and backgrounds to small micro-interactions.",
     url: "https://reactbits.dev",
     category: "Animation & Motion",
     stacks: ["React", "Tailwind CSS", "TypeScript"],
@@ -110,7 +110,7 @@ export const libraries: Library[] = [
     name: "shadcn/ui",
     slug: "shadcn-ui",
     description:
-      "Beautifully designed, accessible components you copy into your project. Built on Radix UI and Tailwind CSS.",
+      "Accessible components you copy into your project and own, built on Radix UI and Tailwind CSS.",
     url: "https://ui.shadcn.com",
     category: "Component Library",
     stacks: ["React", "Next.js", "Astro", "Tailwind CSS", "TypeScript"],
@@ -121,7 +121,7 @@ export const libraries: Library[] = [
     name: "Magic UI",
     slug: "magic-ui",
     description:
-      "150+ free animated components and effects for landing pages, built with React, TypeScript and Tailwind.",
+      "More than 150 free animated components and effects for landing pages, built with React, TypeScript, and Tailwind CSS.",
     url: "https://magicui.design",
     category: "Animation & Motion",
     stacks: ["React", "Next.js", "Tailwind CSS", "TypeScript"],
@@ -132,7 +132,7 @@ export const libraries: Library[] = [
     name: "Aceternity UI",
     slug: "aceternity-ui",
     description:
-      "Trendy animated components and sections — hero effects, 3D cards, and scroll experiences for modern websites.",
+      "Animated components and page sections for modern websites, including hero effects, 3D cards, and scroll-driven experiences.",
     url: "https://ui.aceternity.com",
     category: "Animation & Motion",
     stacks: ["React", "Tailwind CSS", "TypeScript"],
@@ -143,7 +143,7 @@ export const libraries: Library[] = [
     name: "Motion",
     slug: "motion",
     description:
-      "A powerful, production-ready animation library for React and JavaScript (formerly Framer Motion).",
+      "A production-ready animation library for React and JavaScript, formerly known as Framer Motion.",
     url: "https://motion.dev",
     category: "Animation & Motion",
     stacks: ["React", "Vanilla JS", "TypeScript"],
@@ -154,7 +154,7 @@ export const libraries: Library[] = [
     name: "GSAP",
     slug: "gsap",
     description:
-      "The industry-standard JavaScript animation library with ScrollTrigger, timelines, and physics-based motion.",
+      "A widely used JavaScript animation library with timelines, ScrollTrigger, and physics-based motion.",
     url: "https://gsap.com",
     category: "Animation & Motion",
     stacks: ["Vanilla JS", "React", "Vue", "TypeScript"],
@@ -187,7 +187,7 @@ export const libraries: Library[] = [
     name: "HeroUI",
     slug: "heroui",
     description:
-      "Beautiful, fast and modern React UI library with built-in theming (formerly NextUI).",
+      "A modern React UI library with built-in theming, formerly known as NextUI.",
     url: "https://www.heroui.com",
     category: "Component Library",
     stacks: ["React", "Tailwind CSS", "TypeScript"],
@@ -220,7 +220,7 @@ export const libraries: Library[] = [
     name: "Material UI (MUI)",
     slug: "mui",
     description:
-      "The most popular React implementation of Google's Material Design, with a huge ecosystem.",
+      "A React implementation of Google's Material Design with a large ecosystem of components and tools.",
     url: "https://mui.com",
     category: "Component Library",
     stacks: ["React", "TypeScript"],
@@ -231,7 +231,7 @@ export const libraries: Library[] = [
     name: "Ant Design",
     slug: "ant-design",
     description:
-      "An enterprise-class React UI design system with a rich set of high-quality components.",
+      "An enterprise-focused React design system with a broad set of components.",
     url: "https://ant.design",
     category: "Component Library",
     stacks: ["React", "TypeScript"],
@@ -242,7 +242,7 @@ export const libraries: Library[] = [
     name: "daisyUI",
     slug: "daisyui",
     description:
-      "The most popular component library plugin for Tailwind CSS — semantic class names, zero JS required.",
+      "A Tailwind CSS plugin that adds semantic component classes such as btn and card, with no JavaScript required.",
     url: "https://daisyui.com",
     category: "CSS Framework",
     stacks: ["Tailwind CSS", "Vanilla JS"],
@@ -264,7 +264,7 @@ export const libraries: Library[] = [
     name: "Preline",
     slug: "preline",
     description:
-      "Open-source Tailwind CSS components with Figma design files — marketing, e-commerce and application UI.",
+      "Open-source Tailwind CSS components with matching Figma files, covering marketing, e-commerce, and application UI.",
     url: "https://preline.co",
     category: "Templates & Blocks",
     stacks: ["Tailwind CSS", "Vanilla JS", "React"],
@@ -297,7 +297,7 @@ export const libraries: Library[] = [
     name: "Motion Primitives",
     slug: "motion-primitives",
     description:
-      "Beautifully designed, animated components powered by Motion — copy, paste, and customize.",
+      "Animated components built on Motion that you copy into your project and adjust to fit.",
     url: "https://motion-primitives.com",
     category: "Animation & Motion",
     stacks: ["React", "Tailwind CSS", "TypeScript"],
@@ -319,7 +319,7 @@ export const libraries: Library[] = [
     name: "Lucide",
     slug: "lucide",
     description:
-      "Beautiful, consistent open-source icons — a community fork of Feather Icons for every framework.",
+      "A consistent, open-source icon set that began as a community fork of Feather Icons, with packages for most frameworks.",
     url: "https://lucide.dev",
     category: "Icons",
     stacks: ["React", "Vue", "Svelte", "Angular", "Vanilla JS"],
@@ -341,7 +341,7 @@ export const libraries: Library[] = [
     name: "Tremor",
     slug: "tremor",
     description:
-      "React components purpose-built for dashboards — charts, KPI cards, and data display built on Tailwind.",
+      "React components for dashboards, including charts, KPI cards, and data displays, styled with Tailwind CSS.",
     url: "https://tremor.so",
     category: "Charts & Data Viz",
     stacks: ["React", "Tailwind CSS", "TypeScript"],
@@ -352,7 +352,7 @@ export const libraries: Library[] = [
     name: "React Three Fiber",
     slug: "react-three-fiber",
     description:
-      "A React renderer for Three.js — build 3D scenes and WebGL experiences declaratively.",
+      "A React renderer for Three.js that lets you build 3D scenes and WebGL experiences as components.",
     url: "https://r3f.docs.pmnd.rs",
     category: "3D & WebGL",
     stacks: ["React", "TypeScript"],
@@ -363,7 +363,7 @@ export const libraries: Library[] = [
     name: "shadcn-svelte",
     slug: "shadcn-svelte",
     description:
-      "The shadcn/ui experience, ported to Svelte — accessible, copy-and-paste components for Svelte apps.",
+      "A Svelte port of shadcn/ui with accessible components you copy straight into your Svelte app.",
     url: "https://www.shadcn-svelte.com",
     category: "Component Library",
     stacks: ["Svelte", "SvelteKit", "Tailwind CSS", "TypeScript"],
@@ -374,7 +374,7 @@ export const libraries: Library[] = [
     name: "PrimeVue",
     slug: "primevue",
     description:
-      "The most complete UI component suite for Vue — 90+ components, themes, and blocks.",
+      "A large UI component suite for Vue with more than 90 components, plus ready-made themes and blocks.",
     url: "https://primevue.org",
     category: "Component Library",
     stacks: ["Vue", "TypeScript"],

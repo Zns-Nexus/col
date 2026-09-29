@@ -3,20 +3,20 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpen, ChevronDown, FilePlus, GitPullRequest, Search, Bug, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import styles from "./DocsSidebar.module.css";
 
-const getStarted = [
-  ["/docs", "Overview"],
-  ["/docs/find-a-library", "Find a library"],
-] as const;
+const getStarted: readonly (readonly [string, string, LucideIcon])[] = [
+  ["/docs", "Overview", BookOpen],
+  ["/docs/find-a-library", "Find a library", Search],
+];
 
-const contribute = [
-  ["/docs/request-a-library", "Request a library"],
-  ["/docs/report-issues", "Report issues"],
-  ["/docs/pull-requests", "Open a pull request"],
-] as const;
+const contribute: readonly (readonly [string, string, LucideIcon])[] = [
+  ["/docs/request-a-library", "Request a library", FilePlus],
+  ["/docs/report-issues", "Report issues", Bug],
+  ["/docs/pull-requests", "Open a pull request", GitPullRequest],
+];
 
 const pages = [...getStarted, ...contribute];
 
@@ -101,15 +101,15 @@ export function DocsSidebar() {
       >
         <span ref={highlightRef} className="docs-sidebar-link-highlight" aria-hidden="true" />
         <div className={styles.section}>
-          <p className="docs-sidebar-heading mb-2 px-3 text-xs font-semibold"><span className={styles.sectionIndex}>01</span> Get started</p>
+          <p className="docs-sidebar-heading mb-1.5 px-2.5 text-xs font-semibold">Get started</p>
           <ul className="space-y-0.5 text-sm">
-            {getStarted.map(([href, label]) => <li key={href}><Link href={href} aria-current={pathname === href ? "page" : undefined} className="docs-sidebar-link relative z-10 block rounded-md px-3 py-2" onMouseEnter={(event) => positionHighlight(event.currentTarget)} onFocus={(event) => positionHighlight(event.currentTarget)} onClick={(event) => { pendingLinkRef.current = event.currentTarget; positionHighlight(event.currentTarget); }}>{label}</Link></li>)}
+            {getStarted.map(([href, label, Icon]) => <li key={href}><Link href={href} aria-current={pathname === href ? "page" : undefined} className="docs-sidebar-link relative z-10 flex items-center gap-2.5 rounded-[10px] px-2.5 py-2" onMouseEnter={(event) => positionHighlight(event.currentTarget)} onFocus={(event) => positionHighlight(event.currentTarget)} onClick={(event) => { pendingLinkRef.current = event.currentTarget; positionHighlight(event.currentTarget); }}><Icon className="size-4 shrink-0" aria-hidden />{label}</Link></li>)}
           </ul>
         </div>
         <div className={styles.section}>
-          <p className="docs-sidebar-heading mb-2 px-3 text-xs font-semibold"><span className={styles.sectionIndex}>02</span> Contribute</p>
+          <p className="docs-sidebar-heading mb-1.5 px-2.5 text-xs font-semibold">Contribute</p>
           <ul className="space-y-0.5 text-sm">
-            {contribute.map(([href, label]) => <li key={href}><Link href={href} aria-current={pathname === href ? "page" : undefined} className="docs-sidebar-link relative z-10 block rounded-md px-3 py-2" onMouseEnter={(event) => positionHighlight(event.currentTarget)} onFocus={(event) => positionHighlight(event.currentTarget)} onClick={(event) => { pendingLinkRef.current = event.currentTarget; positionHighlight(event.currentTarget); }}>{label}</Link></li>)}
+            {contribute.map(([href, label, Icon]) => <li key={href}><Link href={href} aria-current={pathname === href ? "page" : undefined} className="docs-sidebar-link relative z-10 flex items-center gap-2.5 rounded-[10px] px-2.5 py-2" onMouseEnter={(event) => positionHighlight(event.currentTarget)} onFocus={(event) => positionHighlight(event.currentTarget)} onClick={(event) => { pendingLinkRef.current = event.currentTarget; positionHighlight(event.currentTarget); }}><Icon className="size-4 shrink-0" aria-hidden />{label}</Link></li>)}
           </ul>
         </div>
       </div>

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { LibraryDetail } from "@/components/LibraryDetail";
 import { libraries } from "@/data/libraries";
@@ -47,10 +46,7 @@ export default async function LibraryPage({ params }: LibraryPageProps) {
 
   return (
     <>
-      <Header />
-      <main className="docs-page-shell w-full max-w-full min-h-screen overflow-x-hidden">
-        <LibraryDetail library={library} details={details} />
-      </main>
+      <LibraryDetail library={library} details={details} />
       <SiteFooter />
     </>
   );

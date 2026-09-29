@@ -18,13 +18,7 @@ export function LibraryDetail({ library, details }: LibraryDetailProps) {
   const gettingStarted = details.gettingStarted;
 
   return (
-    <article className={`relative isolate mx-auto w-full px-5 pt-28 pb-28 sm:px-8 sm:pt-32 ${details.preview ? "max-w-6xl" : "max-w-4xl"}`}>
-      {details.preview && (
-        <div className="library-detail-backdrop" aria-hidden="true">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={details.preview.src} alt="" />
-        </div>
-      )}
+    <article className={`relative isolate mx-auto w-full px-5 pt-6 pb-20 sm:px-8 ${details.preview ? "max-w-6xl" : "max-w-4xl"}`}>
       <Link
         href="/libraries"
         className="docs-text-link theme-muted inline-flex min-h-11 w-fit items-center gap-2 text-sm font-medium"

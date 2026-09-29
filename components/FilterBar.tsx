@@ -1,11 +1,12 @@
 "use client";
 
-import { useRef, useState, type ReactNode } from "react";
-import { ChevronDown, RotateCcw, SlidersHorizontal } from "lucide-react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type FocusEvent, type MouseEvent, type ReactNode } from "react";
+import { Check, ChevronDown, RotateCcw, SlidersHorizontal } from "lucide-react";
+import { categoryIcons, Icons, type IconComponent } from "./MaskIcon";
 import { CATEGORIES, STACKS, USE_CASES, type Category, type Stack, type UseCase } from "@/data/libraries";
 import type { DirectoryFacetCounts } from "@/lib/directory";
+import { SidebarSlot } from "./SidebarSlot";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,9 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
-  Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
@@ -54,6 +53,8 @@ export function FilterDropdown({ label, value, items, onValueChange, className =
   );
 }
 
+const CATEGORY_ICONS = categoryIcons;
+
 interface FacetGroupProps<T extends string> {
   label: string;
   allLabel: string;
@@ -67,73 +68,108 @@ interface FacetGroupProps<T extends string> {
   expanded: boolean;
   onExpandedChange: () => void;
   selectionMode: "single" | "multiple";
+  icons?: Partial<Record<T, IconComponent>>;
 }
 
-function FacetGroup<T extends string>({ label, allLabel, total, id, options, selected, counts, onSelect, onClear, expanded, onExpandedChange, selectionMode }: FacetGroupProps<T>) {
-  const allValue = "__all__";
+/** Moves an absolutely positioned pill onto `target`, relative to `container`. */
+function placePill(pill: HTMLElement | null, target: HTMLElement | null) {
+  if (!pill) return;
+  if (!target) {
+    pill.style.opacity = "0";
+    return;
+  }
+  pill.style.transform = `translateY(${target.offsetTop}px)`;
+  pill.style.height = `${target.offsetHeight}px`;
+  pill.style.opacity = "1";
+}
+
+function FacetGroup<T extends string>({ label, allLabel, total, id, options, selected, counts, onSelect, onClear, expanded, onExpandedChange, selectionMode, icons }: FacetGroupProps<T>) {
+  const listRef = useRef<HTMLDivElement>(null);
+  const activePillRef = useRef<HTMLSpanElement>(null);
+  const hoverPillRef = useRef<HTMLSpanElement>(null);
+  const single = selectionMode === "single";
+  const selectedKey = selected.join("|");
+
+  const syncActivePill = useCallback(() => {
+    if (!single) return;
+    placePill(activePillRef.current, listRef.current?.querySelector<HTMLElement>('[aria-pressed="true"]') ?? null);
+  }, [single]);
+
+  useLayoutEffect(() => {
+    syncActivePill();
+    const frame = requestAnimationFrame(() => {
+      if (activePillRef.current) activePillRef.current.dataset.ready = "true";
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [selectedKey, expanded, syncActivePill]);
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(syncActivePill);
+    observer.observe(list);
+    return () => observer.disconnect();
+  }, [syncActivePill]);
+
+  const hoverHandlers = {
+    onMouseEnter: (event: MouseEvent<HTMLButtonElement>) => placePill(hoverPillRef.current, event.currentTarget),
+    onFocus: (event: FocusEvent<HTMLButtonElement>) => placePill(hoverPillRef.current, event.currentTarget),
+  };
+
+  const renderOption = (value: T | null, optionLabel: string, count: number) => {
+    const isActive = value === null ? selected.length === 0 : selected.includes(value);
+    const disabled = value !== null && count === 0 && !isActive;
+    const Icon: IconComponent | undefined = value === null ? Icons.allLibraries : icons?.[value];
+    return (
+      <button
+        key={value ?? "__all__"}
+        type="button"
+        role={single ? undefined : "checkbox"}
+        aria-pressed={single ? isActive : undefined}
+        aria-checked={single ? undefined : isActive}
+        disabled={disabled}
+        data-active={isActive}
+        className="facet-option"
+        onClick={() => (value === null ? onClear() : onSelect(value))}
+        {...hoverHandlers}
+      >
+        {single ? (
+          Icon && <Icon className="facet-option-icon" />
+        ) : (
+          <span className="facet-check" aria-hidden><Check /></span>
+        )}
+        <span className="facet-option-label cap">{optionLabel}</span>
+        <span className="facet-option-count cap">{count}</span>
+      </button>
+    );
+  };
 
   return (
-    <SidebarGroup className="directory-facet-group">
-      <button
-        type="button"
-        className="directory-facet-heading"
-        aria-expanded={expanded}
-        aria-controls={id}
-        onClick={onExpandedChange}
-      >
-        <span className="flex min-w-0 items-center gap-2">
-          <ChevronDown className="directory-facet-heading-icon" aria-hidden />
-          <span className="truncate">{label}</span>
-        </span>
-        <span className="directory-facet-summary" aria-live="polite">
-          {selected.length > 0 ? `${selected.length} selected` : "All"}
-        </span>
+    <SidebarGroup className="facet-group">
+      <button type="button" className="facet-heading-row" aria-expanded={expanded} aria-controls={id} onClick={onExpandedChange}>
+        <span className="facet-heading cap">{label}</span>
+        {!single && selected.length > 0 && <span className="facet-selected-count" aria-label={`${selected.length} selected`}><span className="cap">{selected.length}</span></span>}
+        <ChevronDown className="facet-heading-icon" aria-hidden />
       </button>
-      <SidebarGroupContent id={id} className="directory-facet-collapse" data-expanded={expanded} aria-hidden={!expanded} inert={!expanded}>
-        <div className="directory-facet-collapse-inner">
-        {selectionMode === "single" ? (
-          <ToggleGroup
-            type="single"
-            value={selected[0] ?? allValue}
-            onValueChange={(value) => value === allValue || value === "" ? onClear() : onSelect(value as T)}
-            className="directory-facet-options directory-facet-options-single"
+      <SidebarGroupContent id={id} className="facet-collapse" data-expanded={expanded} aria-hidden={!expanded} inert={!expanded}>
+        <div className="facet-collapse-inner">
+          <div
+            ref={listRef}
+            className="facet-options"
+            role="group"
             aria-label={`${label} options`}
+            onMouseLeave={() => { if (hoverPillRef.current) hoverPillRef.current.style.opacity = "0"; }}
+            onBlur={(event) => {
+              if (!(event.relatedTarget instanceof Node) || !event.currentTarget.contains(event.relatedTarget)) {
+                if (hoverPillRef.current) hoverPillRef.current.style.opacity = "0";
+              }
+            }}
           >
-            <ToggleGroupItem value={allValue} className="directory-facet-option">
-              <span className="directory-facet-option-label">{allLabel}</span>
-              <span className="directory-facet-count">{total}</span>
-            </ToggleGroupItem>
-            {options.map((option) => {
-              const count = counts.get(option) ?? 0;
-              return (
-                <ToggleGroupItem key={option} value={option} disabled={count === 0 && selected[0] !== option} className={`directory-facet-option${count === 0 && selected[0] !== option ? " directory-facet-option-disabled" : ""}`}>
-                  <span className="directory-facet-option-label">{option}</span>
-                  <span className="directory-facet-count">{count}</span>
-                </ToggleGroupItem>
-              );
-            })}
-          </ToggleGroup>
-        ) : (
-          <div className="directory-facet-options" aria-label={`${label} options`}>
-            <label htmlFor={`${id}-all`} className="directory-facet-option">
-              <Checkbox id={`${id}-all`} checked={selected.length === 0} onCheckedChange={onClear} />
-              <span className="directory-facet-option-label">{allLabel}</span>
-              <span className="directory-facet-count">{total}</span>
-            </label>
-            {options.map((option) => {
-              const isActive = selected.includes(option);
-              const count = counts.get(option) ?? 0;
-              const optionId = `${id}-${option.toLowerCase().replaceAll(" ", "-")}`;
-              return (
-                <label key={option} htmlFor={optionId} className={`directory-facet-option${count === 0 && !isActive ? " directory-facet-option-disabled" : ""}`}>
-                  <Checkbox id={optionId} checked={isActive} disabled={count === 0 && !isActive} onCheckedChange={() => onSelect(option)} />
-                  <span className="directory-facet-option-label">{option}</span>
-                  <span className="directory-facet-count">{count}</span>
-                </label>
-              );
-            })}
+            <span ref={hoverPillRef} className="facet-hover-pill" aria-hidden />
+            {single && <span ref={activePillRef} className="facet-active-pill" aria-hidden />}
+            {single && renderOption(null, allLabel, total)}
+            {options.map((option) => renderOption(option, option, counts.get(option) ?? 0))}
           </div>
-        )}
         </div>
       </SidebarGroupContent>
     </SidebarGroup>
@@ -183,6 +219,7 @@ function FilterPanel({ showSaved, activeCategory, activeStacks, activeUseCases, 
           onSelect={(value) => onCategoryChange(activeCategory === value ? null : value)}
           onClear={() => onCategoryChange(null)}
           selectionMode="single"
+          icons={CATEGORY_ICONS}
           expanded={expandedGroups.category}
           onExpandedChange={() => setExpandedGroups((current) => ({ ...current, category: !current.category }))}
         />
@@ -217,9 +254,9 @@ function FilterPanel({ showSaved, activeCategory, activeStacks, activeUseCases, 
       </SidebarContent>
 
       {hasFilters && (footer ?? <SidebarFooter>
-        <Button type="button" variant="outline" onClick={onClearAll} className="min-h-11 w-full">
-          <RotateCcw aria-hidden /> Clear filters
-        </Button>
+        <button type="button" onClick={onClearAll} className="facet-reset">
+          <RotateCcw aria-hidden /> <span className="cap">Reset all filters</span>
+        </button>
       </SidebarFooter>)}
     </>
   );
@@ -276,9 +313,11 @@ export function FilterBar({ showSaved, activeCategory, activeStacks, activeUseCa
         <SlidersHorizontal aria-hidden /> Filters{hasFilters ? " · Active" : ""}
       </Button>
 
-      <Sidebar collapsible="none" className="directory-sidebar directory-filter-panel hidden lg:flex" aria-label="Library filters">
-        <FilterPanel {...panelProps} idSuffix="" />
-      </Sidebar>
+      <SidebarSlot mobile="hidden">
+        <div className="directory-sidebar directory-filter-panel" role="region" aria-label="Library filters">
+          <FilterPanel {...panelProps} idSuffix="" />
+        </div>
+      </SidebarSlot>
 
       <Sheet open={openMobile} onOpenChange={handleMobileOpenChange}>
         <SheetContent side="left" className="w-[16rem] gap-0 bg-sidebar p-0 lg:hidden">
