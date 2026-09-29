@@ -3,6 +3,14 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://www.obsidianui.dev",
   repoUrl: "https://gitlab.com/Atharvsinh-codez/ObsidianUI",
+  registrySetup: {
+    description: "From a React project with Tailwind CSS, initialize shadcn if needed. Merge this registry into components.json, preserving its existing settings and other registries. Then run a component command below.",
+    config: `{
+  "registries": {
+    "@obsidian": "https://www.obsidianui.dev/r/{name}.json"
+  }
+}`,
+  },
   install: [
     {
       label: "Add a component (shadcn registry)",

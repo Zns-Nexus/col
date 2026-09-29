@@ -28,7 +28,7 @@ function BentoGrid({ children, className, ...props }: BentoGridProps) {
 }
 
 function BentoCard({ name, className, background, Icon, description, href, cta, status, ...props }: BentoCardProps) {
-  const external = href?.startsWith("https://");
+  const newTab = href?.startsWith("https://") || href?.startsWith("/libraries/");
 
   return (
     <div
@@ -45,7 +45,7 @@ function BentoCard({ name, className, background, Icon, description, href, cta, 
         </div>
         {href && cta && <div className="mt-3 flex items-center">
           <Button variant="link" asChild size="sm" className="bento-card-cta h-auto p-0">
-            <a href={href} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined}>{cta}<ArrowRightIcon className="ms-2 size-4" aria-hidden /></a>
+            <a href={href} target={newTab ? "_blank" : undefined} rel={newTab ? "noopener noreferrer" : undefined}>{cta}<ArrowRightIcon className="ms-2 size-4" aria-hidden /></a>
           </Button>
         </div>}
       </div>

@@ -3,6 +3,14 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://www.fancycomponents.dev",
   repoUrl: "https://github.com/danielpetho/fancy",
+  registrySetup: {
+    description: "From a React project with Tailwind CSS, initialize shadcn if needed. Merge this registry into components.json, preserving its existing settings and other registries. Then run a component command below.",
+    config: `{
+  "registries": {
+    "@fancy": "https://www.fancycomponents.dev/r/{name}.json"
+  }
+}`,
+  },
   install: [
     {
       label: "Base dependencies",

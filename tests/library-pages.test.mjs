@@ -76,6 +76,35 @@ test("every library has a built detail page with name, website link, docs link, 
   }
 });
 
+test("detail pages use their own header image and explain third-party registry setup before installation", async () => {
+  const images = new Set();
+  for (const library of libraries) {
+    const details = await loadDetails(library.slug);
+    const html = decodeHtml(readBuilt(`libraries/${library.slug}.html`));
+    assert.ok(details.preview?.src, `${library.slug}: missing header image`);
+    assert.ok(!images.has(details.preview.src), `${library.slug}: reuses another library's image`);
+    images.add(details.preview.src);
+    assert.ok(html.includes('class="library-detail-background'), `${library.slug}: missing header background`);
+    assert.equal((html.match(/<main[\s>]/g) ?? []).length, 1, `${library.slug}: duplicates the app frame's main landmark`);
+    assert.ok(html.includes(`src="${details.preview.src}" alt="" fetchPriority="high"`), `${library.slug}: wrong header image`);
+
+    const usesRegistry = details.install?.some(({ command }) => /shadcn(?:@\S+)? add/.test(command));
+    if (usesRegistry && library.slug !== "shadcn-ui") {
+      assert.ok(details.registrySetup?.description, `${library.slug}: missing registry setup guide`);
+      assert.ok(html.includes(details.registrySetup.description), `${library.slug}: registry guide is not rendered`);
+      assert.ok(html.indexOf("Registry setup") < html.indexOf(details.install[0].command), `${library.slug}: setup follows installation`);
+      if (details.registrySetup.config) {
+        const { registries } = JSON.parse(details.registrySetup.config);
+        assert.ok(Object.keys(registries).length > 0);
+        for (const value of Object.values(registries)) {
+          assert.ok((typeof value === "string" ? value : value.url).includes("{name}"));
+        }
+        assert.ok(html.includes(details.registrySetup.config), `${library.slug}: registry config is not rendered`);
+      }
+    }
+  }
+});
+
 // The discovery suite already asserts sitemap coverage for every slug.
 test("unknown library slugs return 404", () => {
   const manifest = JSON.parse(readFileSync(new URL("../.next/prerender-manifest.json", import.meta.url), "utf8"));

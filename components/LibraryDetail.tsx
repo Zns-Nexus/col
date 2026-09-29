@@ -15,10 +15,21 @@ interface LibraryDetailProps {
 /** Shared detail-page layout for a single library; all content comes from props. */
 export function LibraryDetail({ library, details }: LibraryDetailProps) {
   const install = details.install ?? [];
+  const registrySetup = details.registrySetup;
+  const setupCommands = registrySetup ? [
+    { label: "Initialize shadcn (if components.json is missing)", command: "npx shadcn@latest init" },
+    ...(registrySetup.config ? [{ label: "Merge into components.json", command: registrySetup.config }] : []),
+  ] : [];
   const gettingStarted = details.gettingStarted;
 
   return (
     <article className={`relative isolate mx-auto w-full px-5 pt-6 pb-20 sm:px-8 ${details.preview ? "max-w-6xl" : "max-w-4xl"}`}>
+      {details.preview && (
+        <div className="library-detail-background library-detail-backdrop" aria-hidden="true">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={details.preview.src} alt="" fetchPriority="high" />
+        </div>
+      )}
       <Link
         href="/libraries"
         className="docs-text-link theme-muted inline-flex min-h-11 w-fit items-center gap-2 text-sm font-medium"
@@ -65,7 +76,7 @@ export function LibraryDetail({ library, details }: LibraryDetailProps) {
           </dl>
 
           <div className="mt-7 flex flex-wrap gap-3">
-            <a href={library.url} className="hero-cta hero-cta-primary">
+            <a href={library.url} target="_blank" rel="noopener noreferrer" className="hero-cta hero-cta-primary">
               Visit website <ArrowUpRight className="size-4" aria-hidden />
             </a>
             <a href={details.docsUrl} target="_blank" rel="noopener noreferrer" className="hero-cta hero-cta-secondary">
@@ -80,11 +91,17 @@ export function LibraryDetail({ library, details }: LibraryDetailProps) {
         </header>
       </div>
 
-      {install.length > 0 && (
+      {(registrySetup || install.length > 0) && (
         <section className="mt-10">
-          <h2 className="theme-text text-2xl font-semibold tracking-[-0.025em]">Installation</h2>
+          <h2 className="theme-text text-2xl font-semibold tracking-[-0.025em]">Installation details</h2>
+          {registrySetup && (
+            <>
+              <h3 className="theme-text mt-5 text-base font-semibold">Registry setup</h3>
+              <p className="theme-muted mt-2 max-w-[65ch] text-sm leading-6">{registrySetup.description}</p>
+            </>
+          )}
           <div className="mt-4 space-y-4">
-            {install.map((step) => (
+            {[...setupCommands, ...install.filter((step) => !registrySetup || !/shadcn@\S+ init$/.test(step.command))].map((step) => (
               <figure key={step.command} className="library-chip overflow-hidden rounded-xl border">
                 <figcaption className="theme-border flex items-center justify-between gap-3 border-b px-4 py-2">
                   <span className="truncate text-xs font-medium">{step.label}</span>

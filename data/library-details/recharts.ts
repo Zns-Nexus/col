@@ -20,6 +20,10 @@ export default {
     'On older Recharts versions, wrap the chart in `ResponsiveContainer` instead, for example `<ResponsiveContainer width="100%" height={400}>`. The wrapper needs a parent element with a defined size, otherwise it measures zero and renders empty. Details at https://recharts.github.io/en-US/guide/sizes.',
     "Optionally add theming and devtools. Theming is experimental: wrap charts in `<RechartsThemeProvider value={lightTheme}>` (or `darkTheme` / `emptyTheme`), all exported from `recharts`. `<RechartsDevtools />` from the separate `@recharts/devtools` package adds a hook inspector in development and is not required for charts to work.",
   ],
+  preview: {
+    src: "https://opengraph.githubassets.com/2/recharts/recharts",
+    alt: "Recharts repository social preview",
+  },
   agentPrompt: `Add Recharts (https://recharts.github.io/en-US/guide), a React chart library that renders SVG, to this existing project.
 
 Prerequisites:

@@ -3,6 +3,14 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://spell.sh",
   repoUrl: "https://github.com/xxtomm/spell-ui",
+  registrySetup: {
+    description: "From a React project with Tailwind CSS, initialize shadcn if needed. Merge this registry into components.json, preserving its existing settings and other registries. Then run a component command below.",
+    config: `{
+  "registries": {
+    "@spell": "https://spell.sh/r/{name}.json"
+  }
+}`,
+  },
   install: [
     { label: "Add a component (npm)", command: "npx shadcn@latest add @spell/perspective-book" },
     {

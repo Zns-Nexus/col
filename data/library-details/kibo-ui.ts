@@ -3,6 +3,14 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://www.kibo-ui.com",
   repoUrl: "https://github.com/shadcnblocks/kibo",
+  registrySetup: {
+    description: "From a React project with Tailwind CSS, initialize shadcn if needed. Merge this registry into components.json, preserving its existing settings and other registries. Then run a component command below.",
+    config: `{
+  "registries": {
+    "@kibo-ui": "https://www.kibo-ui.com/r/{name}.json"
+  }
+}`,
+  },
   install: [
     { label: "Kibo UI CLI", command: "npx kibo-ui add gantt" },
     { label: "shadcn CLI", command: "npx shadcn add @kibo-ui/gantt" },

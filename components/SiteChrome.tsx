@@ -122,7 +122,7 @@ export function SiteSearch({ className = "", collapsed = false }: { className?: 
             <ul>
               {results.map(({ library, components }) => (
                 <li key={library.slug}>
-                  <Link href={libraryPath(library.slug)} onClick={() => setOpen(false)}>
+                  <Link href={libraryPath(library.slug)} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>
                     <span>{library.name}</span>
                     <small>{components[0]?.name ?? library.category}</small>
                   </Link>

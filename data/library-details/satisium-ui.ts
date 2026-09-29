@@ -3,6 +3,9 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://ui.satisium.com/",
   repoUrl: "https://github.com/satisium/ui",
+  registrySetup: {
+    description: "Initialize shadcn if needed, then use the full registry URL for a component, or the whole-registry command below to add all components. No namespace entry is required in components.json.",
+  },
   install: [
     {
       label: "Initialize shadcn/ui in the project first",

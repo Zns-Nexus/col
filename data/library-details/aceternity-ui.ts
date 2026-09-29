@@ -2,6 +2,14 @@ import type { LibraryDetails } from "./types";
 
 export default {
   docsUrl: "https://ui.aceternity.com",
+  registrySetup: {
+    description: "From a React project with Tailwind CSS, initialize shadcn if needed. Merge this registry into components.json, preserving its existing settings and other registries. Then run a component command below.",
+    config: `{
+  "registries": {
+    "@aceternity": "https://ui.aceternity.com/registry/{name}.json"
+  }
+}`,
+  },
   install: [
     { label: "Initialize shadcn in the project", command: "npx shadcn@latest init" },
     {

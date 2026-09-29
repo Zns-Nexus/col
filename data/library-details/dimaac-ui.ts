@@ -17,6 +17,10 @@ export default {
     "Install the dependencies the component imports: `npm install react @gsap/react`, plus any GSAP plugins that component registers, for example Draggable, MotionPathPlugin, InertiaPlugin, ScrollTrigger or Flip. Components land under `components/` grouped by category and demos under `examples/`.",
     "Import the component into a page and render it. Every component is a client component (`\"use client\"`) that calls `gsap.registerPlugin(...)` and drives its animation through the `useGSAP` hook, so it must run in a browser environment.",
   ],
+  preview: {
+    src: "https://opengraph.githubassets.com/2/DimaacUI/DiMaac-UI",
+    alt: "DiMaac UI repository social preview",
+  },
   agentPrompt: `Help me use DiMAAC UI (https://ui.dimaac.com) in this existing project. It is a catalog of copy-paste React components for galleries, cards, scroll animations and text effects, built with Tailwind CSS and GSAP.
 
 Prerequisites:
