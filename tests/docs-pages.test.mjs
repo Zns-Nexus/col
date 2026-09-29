@@ -13,6 +13,9 @@ test("docs pages render adjacent navigation without the footer or sidebar librar
     assert.ok(navigation, `Missing navigation on /docs/${slug}`);
     assert.equal(html.includes("<footer"), false);
     assert.equal(html.includes("docs-sidebar-search"), false);
+    assert.ok(html.includes('class="docs-layout-nav"'));
+    assert.ok(html.includes('class="docs-layout-main"'));
+    assert.ok(html.includes('class="docs-layout-toc"'));
     assert.equal(navigation.includes("Previous:"), index > 0);
     assert.equal(navigation.includes("Next:"), index < pages.length - 1);
     if (index > 0) assert.ok(navigation.includes(`href="/docs${pages[index - 1] ? `/${pages[index - 1]}` : ""}"`));

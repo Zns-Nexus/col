@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { ChevronDown } from "lucide-react";
 import { CopyButton } from "./CopyButton";
 
@@ -22,7 +22,8 @@ function waveChars(text: string, direction: "in" | "out" | "rest") {
  * active pill slides between tabs; switching sends a blur wave from the start
  * of the command to the end, replacing the old command character by character.
  */
-export function InstallTabs({ steps }: { steps: { label: string; command: string }[] }) {
+export function InstallTabs({ steps, label = "Install method" }: { steps: { label: string; command: string; language?: "json" }[]; label?: string }) {
+  const id = useId();
   const [active, setActive] = useState(0);
   const [swap, setSwap] = useState<{ from: number; id: number } | null>(null);
   // Once a swap has happened the command stays split into characters, so the
@@ -78,12 +79,12 @@ export function InstallTabs({ steps }: { steps: { label: string; command: string
     <div className="ld-card">
       <div
         role={tabbed ? "tabpanel" : undefined}
-        id={tabbed ? "install-panel" : undefined}
-        aria-labelledby={tabbed ? `install-tab-${active}` : undefined}
+        id={tabbed ? `${id}-panel` : undefined}
+        aria-labelledby={tabbed ? `${id}-tab-${active}` : undefined}
         className="ld-screen ld-screen-command"
       >
         <pre>
-          <span className="ld-prompt-sign" aria-hidden>$</span>
+          {steps[active].language !== "json" && <span className="ld-prompt-sign" aria-hidden>$</span>}
           <span ref={cmdRef} className="ld-cmd">
             <span className="sr-only">{command}</span>
             {swap && <span key={`out-${swap.id}`} className="ld-cmd-layer ld-cmd-leaving" aria-hidden>{waveChars(steps[swap.from].command, "out")}</span>}
@@ -95,16 +96,16 @@ export function InstallTabs({ steps }: { steps: { label: string; command: string
       </div>
       <div className="ld-card-foot">
         {tabbed ? (
-          <div ref={listRef} role="tablist" aria-label="Install method" className="ld-tabs">
+          <div ref={listRef} role="tablist" aria-label={label} className="ld-tabs">
             <span className="ld-tabs-pill" style={pill} aria-hidden />
             {steps.map((step, index) => (
               <button
                 key={step.command}
                 type="button"
                 role="tab"
-                id={`install-tab-${index}`}
+                id={`${id}-tab-${index}`}
                 aria-selected={index === active}
-                aria-controls="install-panel"
+                aria-controls={`${id}-panel`}
                 tabIndex={index === active ? 0 : -1}
                 onClick={() => select(index)}
                 onKeyDown={(event) => {

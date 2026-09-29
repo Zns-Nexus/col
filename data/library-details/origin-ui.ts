@@ -3,6 +3,10 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://coss.com/ui/docs",
   repoUrl: "https://github.com/cosscom/coss",
+  registrySetup: {
+    description: "Origin UI now lives at coss ui. Initialize shadcn if needed, then merge this registry into components.json, preserving its existing settings. For a new project, use the @coss/style initialization command below to include the coss theme.",
+    config: `{\n  "registries": {\n    "@coss": "https://coss.com/ui/r/{name}.json"\n  }\n}`,
+  },
   install: [
     { label: "New project: init the coss style preset", command: "npx shadcn@latest init @coss/style" },
     { label: "Existing project: add all coss ui primitives", command: "npx shadcn@latest add @coss/ui" },

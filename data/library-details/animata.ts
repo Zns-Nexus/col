@@ -3,6 +3,9 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://animata.design",
   repoUrl: "https://github.com/codse/animata",
+  registrySetup: {
+    description: "For the shadcn route, initialize shadcn if needed, then use the full registry URL from the component page. Animata URLs include the category and component name; no namespace entry is required. Manual copy and paste is also supported.",
+  },
   install: [
     {
       label: "Install one component (shadcn CLI)",

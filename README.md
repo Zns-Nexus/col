@@ -10,6 +10,7 @@
   [![GitHub stars](https://img.shields.io/github/stars/screen-gd/Col?style=flat&color=ff6257)](https://github.com/screen-gd/Col/stargazers)
   [![Open issues](https://img.shields.io/github/issues/screen-gd/Col?style=flat&color=69a9ff)](https://github.com/screen-gd/Col/issues)
   [![Pull requests](https://img.shields.io/github/issues-pr/screen-gd/Col?style=flat&color=3ddc97)](https://github.com/screen-gd/Col/pulls)
+  [![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/screen-gd/Col?utm_source=oss&utm_medium=github&utm_campaign=screen-gd%2FCol&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)](https://coderabbit.ai)
   [![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=flat&logo=nextdotjs)](https://nextjs.org)
   [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 

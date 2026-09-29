@@ -3,6 +3,9 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://rareui.com",
   repoUrl: "https://github.com/swamimalode07/rare-ui",
+  registrySetup: {
+    description: "Initialize shadcn if needed, then use the GitHub registry address swamimalode07/rare-ui/<component-name>. The CLI reads the registry from GitHub; no namespace entry is required in components.json.",
+  },
   install: [
     {
       label: "Add a component (shadcn CLI)",
@@ -24,6 +27,10 @@ export default {
     "The component source, its npm dependencies and any extra CSS land in your repo as editable files. The CLI also pulls the shared `utils` registry item that provides `cn()`.",
     'Import it with your alias (for example `import FluidOrb from "@/components/ui/fluid-orb"`) and edit the file directly. Components are animated with Motion and honor `prefers-reduced-motion`.',
   ],
+  preview: {
+    src: "https://opengraph.githubassets.com/col/swamimalode07/rare-ui",
+    alt: "Rare UI repository social preview",
+  },
   agentPrompt: `Set up Rare UI (https://rareui.com) in this existing project. Rare UI is a free, open-source shadcn registry of animated React components — the code is copied into the repo, there is no runtime package to install.
 
 Prerequisites:

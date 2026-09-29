@@ -3,6 +3,9 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://21st.dev",
   repoUrl: "https://github.com/serafimcloud/21st",
+  registrySetup: {
+    description: "Initialize shadcn if needed. Create a free API key at 21st.dev/mcp and export API_KEY_21ST in your shell. Use the full registry URL from each component page; no namespace entry is required in components.json.",
+  },
   install: [
     {
       label: "Install one component (shadcn CLI)",

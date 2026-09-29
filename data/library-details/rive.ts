@@ -16,6 +16,10 @@ export default {
     "Serve the `.riv` file like any other static asset, then point the runtime at it. The docs use `src: \"https://cdn.rive.app/animations/vehicles.riv\"`, but a local path in your public directory works the same way, and the `buffer` and `rivFile` parameters let you load an `ArrayBuffer` or reuse one parsed file across many instances.",
     "Play it: call `useRive({ src, stateMachine, autoplay: true, autoBind: true })` in React, or `new rive.Rive({ src, canvas, stateMachine, autoplay: true, autoBind: true })` in JavaScript. Always call `riveInstance.cleanup()` when the instance unmounts, since the runtime allocates native objects that are otherwise leaked.",
   ],
+  preview: {
+    src: "https://rive.mintlify.app/_next/image?url=%2F_mintlify%2Fapi%2Fog%3Fdivision%3D%2B%26title%3DIntroduction%26description%3DRive%2Bis%2Bwhere%2Bdesigners%252C%2Banimators%252C%2Band%2Bdevelopers%2Bbuild%2Binteractive%2Bexperiences.%2BDesign%252C%2Banimate%252C%2Band%2Bcode%2Bin%2Bone%2Bplace.%2BWhat%2Byou%2Bbuild%2Bin%2Bthe%2Beditor%2Bis%2Bwhat%2Bs%26theme%3D1a37e01e6f4d1e0c93d0da82&w=1200&q=100",
+    alt: "Rive documentation social preview",
+  },
   agentPrompt: `Add Rive to this existing project.
 
 Rive (https://rive.app) is a design-and-runtime platform for interactive animation. Designs are authored in the Rive Editor and exported as a single \`.riv\` file, which the open source runtimes then render. The npm packages are runtimes only: they contain no animations, so do not look for a component library to import.

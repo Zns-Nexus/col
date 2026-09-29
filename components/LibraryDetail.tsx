@@ -63,6 +63,20 @@ export function LibraryDetail({ library, details }: LibraryDetailProps) {
             <p className="ld-description">{library.description}</p>
           </header>
 
+          {details.registrySetup && (
+            <section className="ld-section ld-reveal" style={reveal(3)} aria-labelledby="ld-registry">
+              <h2 id="ld-registry">Registry setup</h2>
+              <p className="ld-section-note">{details.registrySetup.description}</p>
+              <InstallTabs
+                label="Registry setup"
+                steps={[
+                  { label: "Initialize shadcn", command: "npx shadcn@latest init" },
+                  ...(details.registrySetup.config ? [{ label: "components.json", command: details.registrySetup.config, language: "json" as const }] : []),
+                ]}
+              />
+            </section>
+          )}
+
           {install.length > 0 && (
             <section className="ld-section ld-reveal" style={reveal(3)} aria-labelledby="ld-install">
               <h2 id="ld-install">Install</h2>
