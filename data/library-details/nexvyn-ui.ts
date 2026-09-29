@@ -3,8 +3,16 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://ui.nexvyn.dev",
   repoUrl: "https://github.com/Nexvyn/Nexvyn-ui",
+  registrySetup: {
+    description: "From a React project with Tailwind CSS, initialize shadcn if needed. Merge this registry into components.json, preserving its existing settings and other registries. Then run a component command below.",
+    config: `{
+  "registries": {
+    "@nexvyn": "https://ui.nexvyn.dev/r/{name}.json"
+  }
+}`,
+  },
   install: [
-    { label: "Add the registry", command: "npx shadcn@latest registry add @nexvyn" },
+    { label: "Initialize shadcn in the project", command: "npx shadcn@latest init" },
     {
       label: "Add a component (registry name)",
       command: "npx shadcn@latest add @nexvyn/bounce-sidebar",
@@ -16,7 +24,7 @@ export default {
   ],
   gettingStarted: [
     "Prerequisites: a React + TypeScript project already set up with Tailwind CSS v4 and shadcn/ui. If the project root has no `components.json`, run `npx shadcn@latest init` first.",
-    "Register Nexvyn UI as a shadcn registry so you can install by name: `npx shadcn@latest registry add @nexvyn`.",
+    "Merge the @nexvyn registry into components.json: \"registries\": { \"@nexvyn\": \"https://ui.nexvyn.dev/r/{name}.json\" }.",
     "Browse the catalog at https://ui.nexvyn.dev/components, open a component, and run its install command from the project root, for example `npx shadcn@latest add @nexvyn/bounce-sidebar`. You can skip the registry step and use the full URL form instead: `npx shadcn@latest add https://ui.nexvyn.dev/r/bounce-sidebar.json`.",
     "The CLI writes source files into your repo and installs the item's declared dependencies automatically. Most animated components need the `motion` package; others pull in `@radix-ui/react-slot`, `class-variance-authority`, `@base-ui/react` or `pdfjs-dist`.",
     "Every component imports `cn` from `@/lib/utils` and uses your existing shadcn CSS variables, so your theme and dark mode apply as-is. Some items also add shared helpers under `lib/` (such as `lib/sound.ts` for optional UI sound cues).",
@@ -33,7 +41,7 @@ Prerequisites:
 - Components expect the shadcn \`cn\` helper at \`@/lib/utils\` and the standard shadcn CSS variables. Both already exist in a shadcn project.
 
 Steps:
-1. Add the registry: \`npx shadcn@latest registry add @nexvyn\`. This is optional if you prefer the direct-URL form, but it lets you install by short name.
+1. Merge "@nexvyn": "https://ui.nexvyn.dev/r/{name}.json" into the registries object in components.json. This is optional if you prefer the direct-URL form, but it lets you install by short name.
 2. Pick a component from https://ui.nexvyn.dev/components. The full machine-readable catalog is the registry index at https://ui.nexvyn.dev/r/registry.json, and each item is served at https://ui.nexvyn.dev/r/<name>.json. Read those before choosing so you use a real name.
 3. Install it from the project root with \`npx shadcn@latest add @nexvyn/<name>\`, or without the registry with \`npx shadcn@latest add https://ui.nexvyn.dev/r/<name>.json\`. The registry uses \`bunx\` in its README; \`npx\` is the equivalent and is what the site itself shows.
 4. Review what landed. Each item may write more than the component: shared helpers such as \`lib/sound.ts\` (optional hover/click/bounce sound cues, muted state stored in localStorage) and \`lib/motion-tokens.ts\` can be pulled in alongside. Dependencies declared by the item are installed for you; \`motion\` is the common one, and some items also need \`@radix-ui/react-slot\`, \`class-variance-authority\`, \`@base-ui/react\` or \`pdfjs-dist\`.

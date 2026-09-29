@@ -3,6 +3,9 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://motion-primitives.com",
   repoUrl: "https://github.com/ibelick/motion-primitives",
+  registrySetup: {
+    description: "For the shadcn route, initialize shadcn if needed, then use a component registry URL below. No namespace entry is required. The Motion Primitives CLI is an alternative that does not need shadcn setup.",
+  },
   install: [
     { label: "Install the animation runtime", command: "npm install motion" },
     { label: "Install Lucide icons", command: "npm install lucide-react" },

@@ -9,6 +9,7 @@ import { libraries } from "@/data/libraries";
 import { componentIndex } from "@/data/components";
 import { createDirectorySearch } from "@/lib/directory";
 import { libraryPath } from "@/lib/site";
+import { directoryQuery, useDirectoryQuery } from "@/lib/directory-query";
 
 const compactNumber = new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 });
 const searchDirectory = createDirectorySearch(libraries, componentIndex);
@@ -73,6 +74,32 @@ export function SiteSearch({ className = "", collapsed = false }: { className?: 
     setQuery("");
   }, [pathname]);
 
+  const directoryValue = useDirectoryQuery();
+
+  // On the directory the field filters the results in place instead of opening a dropdown.
+  if (pathname === "/libraries" && !collapsed) {
+    return (
+      <form role="search" className={`site-search ${className}`} onSubmit={(event) => event.preventDefault()}>
+        <Search aria-hidden="true" />
+        <input
+          data-directory-search=""
+          type="search"
+          value={directoryValue}
+          onChange={(event) => directoryQuery.set(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              if (directoryValue) directoryQuery.set("");
+              else event.currentTarget.blur();
+            }
+          }}
+          placeholder="Search libraries"
+          aria-label="Search libraries or components"
+        />
+        <kbd aria-hidden="true">/</kbd>
+      </form>
+    );
+  }
+
   if (collapsed) {
     return (
       <Link href="/libraries#library-search" className={`site-search-icon ${className}`} aria-label="Search libraries" title="Search libraries">
@@ -122,7 +149,7 @@ export function SiteSearch({ className = "", collapsed = false }: { className?: 
             <ul>
               {results.map(({ library, components }) => (
                 <li key={library.slug}>
-                  <Link href={libraryPath(library.slug)} onClick={() => setOpen(false)}>
+                  <Link href={libraryPath(library.slug)} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>
                     <span>{library.name}</span>
                     <small>{components[0]?.name ?? library.category}</small>
                   </Link>

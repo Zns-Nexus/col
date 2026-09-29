@@ -8,25 +8,21 @@ import { BrandLink, GitHubStars, SiteSearch, useGitHubStars } from "./SiteChrome
 import { SIDEBAR_SLOT_ID } from "./SidebarSlot";
 import { ThemeToggle } from "./ThemeToggle";
 
-type SidebarMode = "narrow" | "wide" | "rail";
+type SidebarMode = "narrow" | "wide";
 
 function sidebarModeFor(pathname: string): SidebarMode {
-  if (pathname === "/docs" || pathname.startsWith("/docs/")) return "rail";
-  if (pathname === "/libraries") return "wide";
-  return "narrow";
+  return pathname === "/libraries" ? "wide" : "narrow";
 }
 
 /**
  * The one layout every route shares: a sidebar (brand, search, navigation,
  * page-specific content, repo links) and the content card. The sidebar is
- * narrow by default, widens on the directory to fit its filters, and on docs
- * collapses the navigation to an icon rail with the docs navigation beside it.
- * Small screens get a compact top bar instead.
+ * narrow by default and widens on the directory to fit its filters. Small
+ * screens get a compact top bar instead.
  */
 export function AppFrame({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const mode = sidebarModeFor(pathname);
-  const rail = mode === "rail";
   const stars = useGitHubStars();
   const panelRef = useRef<HTMLElement>(null);
 
@@ -44,9 +40,8 @@ export function AppFrame({ children }: { children: ReactNode }) {
       const slash = event.key === "/" && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey;
       const command = (event.ctrlKey || event.metaKey) && !event.altKey && !event.shiftKey && event.key.toLowerCase() === "k";
       if (!slash && !command) return;
-      // The directory owns its search; elsewhere focus whichever site search is on screen.
-      const visibleSearch = [...document.querySelectorAll<HTMLInputElement>("[data-site-search]")].find((input) => input.offsetParent !== null);
-      const field = document.getElementById("library-search") ?? visibleSearch;
+      // Focus whichever search field is on screen: the directory search on /libraries, the site search elsewhere.
+      const field = [...document.querySelectorAll<HTMLInputElement>("[data-directory-search], [data-site-search]")].find((input) => input.offsetParent !== null);
       if (!field) return;
       event.preventDefault();
       field.focus();
@@ -56,12 +51,12 @@ export function AppFrame({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div className="app-frame library-page-shell" data-sidebar={mode} data-rail={rail ? "" : undefined}>
+    <div className="app-frame library-page-shell" data-sidebar={mode}>
       <Header />
       <aside className="app-frame-sidebar" aria-label="Sidebar">
         <div className="app-frame-brand"><BrandLink /></div>
-        <div className="app-frame-search"><SiteSearch collapsed={rail} /></div>
-        <div className="app-frame-nav"><AppSidebar collapsed={rail} /></div>
+        <div className="app-frame-search"><SiteSearch /></div>
+        <div className="app-frame-nav"><AppSidebar /></div>
         <div id={SIDEBAR_SLOT_ID} className="app-frame-slot" />
         <div className="app-frame-footer">
           <GitHubStars stars={stars} />

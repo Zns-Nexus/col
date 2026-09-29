@@ -1,25 +1,114 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, BookOpen, ChevronDown, FilePlus, GitPullRequest, Search, Bug, type LucideIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import styles from "./DocsSidebar.module.css";
+import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
 
-const getStarted: readonly (readonly [string, string, LucideIcon])[] = [
-  ["/docs", "Overview", BookOpen],
-  ["/docs/find-a-library", "Find a library", Search],
+type DocsPage = readonly [href: string, label: string];
+
+const sections: readonly { title: string; pages: readonly DocsPage[] }[] = [
+  {
+    title: "Get started",
+    pages: [
+      ["/docs", "Overview"],
+      ["/docs/find-a-library", "Find a library"],
+    ],
+  },
+  {
+    title: "Contribute",
+    pages: [
+      ["/docs/request-a-library", "Request a library"],
+      ["/docs/report-issues", "Report issues"],
+      ["/docs/pull-requests", "Open a pull request"],
+    ],
+  },
 ];
 
-const contribute: readonly (readonly [string, string, LucideIcon])[] = [
-  ["/docs/request-a-library", "Request a library", FilePlus],
-  ["/docs/report-issues", "Report issues", Bug],
-  ["/docs/pull-requests", "Open a pull request", GitPullRequest],
-];
+const pages: readonly DocsPage[] = sections.flatMap(({ pages: sectionPages }) => sectionPages);
 
-const pages = [...getStarted, ...contribute];
+/**
+ * Keeps an absolutely positioned pill on the item matching `selector` inside
+ * `container`, so the pill slides from item to item as the selection changes.
+ */
+function useSlidingPill(container: RefObject<HTMLElement | null>, selector: string, deps: unknown[]) {
+  const [style, setStyle] = useState<CSSProperties>({ opacity: 0 });
+  const [ready, setReady] = useState(false);
 
+  useLayoutEffect(() => {
+    const box = container.current;
+    const target = box?.querySelector<HTMLElement>(selector);
+    // Measure against the container itself: nested lists are positioned, so offsetTop would be list-relative.
+    const top = target && box ? target.getBoundingClientRect().top - box.getBoundingClientRect().top : 0;
+    setStyle(target ? { transform: `translateY(${top}px)`, height: target.offsetHeight, opacity: 1 } : { opacity: 0 });
+    // Place the pill without animating on first paint; slide on every change after that.
+    const frame = requestAnimationFrame(() => setReady(true));
+    return () => cancelAnimationFrame(frame);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
+
+  return { style, ready };
+}
+
+/** Section navigation for the docs, with the same sliding pill as the main sidebar. */
+export function DocsSidebar() {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const groupsRef = useRef<HTMLDivElement>(null);
+  const current = pages.find(([href]) => href === pathname);
+  const pill = useSlidingPill(groupsRef, '[aria-current="page"]', [pathname, open]);
+
+  useEffect(() => setOpen(false), [pathname]);
+
+  return (
+    <nav aria-label="Documentation pages" className="docs-nav">
+      <button type="button" className="docs-nav-toggle" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+        <span className="cap">{current?.[1] ?? "Documentation"}</span>
+        <ChevronDown aria-hidden />
+      </button>
+      <div ref={groupsRef} className="docs-nav-groups" data-open={open}>
+        <span className="docs-nav-pill" data-ready={pill.ready} style={pill.style} aria-hidden />
+        {sections.map(({ title, pages: sectionPages }) => (
+          <div key={title} className="docs-nav-group">
+            <p className="docs-nav-heading">{title}</p>
+            <ul>
+              {sectionPages.map(([href, label]) => (
+                <li key={href}>
+                  <Link href={href} aria-current={pathname === href ? "page" : undefined} className="docs-nav-link">
+                    <span className="cap">{label}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
+/**
+ * Wraps the docs page body and replays an entrance on every page change: the
+ * new page slides in from the side you are moving towards.
+ */
+export function DocsTransition({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const index = pages.findIndex(([href]) => href === pathname);
+  const previousIndex = useRef<number | null>(null);
+  const direction = previousIndex.current === null ? "initial" : index >= previousIndex.current ? "forward" : "back";
+
+  useEffect(() => {
+    previousIndex.current = index;
+  }, [index]);
+
+  return (
+    <div key={pathname} className="docs-page" data-direction={direction}>
+      {children}
+    </div>
+  );
+}
+
+/** Previous and next page links at the end of each docs page. */
 export function DocsPageNavigation() {
   const pathname = usePathname();
   const index = pages.findIndex(([href]) => href === pathname);
@@ -29,91 +118,80 @@ export function DocsPageNavigation() {
   const next = pages[index + 1];
 
   return (
-    <nav aria-label="Documentation pagination" className="theme-border mt-12 flex items-center justify-between gap-6 border-t pt-6 text-sm">
-      {previous ? <Link href={previous[0]} className="docs-rail-link inline-flex items-center gap-2 font-medium"><ArrowLeft className="size-4" aria-hidden /> Previous: {previous[1]}</Link> : <span />}
-      {next && <Link href={next[0]} className="docs-rail-link inline-flex items-center gap-2 text-right font-medium">Next: {next[1]} <ArrowRight className="size-4 shrink-0" aria-hidden /></Link>}
+    <nav aria-label="Documentation pagination" className="docs-pager">
+      {previous ? (
+        <Link href={previous[0]} aria-label={`Previous: ${previous[1]}`} className="docs-pager-link">
+          <ArrowLeft className="docs-pager-arrow" aria-hidden />
+          <span className="docs-pager-copy">
+            <span className="docs-pager-label">Previous</span>
+            <span className="docs-pager-title">{previous[1]}</span>
+          </span>
+        </Link>
+      ) : <span />}
+      {next ? (
+        <Link href={next[0]} aria-label={`Next: ${next[1]}`} className="docs-pager-link docs-pager-next">
+          <span className="docs-pager-copy">
+            <span className="docs-pager-label">Next</span>
+            <span className="docs-pager-title">{next[1]}</span>
+          </span>
+          <ArrowRight className="docs-pager-arrow" aria-hidden />
+        </Link>
+      ) : <span />}
     </nav>
   );
 }
 
-export function DocsSidebar() {
+/** "On this page": the page's section headings, with a pill that follows the one being read. */
+export function DocsToc() {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
-  const linksRef = useRef<HTMLDivElement>(null);
-  const highlightRef = useRef<HTMLSpanElement>(null);
-  const pendingLinkRef = useRef<HTMLAnchorElement>(null);
-
-  const positionHighlight = useCallback((link: HTMLAnchorElement | null) => {
-    const container = linksRef.current;
-    const highlight = highlightRef.current;
-    if (!container || !highlight || !link) return;
-
-    const linkRect = link.getBoundingClientRect();
-    const containerRect = container.getBoundingClientRect();
-    highlight.style.width = `${linkRect.width}px`;
-    highlight.style.height = `${linkRect.height}px`;
-    highlight.style.transform = `translate(${linkRect.left - containerRect.left}px, ${linkRect.top - containerRect.top}px)`;
-    highlight.style.opacity = "1";
-  }, []);
-
-  const restoreActiveHighlight = useCallback(() => {
-    if (pendingLinkRef.current && linksRef.current?.contains(pendingLinkRef.current)) {
-      positionHighlight(pendingLinkRef.current);
-      return;
-    }
-    const activeLink = linksRef.current?.querySelector<HTMLAnchorElement>('[aria-current="page"]');
-    if (activeLink) positionHighlight(activeLink);
-    else if (highlightRef.current) highlightRef.current.style.opacity = "0";
-  }, [positionHighlight]);
+  const listRef = useRef<HTMLUListElement>(null);
+  const [items, setItems] = useState<{ id: string; title: string }[]>([]);
+  const [active, setActive] = useState<string | null>(null);
+  const pill = useSlidingPill(listRef, '[aria-current="location"]', [active, items]);
 
   useEffect(() => {
-    pendingLinkRef.current = null;
-    let readyFrame = 0;
-    const frame = requestAnimationFrame(() => {
-      restoreActiveHighlight();
-      readyFrame = requestAnimationFrame(() => {
-        if (highlightRef.current) highlightRef.current.dataset.ready = "true";
-      });
-    });
-    window.addEventListener("resize", restoreActiveHighlight);
-    return () => {
-      cancelAnimationFrame(frame);
-      cancelAnimationFrame(readyFrame);
-      window.removeEventListener("resize", restoreActiveHighlight);
-    };
-  }, [pathname, restoreActiveHighlight]);
+    const headings = [...document.querySelectorAll<HTMLElement>(".docs-layout-main h2[id]")];
+    setItems(headings.map((heading) => ({ id: heading.id, title: heading.dataset.title ?? heading.textContent ?? "" })));
+    setActive(headings[0]?.id ?? null);
+    const root = document.querySelector(".app-frame-panel");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) setActive(visible[0].target.id);
+      },
+      { root, rootMargin: "0px 0px -65% 0px" },
+    );
+    headings.forEach((heading) => observer.observe(heading));
+    return () => observer.disconnect();
+  }, [pathname]);
+
+  if (items.length < 2) return null;
 
   return (
-    <nav aria-label="Documentation pages" className={`docs-sidebar ${styles.sidebar}`}>
-      <div className={styles.mobileBar}>
-        <span className={styles.mobileLabel}>On this page</span>
-        <Button type="button" variant="ghost" className="docs-mobile-toggle theme-text min-h-11 w-full justify-between px-0 text-sm hover:bg-transparent" aria-expanded={open} onClick={() => setOpen((current) => !current)}>Documentation menu <ChevronDown className={`size-4 ${open ? "rotate-180" : ""}`} aria-hidden /></Button>
-      </div>
-      <div className={`docs-sidebar-content ${open ? "docs-sidebar-content-open" : ""}`}>
-      <div
-        ref={linksRef}
-        className="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-1"
-        onClick={(event) => { if ((event.target as HTMLElement).closest("a")) setOpen(false); }}
-        onMouseLeave={restoreActiveHighlight}
-        onBlur={(event) => {
-          if (!(event.relatedTarget instanceof Node) || !event.currentTarget.contains(event.relatedTarget)) restoreActiveHighlight();
-        }}
-      >
-        <span ref={highlightRef} className="docs-sidebar-link-highlight" aria-hidden="true" />
-        <div className={styles.section}>
-          <p className="docs-sidebar-heading mb-1.5 px-2.5 text-xs font-semibold">Get started</p>
-          <ul className="space-y-0.5 text-sm">
-            {getStarted.map(([href, label, Icon]) => <li key={href}><Link href={href} aria-current={pathname === href ? "page" : undefined} className="docs-sidebar-link relative z-10 flex items-center gap-2.5 rounded-[10px] px-2.5 py-2" onMouseEnter={(event) => positionHighlight(event.currentTarget)} onFocus={(event) => positionHighlight(event.currentTarget)} onClick={(event) => { pendingLinkRef.current = event.currentTarget; positionHighlight(event.currentTarget); }}><Icon className="size-4 shrink-0" aria-hidden />{label}</Link></li>)}
-          </ul>
-        </div>
-        <div className={styles.section}>
-          <p className="docs-sidebar-heading mb-1.5 px-2.5 text-xs font-semibold">Contribute</p>
-          <ul className="space-y-0.5 text-sm">
-            {contribute.map(([href, label, Icon]) => <li key={href}><Link href={href} aria-current={pathname === href ? "page" : undefined} className="docs-sidebar-link relative z-10 flex items-center gap-2.5 rounded-[10px] px-2.5 py-2" onMouseEnter={(event) => positionHighlight(event.currentTarget)} onFocus={(event) => positionHighlight(event.currentTarget)} onClick={(event) => { pendingLinkRef.current = event.currentTarget; positionHighlight(event.currentTarget); }}><Icon className="size-4 shrink-0" aria-hidden />{label}</Link></li>)}
-          </ul>
-        </div>
-      </div>
-      </div>
+    <nav aria-label="On this page" className="docs-toc">
+      <p className="docs-nav-heading">On this page</p>
+      <ul ref={listRef}>
+        <li className="docs-toc-pill" data-ready={pill.ready} style={pill.style} aria-hidden role="presentation" />
+        {items.map(({ id, title }) => (
+          <li key={id}>
+            <a
+              href={`#${id}`}
+              aria-current={active === id ? "location" : undefined}
+              className="docs-toc-link"
+              onClick={(event) => {
+                const target = document.getElementById(id);
+                if (!target) return;
+                event.preventDefault();
+                target.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+                history.replaceState(null, "", `#${id}`);
+                setActive(id);
+              }}
+            >
+              {title}
+            </a>
+          </li>
+        ))}
+      </ul>
     </nav>
   );
 }

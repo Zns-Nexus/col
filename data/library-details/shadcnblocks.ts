@@ -3,6 +3,14 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://www.shadcnblocks.com/docs",
   repoUrl: "https://github.com/shadcnblocks/shadcn-ui-blocks",
+  registrySetup: {
+    description: "Initialize shadcn if needed, then merge this registry into components.json, preserving its existing settings. Free blocks use this config; paid blocks also require an API key and the Authorization header described in Getting started.",
+    config: `{
+  "registries": {
+    "@shadcnblocks": "https://www.shadcnblocks.com/r/{style}/{name}"
+  }
+}`,
+  },
   install: [
     { label: "Add a block (shadcn CLI)", command: "npx shadcn add @shadcnblocks/hero1" },
     {

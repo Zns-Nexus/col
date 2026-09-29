@@ -3,6 +3,19 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://aicanvas.me",
   repoUrl: "https://github.com/aicanvas-me/aicanvas",
+  registrySetup: {
+    description: "Create a free account at aicanvas.me, copy your token from account settings, and set AICANVAS_TOKEN in .env.local. Initialize shadcn if needed, then merge this registry into components.json, preserving its existing settings.",
+    config: `{
+  "registries": {
+    "@aicanvas": {
+      "url": "https://aicanvas.me/r/{name}.json",
+      "params": {
+        "token": "\${AICANVAS_TOKEN}"
+      }
+    }
+  }
+}`,
+  },
   install: [
     {
       label: "Install one component (shadcn CLI)",

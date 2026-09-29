@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Heart, Search, SearchX } from "lucide-react";
+import { Heart, SearchX } from "lucide-react";
 import { Icons } from "./MaskIcon";
 import {
   libraries,
@@ -11,6 +11,7 @@ import {
 } from "@/data/libraries";
 import { componentIndex } from "@/data/components";
 import { createDirectorySearch, toggleStackSelection } from "@/lib/directory";
+import { directoryQuery, focusDirectorySearch, useDirectoryQuery } from "@/lib/directory-query";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { FilterBar } from "./FilterBar";
@@ -21,7 +22,9 @@ const SAVED_LIBRARIES_KEY = "col:saved-libraries";
 const searchDirectory = createDirectorySearch(libraries, componentIndex);
 
 export function DirectoryExplorer({ initialQuery = "" }: { initialQuery?: string }) {
-  const [query, setQuery] = useState(initialQuery);
+  // The search field lives in the sidebar (or the mobile top bar); both share this query.
+  const query = useDirectoryQuery();
+  const setQuery = directoryQuery.set;
   const [category, setCategory] = useState<Category | null>(null);
   const [stacks, setStacks] = useState<Stack[]>([]);
   const [useCases, setUseCases] = useState<UseCase[]>([]);
@@ -50,8 +53,10 @@ export function DirectoryExplorer({ initialQuery = "" }: { initialQuery?: string
   );
 
   useEffect(() => {
-    if (window.location.hash === "#library-search") document.getElementById("library-search")?.focus();
-  }, []);
+    directoryQuery.set(initialQuery);
+    if (window.location.hash === "#library-search") focusDirectorySearch();
+    return () => directoryQuery.set("");
+  }, [initialQuery]);
 
   const visibleResults = showSaved
     ? results.filter(({ library }) => saved.has(library.slug))
@@ -164,18 +169,6 @@ export function DirectoryExplorer({ initialQuery = "" }: { initialQuery?: string
               </p>
             </div>
             <div className="dir-toolbar-controls">
-              <label className="dir-search">
-                <Search aria-hidden />
-                <input
-                  id="library-search"
-                  data-library-search="true"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Search libraries or components"
-                  aria-label="Search libraries or components"
-                />
-                <kbd aria-hidden>/</kbd>
-              </label>
               <div role="radiogroup" aria-label="Sort libraries" className="dir-segment dir-segment-text" data-value={sort === "curated" ? "0" : "1"}>
                 <span className="dir-segment-pill" aria-hidden />
                 <button type="button" role="radio" aria-checked={sort === "curated"} onClick={() => setSort("curated")}><span className="cap">Curated</span></button>

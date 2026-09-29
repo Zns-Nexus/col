@@ -3,6 +3,14 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://cult-ui.com/docs",
   repoUrl: "https://github.com/nolly-studio/cult-ui",
+  registrySetup: {
+    description: "From a React project with Tailwind CSS, initialize shadcn if needed. Merge this registry into components.json, preserving its existing settings and other registries. Then run a component command below.",
+    config: `{
+  "registries": {
+    "@cult-ui": "https://cult-ui.com/r/{name}.json"
+  }
+}`,
+  },
   install: [
     {
       label: "Initialize shadcn/ui in the project first",
@@ -36,6 +44,10 @@ export default {
     "Register the registry in `components.json` under `registries` as `\"@cult-ui\": \"https://cult-ui.com/r/{name}.json\"`, then install with `npx shadcn@beta add @cult-ui/<component-name>`. `npx shadcn@beta search @cult-ui --query \"texture-button\"` lists what the registry contains.",
     "Follow the framework guide for your stack at https://cult-ui.com/docs/installation (Next.js, Vite, or manual React) and the CSS variable setup at https://cult-ui.com/docs/theming. The Next.js and Vite pages still show `npx cult-ui@latest init` and `npx cult-ui@latest add button`, but no `cult-ui` package is published on npm — use the shadcn registry commands instead.",
   ],
+  preview: {
+    src: "https://opengraph.githubassets.com/1/nolly-studio/cult-ui",
+    alt: "Cult UI repository social preview",
+  },
   agentPrompt: `Add Cult UI (https://cult-ui.com) to this existing project. Cult UI is a curated set of motion-heavy, niche React components distributed as source through a shadcn/ui-compatible registry. It is not an npm package: you copy the component code into the repo and own it.
 
 Prerequisites:

@@ -3,6 +3,14 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://uselayouts.com/docs",
   repoUrl: "https://github.com/iurvish/uselayouts",
+  registrySetup: {
+    description: "From a React project with Tailwind CSS, initialize shadcn if needed. Merge this registry into components.json, preserving its existing settings and other registries. Then run a component command below.",
+    config: `{
+  "registries": {
+    "@uselayouts": "https://uselayouts.com/r/{name}.json"
+  }
+}`,
+  },
   install: [
     {
       label: "Add one component (shadcn CLI)",

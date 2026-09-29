@@ -73,6 +73,38 @@ test("every library has a built detail page with name, website link, docs link, 
     assert.ok(html.includes(details.docsUrl), `${library.slug}: page is missing the docs link`);
     assert.ok(html.includes("Copy prompt"), `${library.slug}: page is missing the agent prompt block`);
     assert.ok(html.includes(details.agentPrompt), `${library.slug}: page is missing the agent prompt text`);
+    assert.ok(html.includes('class="ld-layout"'), `${library.slug}: missing the two-column layout`);
+    assert.ok(html.includes('class="ld-side ld-reveal"'), `${library.slug}: missing the preview/details column`);
+    assert.equal(html.includes("<footer"), false, `${library.slug}: renders the removed footer`);
+  }
+});
+
+test("detail pages explain third-party registry setup before installation", async () => {
+  for (const library of libraries) {
+    const details = await loadDetails(library.slug);
+    const html = decodeHtml(readBuilt(`libraries/${library.slug}.html`));
+    assert.equal((html.match(/<main[\s>]/g) ?? []).length, 1, `${library.slug}: duplicates the app frame's main landmark`);
+
+    const usesRegistry = details.install?.some(({ command }) => /shadcn(?:@\S+)? add/.test(command));
+    if (usesRegistry && library.slug !== "shadcn-ui") {
+      assert.ok(details.registrySetup?.description, `${library.slug}: missing registry setup guide`);
+      assert.ok(html.includes(details.registrySetup.description), `${library.slug}: registry guide is not rendered`);
+      assert.ok(html.indexOf("Registry setup") < html.indexOf(details.install[0].command), `${library.slug}: setup follows installation`);
+      if (details.registrySetup.config) {
+        const { registries } = JSON.parse(details.registrySetup.config);
+        assert.ok(Object.keys(registries).length > 0);
+        for (const value of Object.values(registries)) {
+          assert.ok((typeof value === "string" ? value : value.url).includes("{name}"));
+        }
+        assert.ok(html.includes('aria-label="Registry setup"'), `${library.slug}: registry setup tabs are missing`);
+        assert.ok(html.includes('>components.json</span>'), `${library.slug}: registry config tab is missing`);
+      }
+    }
+    const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
+    assert.equal(new Set(ids).size, ids.length, `${library.slug}: duplicate tab or panel IDs`);
+    for (const [, panel] of html.matchAll(/<button[^>]*role="tab"[^>]*aria-controls="([^"]+)"/g)) {
+      assert.ok(ids.includes(panel), `${library.slug}: tab points to a missing panel`);
+    }
   }
 });
 

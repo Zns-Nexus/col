@@ -1,28 +1,54 @@
+import type { CSSProperties } from "react";
 import { ArrowUpRight } from "lucide-react";
+import { Icons } from "./MaskIcon";
 
 const inquiryUrl = "https://github.com/screen-gd/Col/issues/new?template=sponsorship.yml";
+const reveal = (index: number) => ({ "--i": index }) as CSSProperties;
+
+/** Things maintainers spend their time on, which sponsorship pays for. */
+const supports = [
+  ["Reviewing submissions", "Checking every new library and component against its official source."],
+  ["Keeping listings current", "Updating links, install commands, and details as projects change."],
+  ["Improving the directory", "Better search, filters, and pages for everyone who uses Col."],
+] as const;
 
 export function SponsorsSection() {
   return (
-    <section className="px-5 py-24 sm:px-8 sm:py-32">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h1 className="theme-text text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">Sponsors</h1>
-            <p className="theme-muted mt-4 max-w-xl text-base leading-7">
-              Sponsorship helps keep Col free, open source, and maintained.
-            </p>
-          </div>
-          <a
-            href={inquiryUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="theme-text inline-flex w-fit items-center gap-2 border-b border-current pb-1 text-sm font-medium"
-          >
-            Become a sponsor <ArrowUpRight className="size-4" aria-hidden />
-          </a>
+    <div className="pg">
+      <header className="pg-head ld-reveal" style={reveal(0)}>
+        <div>
+          <h1>Sponsors</h1>
+          <p className="pg-lead">Sponsorship helps keep Col free, open source, and maintained.</p>
         </div>
-      </div>
-    </section>
+        <a href={inquiryUrl} target="_blank" rel="noopener noreferrer" className="ld-button ld-button-primary">
+          <span className="cap">Become a sponsor</span>
+          <ArrowUpRight aria-hidden />
+        </a>
+      </header>
+
+      <section className="pg-empty pg-empty-center ld-reveal" style={reveal(1)} aria-labelledby="sponsors-empty">
+        <span className="pg-empty-icon" aria-hidden><Icons.sponsors className="pg-empty-mask" /></span>
+        <p id="sponsors-empty" className="pg-empty-title">No sponsors yet</p>
+        <p>Col is built and maintained by volunteers. If it saves your team time, sponsoring is the most direct way to keep it going.</p>
+      </section>
+
+      <section className="pg-section ld-reveal" style={reveal(2)} aria-labelledby="sponsors-supports">
+        <h2 id="sponsors-supports">What sponsorship supports</h2>
+        <ul className="pg-list">
+          {supports.map(([title, text]) => (
+            <li key={title} className="pg-row pg-row-static">
+              <span className="pg-row-stack">
+                <span className="pg-row-title">{title}</span>
+                <span className="pg-row-text">{text}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <p className="pg-foot ld-reveal" style={reveal(3)}>
+        Inquiries are public GitHub issues, so leave billing and private contact details out.
+      </p>
+    </div>
   );
 }

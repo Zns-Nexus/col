@@ -3,6 +3,9 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://ruixen.com/docs",
   repoUrl: "https://github.com/ruixenui/ruixen.com",
+  registrySetup: {
+    description: "Initialize shadcn if needed, then use a full component registry URL. Choose the URL variant matching your Tailwind version and primitive library, as described in Getting started. No namespace entry is required.",
+  },
   install: [
     { label: "Set up the project for the shadcn CLI", command: "npx shadcn@latest init" },
     {

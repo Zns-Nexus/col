@@ -3,6 +3,14 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://godui.design",
   repoUrl: "https://github.com/LucasBassetti/godui",
+  registrySetup: {
+    description: "From a React project with Tailwind CSS, initialize shadcn if needed. Merge this registry into components.json, preserving its existing settings and other registries. Then run a component command below.",
+    config: `{
+  "registries": {
+    "@godui": "https://godui.design/r/{name}.json"
+  }
+}`,
+  },
   install: [
     {
       label: "Set up shadcn/ui in the project",

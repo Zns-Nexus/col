@@ -25,7 +25,7 @@ export function Header() {
     setMenuOpen(false);
   }, [pathname]);
 
-  const headerClass = `site-header site-header-solid site-header-app${pathname === "/libraries" ? " site-header-directory" : ""}`;
+  const headerClass = "site-header site-header-solid site-header-app";
 
   return (
     <header className={headerClass}>

@@ -3,6 +3,14 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://ui.wensity.com/docs",
   repoUrl: "https://github.com/wensity/registry",
+  registrySetup: {
+    description: "For the shadcn route, initialize shadcn if needed and merge this registry into components.json. This registry contains free components only. For the Wensity CLI route, run npx wensity@latest init instead; it creates wensity.json.",
+    config: `{
+  "registries": {
+    "@wensity": "https://raw.githubusercontent.com/wensity/registry/main/{name}.json"
+  }
+}`,
+  },
   install: [
     { label: "Add a component with the Wensity CLI", command: "npx wensity@latest add <slug>" },
     { label: "Add a component through the shadcn registry", command: "npx shadcn@latest add @wensity/<slug>" },
