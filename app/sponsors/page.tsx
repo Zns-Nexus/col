@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { SiteFooter } from "@/components/SiteFooter";
 import { SponsorsSection } from "@/components/SponsorsSection";
 
 export const metadata: Metadata = {
@@ -8,12 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function SponsorsPage() {
-  return (
-    <>
-      <div className="contributors-page">
-        <SponsorsSection />
-      </div>
-      <SiteFooter />
-    </>
-  );
+  return <SponsorsSection />;
 }
