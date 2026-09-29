@@ -275,13 +275,6 @@ html.light .bento-preview-chip-active { border-color: rgba(8,111,127,.35); backg
 .footer-link:hover { color: #fff; }
 
 .docs-page-shell { background: #10181a; }
-.library-detail-backdrop { position: absolute; z-index: -1; top: 0; left: 50%; width: 100vw; height: 38rem; transform: translateX(-50%); overflow: hidden; pointer-events: none; }
-.library-detail-background { mask-image: linear-gradient(#000, transparent); }
-.library-detail-backdrop img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
-.library-detail-backdrop::before { content: ""; position: absolute; z-index: 1; inset: 0; background: rgba(0,0,0,.55); }
-.library-detail-backdrop::after { content: ""; position: absolute; z-index: 2; inset: 0; background: rgba(16,24,26,.35); }
-html.light .library-detail-backdrop::before { background: rgba(247,247,245,.65); }
-html.light .library-detail-backdrop::after { background: rgba(247,247,245,.48); }
 .docs-sidebar { background: transparent; }
 .docs-rail-panel, .docs-steps { border-color: rgba(136,213,223,.14); background: #141c1f; }
 .docs-sidebar-heading { color: rgba(255,255,255,.5); }

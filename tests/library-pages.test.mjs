@@ -76,17 +76,11 @@ test("every library has a built detail page with name, website link, docs link, 
   }
 });
 
-test("detail pages use their own header image and explain third-party registry setup before installation", async () => {
-  const images = new Set();
+test("detail pages explain third-party registry setup before installation", async () => {
   for (const library of libraries) {
     const details = await loadDetails(library.slug);
     const html = decodeHtml(readBuilt(`libraries/${library.slug}.html`));
-    assert.ok(details.preview?.src, `${library.slug}: missing header image`);
-    assert.ok(!images.has(details.preview.src), `${library.slug}: reuses another library's image`);
-    images.add(details.preview.src);
-    assert.ok(html.includes('class="library-detail-background'), `${library.slug}: missing header background`);
     assert.equal((html.match(/<main[\s>]/g) ?? []).length, 1, `${library.slug}: duplicates the app frame's main landmark`);
-    assert.ok(html.includes(`src="${details.preview.src}" alt="" fetchPriority="high"`), `${library.slug}: wrong header image`);
 
     const usesRegistry = details.install?.some(({ command }) => /shadcn(?:@\S+)? add/.test(command));
     if (usesRegistry && library.slug !== "shadcn-ui") {

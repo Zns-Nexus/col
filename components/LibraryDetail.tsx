@@ -23,13 +23,7 @@ export function LibraryDetail({ library, details }: LibraryDetailProps) {
   const gettingStarted = details.gettingStarted;
 
   return (
-    <article className={`relative isolate mx-auto w-full px-5 pt-6 pb-20 sm:px-8 ${details.preview ? "max-w-6xl" : "max-w-4xl"}`}>
-      {details.preview && (
-        <div className="library-detail-background library-detail-backdrop" aria-hidden="true">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={details.preview.src} alt="" fetchPriority="high" />
-        </div>
-      )}
+    <article className="mx-auto w-full max-w-4xl px-5 pt-6 pb-20 sm:px-8">
       <Link
         href="/libraries"
         className="docs-text-link theme-muted inline-flex min-h-11 w-fit items-center gap-2 text-sm font-medium"
@@ -39,7 +33,7 @@ export function LibraryDetail({ library, details }: LibraryDetailProps) {
       </Link>
 
       <div className="theme-border mt-4 border-b pb-10">
-        <header className={details.preview ? "max-w-xl" : ""}>
+        <header>
           <div className="flex items-center gap-4">
             <span className="theme-border grid size-12 shrink-0 place-items-center rounded-xl border bg-white/[0.035]">
               <LibraryLogo url={library.url} name={library.name} size={30} />
