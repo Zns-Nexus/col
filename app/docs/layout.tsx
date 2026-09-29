@@ -1,13 +1,20 @@
-import { DocsPageNavigation, DocsSidebar } from "@/components/DocsSidebar";
-import { SidebarSlot } from "@/components/SidebarSlot";
+import { DocsPageNavigation, DocsSidebar, DocsToc, DocsTransition } from "@/components/DocsSidebar";
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
-      <SidebarSlot>
+    <div className="docs-layout">
+      <aside className="docs-layout-nav">
         <DocsSidebar />
-      </SidebarSlot>
-      <div className="docs-copy mx-auto w-full min-w-0 max-w-[76ch] px-5 py-10 sm:px-8">{children}<DocsPageNavigation /></div>
-    </>
+      </aside>
+      <div className="docs-layout-main">
+        <DocsTransition>
+          {children}
+          <DocsPageNavigation />
+        </DocsTransition>
+      </div>
+      <aside className="docs-layout-toc">
+        <DocsToc />
+      </aside>
+    </div>
   );
 }
