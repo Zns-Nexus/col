@@ -20,7 +20,13 @@ export function ThemeToggle() {
   const transitioning = useRef(false);
 
   useEffect(() => {
-    setLight(document.documentElement.classList.contains("light"));
+    // Mirror the document's theme so every toggle on the page shows the right icon.
+    const root = document.documentElement;
+    const sync = () => setLight(root.classList.contains("light"));
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(root, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
   }, []);
 
   const toggle = () => {

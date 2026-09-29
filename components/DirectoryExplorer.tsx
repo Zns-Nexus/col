@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { Heart, LayoutGrid, List, Search, SearchX } from "lucide-react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Heart, Search, SearchX } from "lucide-react";
+import { Icons } from "./MaskIcon";
 import {
   libraries,
   type Category,
@@ -12,8 +13,7 @@ import { componentIndex } from "@/data/components";
 import { createDirectorySearch, toggleStackSelection } from "@/lib/directory";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { FilterBar, FilterDropdown } from "./FilterBar";
+import { FilterBar } from "./FilterBar";
 import { LibraryCard } from "./LibraryCard";
 
 const SAVED_LIBRARIES_KEY = "col:saved-libraries";
@@ -56,6 +56,56 @@ export function DirectoryExplorer({ initialQuery = "" }: { initialQuery?: string
   const visibleResults = showSaved
     ? results.filter(({ library }) => saved.has(library.slug))
     : results;
+
+  // FLIP: cards that stay glide from their old slot to the new one; new cards rise in.
+  const galleryRef = useRef<HTMLDivElement>(null);
+  const cardPositionsRef = useRef(new Map<string, { x: number; y: number }>());
+  const hasLaidOutRef = useRef(false);
+  const resultKey = visibleResults.map(({ library }) => library.slug).join(",");
+
+  useLayoutEffect(() => {
+    const gallery = galleryRef.current;
+    const previous = cardPositionsRef.current;
+    const next = new Map<string, { x: number; y: number }>();
+    cardPositionsRef.current = next;
+    if (!gallery) return;
+
+    const animate = hasLaidOutRef.current && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    hasLaidOutRef.current = true;
+    const origin = gallery.getBoundingClientRect();
+    let entering = 0;
+
+    for (const element of Array.from(gallery.children) as HTMLElement[]) {
+      const slug = element.dataset.slug;
+      if (!slug) continue;
+      const rect = element.getBoundingClientRect();
+      const position = { x: rect.left - origin.left, y: rect.top - origin.top };
+      next.set(slug, position);
+      if (!animate) continue;
+
+      element.getAnimations().forEach((animation) => animation.cancel());
+      const before = previous.get(slug);
+      if (before) {
+        // Whole pixels only, so text lands on the same pixel grid it started on.
+        const dx = Math.round(before.x - position.x);
+        const dy = Math.round(before.y - position.y);
+        if (dx || dy) {
+          element.animate(
+            [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "translate(0, 0)" }],
+            { duration: 560, easing: "cubic-bezier(.32, .72, 0, 1)" },
+          );
+        }
+      } else if (rect.top < window.innerHeight + 200) {
+        element.animate(
+          [
+            { opacity: 0, transform: "translateY(12px)" },
+            { opacity: 1, transform: "none" },
+          ],
+          { duration: 520, delay: Math.min(entering++, 12) * 35, easing: "cubic-bezier(.32, .72, 0, 1)", fill: "backwards" },
+        );
+      }
+    }
+  }, [resultKey, layout]);
 
   const toggleSaved = (slug: string) => {
     setSaved((current) => {
@@ -104,55 +154,52 @@ export function DirectoryExplorer({ initialQuery = "" }: { initialQuery?: string
         />
 
         <div className={`directory-results-pane min-w-0 flex-1 px-5 py-4 sm:px-8 lg:px-8 lg:py-6 ${visibleResults.length ? "pb-40" : ""}`}>
-          <div className="directory-toolbar theme-border space-y-3 border-b pb-4">
-            <label className="directory-search-label relative block w-full max-w-xl">
-              <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" aria-hidden />
-              <input
-                id="library-search"
-                data-library-search="true"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Libraries or components..."
-                aria-label="Search libraries or components"
-                className="directory-search theme-control h-11 w-full rounded-md border bg-transparent pr-4 pl-10 text-sm outline-none placeholder:text-current/50 focus-visible:ring-2"
-              />
-              <kbd className="search-key-hint pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 rounded border px-2 py-1 text-[10px]">/</kbd>
-            </label>
-            <div className="directory-toolbar-row flex flex-wrap items-center justify-between gap-3">
-              <h1 className="theme-text text-xl font-semibold tracking-tight">{query || category || stacks.length || useCases.length ? "Results" : "All libraries"}</h1>
-              <div className="flex flex-wrap items-center gap-2">
-                <p role="status" className="theme-muted whitespace-nowrap text-sm tabular-nums">{visibleResults.length} of {libraries.length}</p>
-                <FilterDropdown
-                  label={sort === "curated" ? "Curated order" : "Name A–Z"}
-                  value={sort}
-                  items={[{ label: "Curated order", value: "curated" }, { label: "Name A–Z", value: "name" }]}
-                  onValueChange={(value) => setSort(value as "curated" | "name")}
-                  className="w-40"
+          <div className="dir-toolbar">
+            <div className="dir-toolbar-title">
+              <h1>{query || category || stacks.length || useCases.length ? "Results" : "All libraries"}</h1>
+              <p role="status" className="dir-count">
+                {visibleResults.length}
+                {visibleResults.length !== libraries.length && <span> / {libraries.length}</span>}
+                <span className="sr-only"> libraries shown</span>
+              </p>
+            </div>
+            <div className="dir-toolbar-controls">
+              <label className="dir-search">
+                <Search aria-hidden />
+                <input
+                  id="library-search"
+                  data-library-search="true"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Search libraries or components"
+                  aria-label="Search libraries or components"
                 />
-                {visibleResults.length > 0 && (
-                  <ToggleGroup
-                    type="single"
-                    value={layout}
-                    onValueChange={(value) => { if (value === "grid" || value === "line") setLayout(value); }}
-                    aria-label="Library layout"
-                    className="theme-control h-11 gap-1 rounded-md border p-1"
-                  >
-                    <ToggleGroupItem value="grid" aria-label="Grid view" className="h-9 min-h-0 flex-none gap-2 px-3 text-sm text-muted-foreground data-[state=on]:bg-secondary data-[state=on]:text-foreground"><LayoutGrid className="size-4" aria-hidden /> Grid</ToggleGroupItem>
-                    <ToggleGroupItem value="line" aria-label="Line view" className="h-9 min-h-0 flex-none gap-2 px-3 text-sm text-muted-foreground data-[state=on]:bg-secondary data-[state=on]:text-foreground"><List className="size-4" aria-hidden /> Line</ToggleGroupItem>
-                  </ToggleGroup>
-                )}
-                <Button type="button" variant="outline" onClick={() => setShowSaved((current) => !current)} aria-pressed={showSaved} className="theme-control min-h-11 hover:opacity-80">
-                  <Heart fill={showSaved ? "currentColor" : "none"} aria-hidden /> Saved {saved.size}
-                </Button>
+                <kbd aria-hidden>/</kbd>
+              </label>
+              <div role="radiogroup" aria-label="Sort libraries" className="dir-segment dir-segment-text" data-value={sort === "curated" ? "0" : "1"}>
+                <span className="dir-segment-pill" aria-hidden />
+                <button type="button" role="radio" aria-checked={sort === "curated"} onClick={() => setSort("curated")}><span className="cap">Curated</span></button>
+                <button type="button" role="radio" aria-checked={sort === "name"} onClick={() => setSort("name")}><span className="cap">A–Z</span></button>
               </div>
+              <div role="radiogroup" aria-label="Library layout" className="dir-segment dir-segment-icon" data-value={layout === "grid" ? "0" : "1"}>
+                <span className="dir-segment-pill" aria-hidden />
+                <button type="button" role="radio" aria-checked={layout === "grid"} aria-label="Grid view" title="Grid" onClick={() => setLayout("grid")}><Icons.allLibraries className="dir-view-icon" /></button>
+                <button type="button" role="radio" aria-checked={layout === "line"} aria-label="List view" title="List" onClick={() => setLayout("line")}><Icons.list className="dir-view-icon" /></button>
+              </div>
+              <button type="button" className="dir-control dir-saved" onClick={() => setShowSaved((current) => !current)} aria-pressed={showSaved} aria-label={`Saved libraries, ${saved.size}`}>
+                <Heart fill={showSaved ? "currentColor" : "none"} aria-hidden />
+                <span className="cap">{saved.size}</span>
+              </button>
             </div>
           </div>
           {query.trim() && <p className="theme-muted mt-3 text-xs leading-5">Component coverage is partial. Links below are verified matches, not a complete inventory.</p>}
 
           {visibleResults.length ? (
-            <div className={`directory-gallery mt-5 grid grid-cols-1 ${layout === "grid" ? "gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4" : "gap-3"}`}>
+            <div ref={galleryRef} className={`directory-gallery mt-5 grid grid-cols-1 ${layout === "grid" ? "gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4" : "gap-3"}`}>
               {visibleResults.map(({ library, components }) => (
-                <LibraryCard key={library.slug} layout={layout} library={library} matches={components} saved={saved.has(library.slug)} onToggleSaved={() => toggleSaved(library.slug)} />
+                <div key={library.slug} data-slug={library.slug} className="directory-gallery-item">
+                  <LibraryCard layout={layout} library={library} matches={components} saved={saved.has(library.slug)} onToggleSaved={() => toggleSaved(library.slug)} />
+                </div>
               ))}
             </div>
           ) : (

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { ArrowUpRight } from "lucide-react";
-import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { getContributors } from "@/lib/github-contributors";
 import styles from "./page.module.css";
@@ -17,9 +16,8 @@ export default async function ContributorsPage() {
 
   return (
     <>
-      <Header />
-      <main className={`contributors-page w-full max-w-full overflow-x-hidden ${styles.page}`}>
-        <div className="mx-auto min-h-screen max-w-7xl px-5 pt-36 pb-28 sm:px-8 sm:pt-44">
+      <div className={`contributors-page w-full max-w-full overflow-x-hidden ${styles.page}`}>
+        <div className="mx-auto max-w-7xl px-5 pt-12 pb-24 sm:px-8 sm:pt-16">
         <div className={styles.intro}>
           <div>
             <p className={styles.eyebrow}>The people behind Col</p>
@@ -58,7 +56,7 @@ export default async function ContributorsPage() {
           </div>
         )}
         </div>
-      </main>
+      </div>
       <SiteFooter />
     </>
   );

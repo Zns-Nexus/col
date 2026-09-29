@@ -1,12 +1,10 @@
-import { ArrowUpRight, Heart, Layers3, Target } from "lucide-react";
+import { ArrowUpRight, Heart } from "lucide-react";
 import Link from "next/link";
 import type { MouseEvent } from "react";
 import type { Library } from "@/data/libraries";
 import type { LibraryComponent } from "@/data/components";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { MinimalCard, MinimalCardDescription, MinimalCardImage, MinimalCardTitle } from "@/components/ui/minimal-card";
+import { MinimalCardImage } from "@/components/ui/minimal-card";
+import { categoryIcons } from "./MaskIcon";
 import { LibraryLogo } from "./LibraryLogo";
 import { hostname } from "@/lib/utils";
 import { libraryPath } from "@/lib/site";
@@ -30,9 +28,10 @@ export function LibraryCard({ library, layout, matches, saved, onToggleSaved }: 
   if (layout === "grid") {
     const preview = libraryPreviews[library.slug];
     const previewRatio = preview ? preview.width / preview.height : 0;
+    const CategoryIcon = categoryIcons[library.category];
 
     return (
-      <MinimalCard className="library-grid-card group relative flex min-w-0 flex-col">
+      <article className="lib-card">
         <MinimalCardImage
           src={preview?.src}
           alt={`${library.name} website preview`}
@@ -41,101 +40,76 @@ export function LibraryCard({ library, layout, matches, saved, onToggleSaved }: 
             padding: previewRatio >= 1.4 ? 0 : "1.5rem",
           }}
           fallback={
-            <span role="img" aria-label={`Preview unavailable for ${library.name}`} className="library-card-fallback absolute inset-0 flex flex-col justify-end rounded-xl p-5">
-              <span className="text-lg font-semibold tracking-tight">{library.name}</span>
-              <span className="mt-1 text-xs opacity-70">{hostname(library.url)}</span>
+            <span role="img" aria-label={`Preview unavailable for ${library.name}`} className="lib-card-fallback">
+              <LibraryLogo url={library.url} name={library.name} size={28} />
+              <span className="lib-card-fallback-host">{hostname(library.url)}</span>
             </span>
           }
-          className="library-card-image mb-3 h-40 2xl:h-48"
+          className="lib-card-media"
         />
-        <Button type="button" size="icon-sm" variant="ghost" onClick={handleToggleSaved} aria-label={saved ? `Remove ${library.name} from saved` : `Save ${library.name}`} aria-pressed={saved} className="library-save library-grid-save absolute right-4 top-4 z-10 size-8 min-h-8 min-w-8 p-0">
-          <Heart className="size-3.5" fill={saved ? "currentColor" : "none"} aria-hidden />
-        </Button>
-        <div className="library-card-heading flex flex-wrap items-center gap-1.5 px-1">
-          <Link href={libraryPath(library.slug)} className="after:absolute after:inset-0 focus-visible:outline-2 focus-visible:outline-offset-2">
-            <MinimalCardTitle className="mt-0 px-0">{library.name}</MinimalCardTitle>
-          </Link>
-          <span className="library-card-category" aria-label={`Category: ${library.category}`}>
-            <span className="library-card-category-dot" aria-hidden />
-            {library.category}
-          </span>
-          {matches.slice(0, 2).map((component) => (
-            <a key={component.url} href={component.url} target="_blank" rel="noopener noreferrer" className="library-chip relative z-10 max-w-full rounded-md border px-1.5 py-0.5 text-[10px] break-words hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2">
-              {component.name}
-            </a>
-          ))}
-          {matches.length > 2 && <span className="library-subtle text-[10px]">+{matches.length - 2}</span>}
+        <button type="button" onClick={handleToggleSaved} aria-label={saved ? `Remove ${library.name} from saved` : `Save ${library.name}`} aria-pressed={saved} className="library-save lib-card-save">
+          <Heart fill={saved ? "currentColor" : "none"} aria-hidden />
+        </button>
+        <div className="lib-card-body">
+          <div className="lib-card-title">
+            <Link href={libraryPath(library.slug)} className="lib-card-name">{library.name}</Link>
+            <span className="lib-card-category" aria-label={`Category: ${library.category}`}>
+              <CategoryIcon className="lib-card-category-icon" />
+              <span className="cap">{library.category}</span>
+            </span>
+          </div>
+          <p className="lib-card-desc">{library.description}</p>
+          {matches.length > 0 && <div className="lib-card-meta">
+            {matches.slice(0, 2).map((component) => (
+              <a key={component.url} href={component.url} target="_blank" rel="noopener noreferrer" className="lib-tag lib-tag-link">
+                <span className="cap">{component.name}</span>
+                <ArrowUpRight aria-hidden />
+              </a>
+            ))}
+            {matches.length > 2 && <span className="lib-tag lib-tag-more"><span className="cap">+{matches.length - 2}</span></span>}
+          </div>}
         </div>
-        <MinimalCardDescription className="library-grid-description mt-1 leading-5">
-          {library.description}
-        </MinimalCardDescription>
-      </MinimalCard>
+      </article>
     );
   }
 
+  const tags = matches.length > 0 ? null : library.stacks;
   return (
-    <Card className="library-card group relative grid min-h-0 grid-cols-1 gap-x-5 gap-y-3 rounded-xl p-4 shadow-none transition-colors lg:grid-cols-[minmax(12rem,0.85fr)_minmax(0,2fr)_auto] lg:items-center">
-      <div className="min-w-0">
-        <Link href={libraryPath(library.slug)} className="flex min-w-0 items-center gap-3 after:absolute after:inset-0 focus-visible:outline-2 focus-visible:outline-offset-2">
-          <span className="theme-border grid size-9 shrink-0 place-items-center rounded-lg border bg-white/[0.035]">
-            <LibraryLogo url={library.url} name={library.name} size={24} />
-          </span>
-          <span className="truncate text-[15px] tracking-[-0.01em]">{library.name}</span>
-        </Link>
-        <p className="library-subtle mt-1.5 truncate pl-12 text-[11px]">{hostname(library.url)}</p>
-        <div className="library-subtle mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[10px]">
-          {library.stacks.length > 0 && <span className="flex items-center gap-1.5"><Layers3 className="size-3" aria-hidden />{library.stacks.length} {library.stacks.length === 1 ? "stack" : "stacks"}</span>}
-          <span className="flex items-center gap-1.5"><Target className="size-3" aria-hidden />{library.useCases.length} {library.useCases.length === 1 ? "use" : "uses"}</span>
-        </div>
+    <article className="lib-row group">
+      <span className="lib-row-logo" aria-hidden>
+        <LibraryLogo url={library.url} name={library.name} size={20} />
+      </span>
+      <div className="lib-row-id">
+        <Link href={libraryPath(library.slug)} className="lib-row-name">{library.name}</Link>
+        <span className="lib-row-host">{hostname(library.url)}</span>
       </div>
-
-      <div className="min-w-0">
-        <p className="library-muted line-clamp-2 text-[13px] leading-5">{library.description}</p>
+      <p className="lib-row-desc">{library.description}</p>
+      <div className="lib-row-tags">
         {matches.length > 0 ? (
-          <div className="mt-2 flex flex-wrap items-center gap-1.5">
+          <>
             {matches.slice(0, 3).map((component) => (
-              <a
-                key={component.url}
-                href={component.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="library-chip focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 relative z-10 inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs hover:opacity-80"
-              >
-                {component.name}
-                <ArrowUpRight className="size-2.5" aria-hidden />
+              <a key={component.url} href={component.url} target="_blank" rel="noopener noreferrer" className="lib-tag lib-tag-link">
+                <span className="cap">{component.name}</span>
+                <ArrowUpRight aria-hidden />
               </a>
             ))}
-            {matches.length > 3 && (
-              <details className="relative z-10">
-                <summary className="library-subtle w-fit cursor-pointer rounded py-2 text-xs focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2">{matches.length - 3} more matches</summary>
-                <div className="flex flex-wrap gap-1.5 pt-1">
-                  {matches.slice(3).map((component) => (
-                    <a key={component.url} href={component.url} target="_blank" rel="noopener noreferrer" className="library-chip inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs hover:opacity-80 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2">
-                      {component.name}<ArrowUpRight className="size-2.5" aria-hidden />
-                    </a>
-                  ))}
-                </div>
-              </details>
-            )}
-          </div>
-        ) : library.stacks.length > 0 ? (
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            {library.stacks.slice(0, 3).map((stack) => (
-              <Badge key={stack} variant="outline" className="library-chip px-2 py-0.5 text-[10px]">{stack}</Badge>
-            ))}
-            {library.stacks.length > 3 && <Badge variant="outline" className="library-chip px-2 py-0.5 text-[10px]">+{library.stacks.length - 3}</Badge>}
-          </div>
-        ) : null}
+            {matches.length > 3 && <span className="lib-tag lib-tag-more"><span className="cap">+{matches.length - 3}</span></span>}
+          </>
+        ) : (
+          <>
+            {tags!.slice(0, 3).map((stack) => <span key={stack} className="lib-tag"><span className="cap">{stack}</span></span>)}
+            {tags!.length > 3 && <span className="lib-tag lib-tag-more"><span className="cap">+{tags!.length - 3}</span></span>}
+          </>
+        )}
       </div>
-
-      <div className="relative z-10 flex items-center justify-end gap-1 lg:justify-self-end">
-        <Button type="button" size="icon-sm" variant="ghost" onClick={handleToggleSaved} aria-label={saved ? `Remove ${library.name} from saved` : `Save ${library.name}`} aria-pressed={saved} className="library-save size-9 min-h-9 min-w-9 rounded-lg p-0 hover:opacity-80">
-          <Heart className="size-4" fill={saved ? "currentColor" : "none"} aria-hidden />
-        </Button>
-        <Button asChild size="icon-sm" variant="ghost" className="library-subtle min-h-11 min-w-11 rounded-lg hover:opacity-80">
-          <a href={library.url} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${library.name} website`}><ArrowUpRight aria-hidden /></a>
-        </Button>
+      <div className="lib-row-actions">
+        <button type="button" onClick={handleToggleSaved} aria-label={saved ? `Remove ${library.name} from saved` : `Save ${library.name}`} aria-pressed={saved} className="library-save lib-row-action">
+          <Heart fill={saved ? "currentColor" : "none"} aria-hidden />
+        </button>
+        <a href={library.url} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${library.name} website`} className="lib-row-action">
+          <ArrowUpRight aria-hidden />
+        </a>
       </div>
-    </Card>
+    </article>
   );
 }
