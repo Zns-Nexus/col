@@ -70,6 +70,8 @@ test("every library has a built detail page with name, website link, docs link, 
 
     assert.ok(html.includes(library.name), `${library.slug}: page is missing the library name`);
     assert.ok(html.includes(library.url), `${library.slug}: page is missing the website link`);
+    const websiteLink = html.match(/<a\b[^>]*class="ld-button ld-button-primary"[^>]*>/)?.[0];
+    assert.ok(websiteLink?.includes('target="_blank"'), `${library.slug}: visit website must open a new tab`);
     assert.ok(html.includes(details.docsUrl), `${library.slug}: page is missing the docs link`);
     assert.ok(html.includes("Copy prompt"), `${library.slug}: page is missing the agent prompt block`);
     assert.ok(html.includes(details.agentPrompt), `${library.slug}: page is missing the agent prompt text`);
