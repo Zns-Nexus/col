@@ -52,7 +52,7 @@ export function LibraryCard({ library, layout, matches, saved, onToggleSaved }: 
         </button>
         <div className="lib-card-body">
           <div className="lib-card-title">
-            <Link href={libraryPath(library.slug)} target="_blank" rel="noopener noreferrer" className="lib-card-name">{library.name}</Link>
+            <Link href={libraryPath(library.slug)} className="lib-card-name">{library.name}</Link>
             <span className="lib-card-category" aria-label={`Category: ${library.category}`}>
               <CategoryIcon className="lib-card-category-icon" />
               <span className="cap">{library.category}</span>
@@ -80,7 +80,7 @@ export function LibraryCard({ library, layout, matches, saved, onToggleSaved }: 
         <LibraryLogo url={library.url} name={library.name} size={20} />
       </span>
       <div className="lib-row-id">
-        <Link href={libraryPath(library.slug)} target="_blank" rel="noopener noreferrer" className="lib-row-name">{library.name}</Link>
+        <Link href={libraryPath(library.slug)} className="lib-row-name">{library.name}</Link>
         <span className="lib-row-host">{hostname(library.url)}</span>
       </div>
       <p className="lib-row-desc">{library.description}</p>

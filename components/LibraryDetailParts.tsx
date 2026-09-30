@@ -133,6 +133,7 @@ export function InstallTabs({ steps, label = "Install method" }: { steps: { labe
 export function AgentPrompt({ prompt }: { prompt: string }) {
   const [expanded, setExpanded] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
   const [fullHeight, setFullHeight] = useState<number | null>(null);
 
   useLayoutEffect(() => {
@@ -145,12 +146,22 @@ export function AgentPrompt({ prompt }: { prompt: string }) {
     return () => observer.disconnect();
   }, []);
 
+  // Follow the footer as the body grows, rather than scrolling to its old position.
+  useLayoutEffect(() => {
+    if (!expanded || !bodyRef.current) return;
+    const observer = new ResizeObserver(() => {
+      footerRef.current?.scrollIntoView({ behavior: "instant", block: "nearest" });
+    });
+    observer.observe(bodyRef.current);
+    return () => observer.disconnect();
+  }, [expanded]);
+
   return (
     <div className="ld-card ld-prompt" data-expanded={expanded}>
       <div ref={bodyRef} className="ld-screen ld-prompt-body" style={expanded && fullHeight ? { maxHeight: fullHeight } : undefined}>
         <pre>{prompt}</pre>
       </div>
-      <div className="ld-card-foot">
+      <div ref={footerRef} className="ld-card-foot">
         <button type="button" className="ld-prompt-toggle" aria-expanded={expanded} onClick={() => setExpanded((open) => !open)}>
           <span className="cap">{expanded ? "Show less" : "Show full prompt"}</span>
           <ChevronDown aria-hidden />
