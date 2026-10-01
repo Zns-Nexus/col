@@ -8,7 +8,8 @@
  * renders at half resolution and at most 30 fps, it pauses while off-screen
  * or in a background tab, and draws a single still frame under reduced
  * motion. `raysAngle` is new: it tilts the beam away from the origin's
- * default direction.
+ * default direction. `paused` is new too: it holds the current frame and stops
+ * rendering, for when the rays are dimmed behind other content.
  */
 "use client";
 
@@ -32,6 +33,8 @@ type LightRaysSettings = {
   noiseAmount: number;
   distortion: number;
   lightMode: boolean;
+  /** Holds the last frame and stops the render loop. */
+  paused: boolean;
 };
 
 export type LightRaysProps = Partial<LightRaysSettings> & { className?: string };
@@ -51,6 +54,7 @@ const DEFAULTS: LightRaysSettings = {
   noiseAmount: 0,
   distortion: 0,
   lightMode: false,
+  paused: false,
 };
 
 /** Share of CSS pixels actually rendered; the rays are soft, so upscaling is invisible. */
@@ -215,6 +219,8 @@ function compile(gl: WebGLRenderingContext, type: number, source: string) {
 export function LightRays({ className, ...props }: LightRaysProps) {
   const container = useRef<HTMLDivElement>(null);
   const settings = useRef<LightRaysSettings>({ ...DEFAULTS, ...props });
+  /** The render loop's restart hook, so `paused` can stop and resume it without rebuilding the context. */
+  const restart = useRef<(() => void) | null>(null);
 
   // The render loop reads the latest props from here, so prop changes never rebuild the WebGL context.
   useEffect(() => {
@@ -303,7 +309,7 @@ export function LightRays({ className, ...props }: LightRaysProps) {
     };
     const start = () => {
       stop();
-      if (!visible || document.hidden || gl.isContextLost()) return;
+      if (!visible || document.hidden || gl.isContextLost() || settings.current.paused) return;
       if (stillness.matches) draw(STILL_TIME);
       else frame = requestAnimationFrame(tick);
     };
@@ -332,8 +338,10 @@ export function LightRays({ className, ...props }: LightRaysProps) {
     stillness.addEventListener("change", start);
     window.addEventListener("pointermove", pointer, { passive: true });
     canvas.addEventListener("webglcontextlost", stop);
+    restart.current = start;
 
     return () => {
+      restart.current = null;
       stop();
       sizeObserver.disconnect();
       viewObserver.disconnect();
@@ -345,6 +353,10 @@ export function LightRays({ className, ...props }: LightRaysProps) {
       canvas.remove();
     };
   }, []);
+
+  useEffect(() => {
+    restart.current?.();
+  }, [props.paused]);
 
   return <div ref={container} className={className} aria-hidden />;
 }

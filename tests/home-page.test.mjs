@@ -29,9 +29,16 @@ test("homepage keeps its four sections, search shortcuts, and new-tab library li
 test("homepage components only use classes the CSS module defines", () => {
   const read = (path) => readFileSync(new URL(path, import.meta.url), "utf8");
   const defined = new Set([...read("../components/HomePage.module.css").matchAll(/\.([a-zA-Z][\w-]*)/g)].map(([, name]) => name));
-  for (const file of ["HeroStage", "LibraryExplorer", "RollText", "RoadmapSection", "SiteFooter", "WhatsInsideSection"]) {
+  for (const file of ["HomeHero", "HomeStory", "RollText", "RoadmapSection", "SiteFooter", "WhatsInsideSection"]) {
     for (const [, name] of read(`../components/${file}.tsx`).matchAll(/styles\.(\w+)/g)) {
       assert.ok(defined.has(name), `${file}.tsx uses styles.${name}, which HomePage.module.css does not define`);
     }
   }
+});
+
+test("the pinned story's media query matches between HomeStory and its stylesheet", () => {
+  const read = (path) => readFileSync(new URL(path, import.meta.url), "utf8");
+  const query = read("../components/HomeStory.tsx").match(/const PINNED_QUERY = "([^"]+)"/)?.[1];
+  assert.ok(query, "PINNED_QUERY is missing");
+  assert.ok(read("../components/HomePage.module.css").includes(`@media ${query} {`), `HomePage.module.css has no @media ${query} block`);
 });

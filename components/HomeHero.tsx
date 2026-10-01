@@ -3,13 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Star } from "lucide-react";
 import { libraryBySlug } from "@/data/libraries";
-import { HeroStage } from "./HeroStage";
 import { RollText } from "./RollText";
 import styles from "./HomePage.module.css";
 
 /**
  * Glass tiles resting on the hero orbit. `x`/`y` place the tile's centre as a
- * percentage of the hero, `size` is a share of the hero width (capped on very
+ * percentage of the stage, `size` is a share of the stage width (capped on very
  * wide panels), and `tilt` is the rotation in degrees.
  */
 const orbitTiles = [
@@ -55,10 +54,10 @@ function tileStyle({ x, y, size, tilt }: TilePlacement, order: number, depth: nu
   } as CSSProperties;
 }
 
-/** Homepage hero: headline and actions inside an orbit of library tiles under React Bits light rays. */
-export function LibraryExplorer() {
+/** The hero's scenery: orbit line, out-of-focus tiles, and the library tiles (each opens its library page). Stays on screen behind every scene. */
+export function HeroBackdrop() {
   return (
-    <HeroStage className={styles.hero} aria-labelledby="home-title">
+    <>
       <div className={styles.orbit} aria-hidden />
       {distantTiles.map((tile, index) => (
         <Image key={tile.slug} src={`/hero-logos/background/${tile.slug}.png`} alt="" width={96} height={96} className={styles.distantTile} style={tileStyle(tile, index, tile.size * -2)} aria-hidden />
@@ -68,32 +67,38 @@ export function LibraryExplorer() {
           <Image src={src} alt="" width={320} height={320} sizes="20vw" loading="eager" />
         </Link>
       ))}
-      <div className={styles.heroCopy}>
-        <h1 id="home-title">
-          {headline.map((line, lineIndex) => (
-            <Fragment key={lineIndex}>
-              {lineIndex > 0 && <br />}
-              {line.map(({ word, order }, wordIndex) => (
-                <Fragment key={order}>
-                  {wordIndex > 0 && " "}
-                  <span className={styles.word} style={{ "--word": order } as CSSProperties}>{word}</span>
-                </Fragment>
-              ))}
-            </Fragment>
-          ))}
-        </h1>
-        <p>Discover UI libraries, components, and tools by stack and use case.</p>
-        <div className={styles.actions}>
-          <Link href="/libraries" className={styles.button}>
-            <RollText>Browse libraries</RollText>
-            <span className={styles.arrowSwap} aria-hidden><ArrowRight /><ArrowRight /></span>
-          </Link>
-          <a href="https://github.com/screen-gd/Col" target="_blank" rel="noopener noreferrer" className={styles.starLink}>
-            <Star aria-hidden />
-            <RollText>Star on GitHub</RollText>
-          </a>
-        </div>
+    </>
+  );
+}
+
+/** The hero's copy: headline (words blur in one by one), subtitle, and the two calls to action. */
+export function HeroCopy() {
+  return (
+    <section className={styles.heroCopy} aria-labelledby="home-title">
+      <h1 id="home-title">
+        {headline.map((line, lineIndex) => (
+          <Fragment key={lineIndex}>
+            {lineIndex > 0 && <br />}
+            {line.map(({ word, order }, wordIndex) => (
+              <Fragment key={order}>
+                {wordIndex > 0 && " "}
+                <span className={styles.word} style={{ "--word": order } as CSSProperties}>{word}</span>
+              </Fragment>
+            ))}
+          </Fragment>
+        ))}
+      </h1>
+      <p>Discover UI libraries, components, and tools by stack and use case.</p>
+      <div className={styles.actions}>
+        <Link href="/libraries" className={styles.button}>
+          <RollText>Browse libraries</RollText>
+          <span className={styles.arrowSwap} aria-hidden><ArrowRight /><ArrowRight /></span>
+        </Link>
+        <a href="https://github.com/screen-gd/Col" target="_blank" rel="noopener noreferrer" className={styles.starLink}>
+          <Star aria-hidden />
+          <RollText>Star on GitHub</RollText>
+        </a>
       </div>
-    </HeroStage>
+    </section>
   );
 }
