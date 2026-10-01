@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Geist_Pixel, Inter, Nunito, Pixelify_Sans } from "next/font/google";
+import { Geist_Mono, Inter, Nunito } from "next/font/google";
 import { siteUrl, socialImage } from "@/lib/site";
 import { AppFrame } from "@/components/AppFrame";
 import { SiteNotice } from "@/components/SiteNotice";
@@ -14,17 +14,6 @@ const inter = Inter({
 const nunito = Nunito({
   variable: "--font-nunito",
   subsets: ["latin"],
-});
-
-const pixelifySans = Pixelify_Sans({
-  variable: "--font-pixelify-sans",
-  subsets: ["latin"],
-});
-
-const geistPixel = Geist_Pixel({
-  variable: "--font-geist-pixel",
-  subsets: ["latin"],
-  axes: ["ELSH"],
 });
 
 const geistMono = Geist_Mono({
@@ -60,7 +49,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`dark ${inter.variable} ${nunito.variable} ${pixelifySans.variable} ${geistPixel.variable} ${geistMono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`dark ${inter.variable} ${nunito.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: `try{const t=localStorage.getItem('col:theme');const l=t==='light'||(!t&&matchMedia('(prefers-color-scheme: light)').matches);document.documentElement.classList.toggle('light',l);document.documentElement.classList.toggle('dark',!l)}catch{}` }} />
       </head>

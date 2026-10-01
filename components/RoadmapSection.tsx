@@ -1,52 +1,61 @@
-import { ArrowUpRight } from "lucide-react";
-import styles from "./RoadmapSection.module.css";
+import { ArrowUpRight, Check } from "lucide-react";
+import { getRoadmap, type Milestone } from "@/lib/github-roadmap";
+import styles from "./HomePage.module.css";
 
-const items = [
-  { title: "Dedicated pages for each library", status: "In progress", issue: 1 },
-  { title: "Better library page experience", status: "Planned", issue: 2 },
-  { title: "MCP servers and connectors", status: "Planned", issue: 4 },
-] as const;
+const ISSUES_URL = "https://github.com/screen-gd/Col/issues";
 
-export function RoadmapSection() {
+const shippedDate = new Intl.DateTimeFormat("en", { month: "short", day: "numeric", timeZone: "UTC" });
+
+const statusText = { "in-progress": "In progress", planned: "Planned" } satisfies Record<Exclude<Milestone["status"], "shipped">, string>;
+
+const when = (milestone: Milestone) =>
+  milestone.status === "shipped"
+    ? milestone.closedAt && <time dateTime={milestone.closedAt}>{shippedDate.format(new Date(milestone.closedAt))}</time>
+    : statusText[milestone.status];
+
+/**
+ * Homepage roadmap: a timeline of major GitHub issues, refreshed every five
+ * minutes. Shipped milestones sit on a solid line, then a "Now" marker, then
+ * upcoming work on a dashed line. Issues labelled "roadmap" are used when any
+ * exist; otherwise feature requests are (see lib/github-roadmap.ts).
+ */
+export async function RoadmapSection() {
+  const roadmap = await getRoadmap();
+  const milestones = roadmap ? [...roadmap.shipped, ...roadmap.upcoming] : [];
+  const lastShipped = (roadmap?.shipped.length ?? 0) - 1;
+  const hasUpcoming = (roadmap?.upcoming.length ?? 0) > 0;
+
   return (
-    <section id="roadmap" aria-labelledby="roadmap-title" className={`theme-border border-b ${styles.section}`}>
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <div>
-            <p className={styles.eyebrow}>Tracked work / GitHub issues</p>
-            <h2 id="roadmap-title" className="theme-text">Roadmap</h2>
-            <p className={`theme-muted ${styles.description}`}>
-              Upcoming features and changes are tracked as tickets in the GitHub repository.
-            </p>
-          </div>
-          <a href="https://github.com/screen-gd/Col/issues" target="_blank" rel="noopener noreferrer" className={`theme-text ${styles.allIssues}`}>
-            View all issues <ArrowUpRight className={styles.headerIcon} aria-hidden />
-          </a>
+    <section id="roadmap" className={styles.section} aria-labelledby="roadmap-title">
+      <div className={styles.sectionHeading}>
+        <div>
+          <h2 id="roadmap-title">Roadmap</h2>
+          <p>Major milestones, straight from GitHub issues.</p>
         </div>
+        <a href={ISSUES_URL} target="_blank" rel="noopener noreferrer" className="ld-button">
+          <span className="cap">View all issues</span>
+          <ArrowUpRight aria-hidden />
+        </a>
+      </div>
+      {milestones.length > 0 ? (
         <ol className={styles.timeline}>
-          {items.map(({ title, status, issue }, index) => (
-            <li key={issue} className={styles.item}>
-              <div className={styles.rail} aria-hidden="true">
-                <span className={`${styles.marker} ${status === "In progress" ? styles.markerActive : ""}`} />
-              </div>
-              <article className={styles.card}>
-                <div className={styles.cardMeta}>
-                  <span className={styles.index}>{String(index + 1).padStart(2, "0")}</span>
-                  <span className={styles.issue}>Issue #{issue}</span>
-                  <span className={`${styles.status} ${status === "In progress" ? styles.statusActive : styles.statusPlanned}`}>
-                    <span className={styles.statusDot} aria-hidden="true" />
-                    {status}
-                  </span>
-                </div>
-                <a href={`https://github.com/screen-gd/Col/issues/${issue}`} target="_blank" rel="noopener noreferrer" className={`theme-text ${styles.itemLink}`}>
-                  <span>{title}</span>
-                  <span className={styles.openIssue}>Open issue <ArrowUpRight className={styles.linkIcon} aria-hidden /></span>
-                </a>
-              </article>
+          {milestones.map((milestone, index) => (
+            <li key={milestone.number} data-status={milestone.status}>
+              <a href={milestone.url} target="_blank" rel="noopener noreferrer" className={styles.milestone}>
+                <span className={styles.node} aria-hidden>{milestone.status === "shipped" && <Check />}</span>
+                <span className={styles.when}>{when(milestone)}</span>
+                <span className={styles.milestoneTitle}>{milestone.title}</span>
+                <span className={styles.issue}>#{milestone.number}</span>
+              </a>
+              {index === lastShipped && hasUpcoming && <span className={styles.now}>Now</span>}
             </li>
           ))}
         </ol>
-      </div>
+      ) : (
+        <p className={styles.timelineEmpty}>
+          {roadmap ? "No milestones yet." : "The roadmap could not be loaded right now."} Follow along in the GitHub issues.
+        </p>
+      )}
     </section>
   );
 }

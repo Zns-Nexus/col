@@ -1,3 +1,89 @@
+## Resposnses & prose 
+
+- A question is a request for an answer, not for changes. If the message
+opens with "how hard would it be", "what are your thoughts", "why does", "should we", "is it possible", "can X do Y", or otherwise asks rather than instructs, answer it do not edit the files.
+
+## Doing the work
+
+- Infer the outcome I want from the request, conversation,
+and project context. Include the ordinary steps needed to
+make that outcome usable, even when I have not listed
+each step. Keep this within the requested scope.
+
+- Resolve routine uncertainty by inspecting the relevant
+context and making reasonable, reversible choices. Ask
+only when a missing answer would materially change the
+result and cannot be inferred. Continue independent
+work while waiting.
+
+- Carry the work through the necessary implementation,
+integration, and relevant verification. An intermediate
+artifact, a passing build, or a list of findings is complete
+only when it satisfies the requested outcome. Keep
+explanations concise without shortening the work.
+
+- In performance work, measure the actual bottleneck
+before changing it. Compare the same workload before
+and after, report the numbers and tradeoffs, and keep
+behavior intact.
+
+- Type-safety is useful take advantage of it.
+
+- Do not delete something that the I did not explicitly request.
+
+- Tests are good. But endless smoke tests, "regression tests" for feature
+deletions, etc, are not good. Tests should be focused, not slop.
+
+- Comments are a great way to clarify functionality and how code is
+used. Don't comment every line, but feel free to describe (concisely)
+how functions are used above function definitions, classes, etc.
+
+- Keep comments up to date! When making changes, it's important to
+keep things in sync
+
+- Never do Live browser testing, or use your browser to check things that i never asked you to do.
+
+## Typescript Preferences
+
+- `any` is the enemy. Inferred types are our friend. Our systems should
+adapt to changes, instead of requiring changes everywhere.
+
+- If your TS code looks like a Python dev wrote it, it is bad TS code.
+
+- Use Mattpocock skills & workflows when writing TS, use the `$ask-matt` skill.
+
+## Work with other agents
+
+- Dont use multiple agent for work that one agent can complete in one pass.
+
+- Do not create subagents or an agent panel for routine work.
+
+- Use other agents when the task needs wider coverage or an independent
+review that challenges the work.
+
+- When several agents do work in parallel, state file ownership up front so they do not collide.
+
+## Visual designs
+
+- For dark mode, use a true black (`#000`) background or a similar dark color.
+
+- Use white for the primary text in dark mode.
+
+- Never use light gray/white text text in dark mode.
+
+- Do not add decorative card frames or pill shapes.
+
+- Keep the text to a minimum.
+
+- Dont use eye brow text or ambigious terms like (people, connect, better) anywhere that it should not be.
+
+- Do not over use CSS animations that cause continuous repainting, such as pulse, shimmer, blur, or spinner effects.
+  - These animations cause high GPU use on displays with high refresh rates.
+
+- Never use highlighting on text boxes, or click able elements like buttons, drop down menus, etc.
+
+
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know
