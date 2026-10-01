@@ -2,7 +2,6 @@
   --gutter: clamp(24px, 4vw, 64px);
   --ease-out: cubic-bezier(.16, 1, .3, 1);
   margin: 0 auto;
-  padding: 0 var(--gutter);
   color: #fff;
 }
 .page, .footer { --home-text: #fff; --hero-light: rgba(255,255,255,.035); --hero-orbit: rgba(255,255,255,.09); --hero-shadow: rgba(0,0,0,.6); --hero-shade: rgba(0,0,0,.4); --hero-rays: .7; }
@@ -11,25 +10,39 @@
 .page a, .footer a { color: inherit; text-decoration: none; }
 .page a:focus-visible, .footer a:focus-visible { outline: 2px solid var(--lib-focus); outline-offset: 5px; }
 .page a:hover, .footer a:hover { text-decoration: underline; text-underline-offset: 4px; }
-/* Full-bleed stage: tiles and the orbit are placed in % of the hero, sized in cqi so they scale with the panel. */
-.hero { position: relative; isolation: isolate; container-type: inline-size; display: grid; place-items: center; min-height: calc(100dvh - 8px); margin: 0 calc(var(--gutter) * -1); padding: 96px var(--gutter); overflow: hidden; clip-path: inset(0 round var(--frame-radius) 0 0 0); }
-/* Darker at the top so the rays read as light, easing back to the panel colour at the bottom. */
-.hero::before { content: ""; position: absolute; inset: 0; z-index: -3; pointer-events: none; background: radial-gradient(50% 40% at 50% 48%, var(--hero-light), transparent 72%), linear-gradient(to bottom, var(--hero-shade), transparent 65%); }
-/* Fades the rays, orbit and far tiles into the panel colour so the hero has no bottom edge. */
-.hero::after { content: ""; position: absolute; inset: auto 0 0; z-index: -1; height: 22%; background: linear-gradient(to bottom, transparent, var(--lib-panel)); pointer-events: none; }
-/* React Bits Light Rays (see LightRays.tsx), mounted by HeroStage on wide screens. In light mode the shader paints dark ink on white, so multiply drops the white. */
-.rays { position: absolute; inset: 0; z-index: -2; opacity: var(--hero-rays); pointer-events: none; animation: fade-in 1.6s ease .2s both; }
+/*
+ * HomeStory: a scroll track (.story) holding the stage (.stage): light rays, the hero backdrop, then the scenes.
+ * By default this is an ordinary stacked page whose first screen (--hero-height) carries the hero scenery.
+ * The "Pinned story" block at the end turns it into one sticky screen whose scenes crossfade as you scroll.
+ * Tiles and the orbit are placed in % of the hero height and sized in cqi of the stage width.
+ */
+.story { --hero-height: calc(100dvh - 8px); position: relative; }
+/* Its own rounded top-left clip keeps composited layers (rays canvas, tiles) inside the panel corner during theme switches. */
+.stage { position: relative; isolation: isolate; container-type: inline-size; clip-path: inset(0 round var(--frame-radius) 0 0 0); }
+/* Darker at the top so the rays read as light, easing back to the panel colour. */
+.stage::before { content: ""; position: absolute; top: 0; right: 0; left: 0; height: var(--hero-height); pointer-events: none; background: radial-gradient(50% 40% at 50% 48%, var(--hero-light), transparent 72%), linear-gradient(to bottom, var(--hero-shade), transparent 65%); }
+/* React Bits Light Rays (see LightRays.tsx), mounted by HomeStory on wide screens. In light mode the shader paints dark ink on white, so multiply drops the white. */
+.rays { position: absolute; top: 0; right: 0; left: 0; height: var(--hero-height); opacity: var(--hero-rays); pointer-events: none; transition: opacity .8s ease; animation: fade-in 1.6s ease .2s backwards; }
+.backdrop { position: absolute; top: 0; right: 0; left: 0; height: var(--hero-height); overflow: hidden; isolation: isolate; transition: opacity .8s ease, scale 1.2s var(--ease-out); }
+/* Fades the orbit and far tiles into the panel colour so the hero has no bottom edge. */
+.backdrop::after { content: ""; position: absolute; inset: auto 0 0; z-index: 1; height: 22%; background: linear-gradient(to bottom, transparent, var(--lib-panel)); pointer-events: none; }
+/* Scenes sit above the backdrop but only their content takes the pointer, so the tiles around the hero copy stay clickable. */
+.scene { position: relative; z-index: 1; padding-inline: var(--gutter); pointer-events: none; }
+.scene > * { pointer-events: auto; }
+.scene[data-scene-index="0"] { display: grid; place-items: center; min-height: var(--hero-height); padding-block: 96px; }
+.scene[data-scene-index="1"] > .section { border-top: 0; }
+.marker { display: none; }
 :global(html.light) .rays canvas { mix-blend-mode: multiply; }
 /* The orbit draws itself in once: a conic mask sweeps round the ellipse and leaves a soft fade where it started. */
-.orbit { --sweep: 360deg; position: absolute; left: 50%; top: 50%; z-index: -1; width: 104cqi; height: min(80%, 56cqi); border: 1px solid var(--hero-orbit); border-radius: 50%; transform: translate(-50%, -50%) rotate(9deg); mask-image: conic-gradient(from 210deg, #000 calc(var(--sweep) - 40deg), transparent var(--sweep)); pointer-events: none; animation: orbit-in 2.2s var(--ease-out) .2s both; }
-/* HeroStage sets --px/--py from the pointer; each tile follows by its own --depth. */
+.orbit { --sweep: 360deg; position: absolute; left: 50%; top: 50%; width: 104cqi; height: min(80%, 56cqi); border: 1px solid var(--hero-orbit); border-radius: 50%; transform: translate(-50%, -50%) rotate(9deg); mask-image: conic-gradient(from 210deg, #000 calc(var(--sweep) - 40deg), transparent var(--sweep)); pointer-events: none; animation: orbit-in 2.2s var(--ease-out) .2s both; }
+/* HomeStory sets --px/--py from the pointer; each tile follows by its own --depth. */
 .tile, .distantTile { position: absolute; left: var(--x); top: calc(50% + (var(--y) - 50%) * var(--spread, 1)); width: calc(var(--size) * var(--scale, 1)); height: auto; aspect-ratio: 1; translate: calc(-50% + var(--px, 0) * var(--depth)) calc(-50% + var(--py, 0) * var(--depth)); rotate: var(--tilt); transition: translate 1s var(--ease-out); }
-.tile { z-index: 1; filter: drop-shadow(0 24px 40px var(--hero-shadow)); will-change: transform, translate; transition: translate 1s var(--ease-out), scale .4s var(--ease-out); animation: tile-float calc(7s + var(--order) * 1.3s) ease-in-out calc(var(--order) * -1.9s) infinite alternate; }
+.tile { z-index: 2; filter: drop-shadow(0 24px 40px var(--hero-shadow)); will-change: transform, translate; transition: translate 1s var(--ease-out), scale .4s var(--ease-out); animation: tile-float calc(7s + var(--order) * 1.3s) ease-in-out calc(var(--order) * -1.9s) infinite alternate; }
 .tile img { display: block; width: 100%; height: 100%; animation: tile-in 1.1s var(--ease-out) calc(.5s + var(--order) * 90ms) both; }
 .tile:hover { scale: 1.05; }
 .tile:active { scale: 1.02; }
-.distantTile { z-index: -1; opacity: .3; filter: blur(3px) grayscale(1); pointer-events: none; will-change: translate; animation: fade-in 1.6s ease calc(.5s + var(--order) * 120ms) both; }
-.heroCopy { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.distantTile { opacity: .3; filter: blur(3px) grayscale(1); pointer-events: none; will-change: translate; animation: fade-in 1.6s ease calc(.5s + var(--order) * 120ms) both; }
+.heroCopy { display: flex; flex-direction: column; align-items: center; text-align: center; }
 .heroCopy > :not(h1) { animation: rise .9s var(--ease-out) .5s both; }
 .heroCopy > :nth-child(3) { animation-delay: .6s; }
 /* After React Bits Blur Text, toned down: each word rises out of a light blur, staggered by --word. */
@@ -37,7 +50,8 @@
 .heroCopy h1 { font-size: clamp(40px, 4.3cqi, 68px); font-weight: 800; line-height: 1.08; letter-spacing: -.03em; text-wrap: balance; }
 .heroCopy > p { max-width: 62ch; margin-top: 20px; font-size: clamp(16px, 1.35cqi, 20px); line-height: 1.6; }
 .actions { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 32px; margin-top: 40px; }
-.button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 0 24px; border-radius: 10px; background: var(--col-brand); color: #fff !important; font-size: 15px; font-weight: 700; box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 10px 24px -12px rgba(8,0,255,.8); transition: scale .25s var(--ease-out); }
+/* The hero's one blue, matched to the reference design (a cleaner azure than the violet --col-brand), with a quiet shadow instead of a glow. */
+.button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 0 24px; border-radius: 10px; background: #082cfe; color: #fff !important; font-size: 15px; font-weight: 700; box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 1px 2px rgba(0,0,0,.3); transition: scale .25s var(--ease-out); }
 .starLink { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; transition: scale .25s var(--ease-out); }
 .button:active, .starLink:active { scale: .97; }
 .actions a:hover { text-decoration: none; }
@@ -64,7 +78,6 @@
 .libraryLink strong { font-size: 14.5px; font-weight: 700; }
 .libraryLink > span > span { color: var(--lib-text-2); font-size: 12px; }
 .section { max-width: 1056px; margin: 0 auto; padding: 64px 0 72px; border-top: 1px solid var(--lib-edge); }
-.hero + .section { border-top: 0; }
 .sectionHeading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px 32px; margin-bottom: 32px; }
 .sectionHeading h2 { font-size: 25px; font-weight: 800; line-height: 1.2; letter-spacing: -.025em; }
 .sectionHeading p { margin-top: 6px; color: var(--lib-text-2); font-size: 14px; line-height: 1.6; }
@@ -150,23 +163,23 @@
 @keyframes tile-in { from { opacity: 0; transform: translateY(20px) scale(.86); } }
 @keyframes tile-float { from { transform: translateY(-6px); } to { transform: translateY(8px); } }
 @media (prefers-reduced-motion: reduce) {
-  .rays, .orbit, .word, .tile, .tile img, .distantTile, .heroCopy > * { animation: none; }
+  .orbit, .word, .tile, .tile img, .distantTile, .heroCopy > * { animation: none; }
   .tile, .distantTile, .button, .starLink, .arrowSwap svg, .starLink > svg, .rollChar, .node, .cellTitle svg, .chips a { transition: none; }
 }
 /* Short viewports: tiles size by width but sit by height, so shrink them and push them toward the edges to keep the headline clear. */
 @media (max-height: 820px) {
-  .hero { --spread: 1.15; --scale: .75; }
+  .stage { --spread: 1.15; --scale: .75; }
 }
 /* Below this width the tiles would crowd the headline, so the orbit stands alone. */
 @container (max-width: 900px) {
   .tile, .distantTile { display: none; }
 }
 @media (max-width: 1023px) {
-  .hero { min-height: calc(100dvh - var(--site-header-height)); }
-  .hero { clip-path: none; }
+  .story { --hero-height: calc(100dvh - var(--site-header-height)); }
+  .stage { clip-path: none; }
 }
 @media (max-width: 900px) {
-  .hero { padding-block: 64px; }
+  .scene[data-scene-index="0"] { padding-block: 64px; }
   .cellFull { grid-template-columns: minmax(0, 1fr); }
   /* The timeline turns vertical: nodes down the left, the line running between them. */
   .timeline { grid-auto-flow: row; gap: 0; }
@@ -181,7 +194,7 @@
 }
 @media (max-width: 560px) {
   .page { --gutter: 24px; }
-  .hero { padding-block: 48px; }
+  .scene[data-scene-index="0"] { padding-block: 48px; }
   .heroCopy h1 { font-size: clamp(34px, 9vw, 44px); }
   .heroCopy > p { font-size: 16px; }
   .libraryLink > svg { display: block; }
@@ -192,4 +205,37 @@
   .cellWide { grid-column: auto; }
   .flow { grid-template-columns: minmax(0, 1fr); }
   .footer { flex-direction: column; align-items: flex-start; }
+}
+/*
+ * Pinned story. Must match PINNED_QUERY in HomeStory.tsx. The stage sticks to the top of a track one screen
+ * tall per scene; HomeStory marks each scene past, current or next, and only the current one shows.
+ */
+@media (min-width: 1280px) and (min-height: 800px) and (prefers-reduced-motion: no-preference) {
+  .story { height: calc(var(--scenes) * var(--hero-height)); }
+  .stage { position: sticky; top: 0; height: var(--hero-height); overflow: hidden; }
+  .marker { display: block; position: absolute; top: calc(var(--index) * var(--hero-height)); left: 0; width: 1px; height: var(--hero-height); pointer-events: none; }
+  .scene { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 40px var(--gutter) 0; opacity: 0; translate: 0 40px; transition: opacity .45s ease, translate .7s var(--ease-out); }
+  .scene[data-scene-index="0"] { display: grid; min-height: 0; padding-block: 96px; }
+  .scene[data-position="past"] { translate: 0 -40px; }
+  .scene[data-position="current"] { opacity: 1; translate: 0 0; }
+  .scene:not([data-position="current"]) > * { pointer-events: none; }
+  .scene > .section { width: 100%; margin-block: auto; padding: 0; border-top: 0; }
+  .scene > .footer { width: 100%; }
+  .sectionHeading { margin-bottom: 24px; }
+  /* Past the hero the scenery recedes: it dims and drifts forward, and the rays (paused by HomeStory) fade. */
+  .stage:not([data-scene="0"]) .backdrop { opacity: .14; scale: 1.06; pointer-events: none; }
+  .stage:not([data-scene="0"]) .rays { opacity: calc(var(--hero-rays) * .35); }
+  /* Details fits one screen as a four-column bento: search, directory and sources on top; install, saved and Col MCP below. */
+  .bento { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  .cell { padding: 18px; }
+  .cellFull { grid-column: span 2; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 14px; }
+  .flow li { padding: 12px; }
+  /* Content rises in each time its scene becomes current. */
+  .scene .timeline li { animation: none; }
+  .scene[data-position="current"] :is(.cell, .timeline li) { animation: rise .6s var(--ease-out) both; animation-delay: calc(var(--i, 0) * 60ms); }
+  .bento > :nth-child(2) { --i: 1; }
+  .bento > :nth-child(3) { --i: 2; }
+  .bento > :nth-child(4) { --i: 3; }
+  .bento > :nth-child(5) { --i: 4; }
+  .bento > :nth-child(6) { --i: 5; }
 }

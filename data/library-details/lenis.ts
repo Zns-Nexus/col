@@ -38,4 +38,10 @@ Steps:
 Verify by scrolling the built app: the page should feel smoothed, sticky positioning should still work, and modals, nested panels, anchors and keyboard scrolling should behave normally. If smooth scroll does nothing, check the CSS import, then \`autoRaf\` or your manual \`raf\` call, then whether the container scrolls at all.
 
 Full option and method tables, the GSAP ScrollTrigger and Framer Motion examples, and the documented limitations (no CSS scroll-snap, use the \`lenis/snap\` subpath; 60fps cap on Safari) are in https://github.com/darkroomengineering/lenis/blob/main/README.md. Use only option names listed there.`,
+  pricing: {
+    model: "free",
+    summary: "Lenis is a free, open-source smooth scroll library; sponsorship is optional.",
+    license: "MIT",
+    source: "https://github.com/darkroomengineering/lenis/blob/main/LICENSE",
+  },
 } satisfies LibraryDetails;

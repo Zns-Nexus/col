@@ -32,4 +32,10 @@ Steps:
 Optional for AI agents: Preline ships agent skills, installed with npx skills add htmlstreamofficial/preline (details at https://preline.co/docs/agent-skills.html).
 
 Use only markup, class names and options documented on https://preline.co/docs/, and check the docs whenever a component needs behavior you do not see in the copied example. Keep the Preline JavaScript include and the CSS source import intact, since interactive components silently fail without them.`,
+  pricing: {
+    model: "freemium",
+    summary: "The open-source components and blocks are free; Preline Pro adds the full block catalog and premium templates as a one-time lifetime purchase.",
+    license: "MIT + Fair Use",
+    source: "https://preline.co/pricing.html",
+  },
 } satisfies LibraryDetails;

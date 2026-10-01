@@ -38,4 +38,10 @@ Steps:
 6. Verify in the app, not just in the editor. State machines respond to inputs such as booleans, numbers, triggers and strings, and data binding exposes the file's view model fields through hooks like \`useViewModelInstanceNumber\`. Re-run the project's type check and build afterwards to confirm nothing regressed.
 
 Use only parameters and hooks documented on https://rive.app/docs, and check the docs for anything the sample does not show. The runtime source is public and MIT licensed at https://github.com/rive-app/rive-wasm, which is the place to check behavior when a detail is undocumented.`,
+  pricing: {
+    model: "freemium",
+    summary: "The runtimes are open source and the editor has a free plan with a Rive splash screen and a file limit; paid plans remove both.",
+    license: "MIT (runtimes)",
+    source: "https://rive.app/pricing",
+  },
 } satisfies LibraryDetails;

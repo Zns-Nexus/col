@@ -34,4 +34,10 @@ Steps:
 5. Confirm the transition actually renders on my running dev server before touching more components.
 
 If a command or option is not documented on https://transitions.dev/skill.html or https://github.com/Jakubantalik/transitions.dev, stop and follow the docs instead of guessing.`,
+  pricing: {
+    model: "freemium",
+    summary: "Core transitions are free; the full library and a commercial license come with paid Pro plans, monthly or lifetime.",
+    license: "MIT",
+    source: "https://transitions.dev/pro.html",
+  },
 } satisfies LibraryDetails;

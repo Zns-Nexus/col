@@ -33,4 +33,10 @@ Steps:
 5. Add extra packages only when needed (for example @mantine/form, @mantine/dates, @mantine/notifications), importing each one's styles.css after the core styles.
 
 Consult the official docs at https://mantine.dev/getting-started/ before deviating from these steps, since PostCSS setup and provider props change between major versions.`,
+  pricing: {
+    model: "free",
+    summary: "Mantine core, hooks and the Mantine UI premade components are free forever, funded by sponsors.",
+    license: "MIT",
+    source: "https://github.com/mantinedev/mantine",
+  },
 } satisfies LibraryDetails;

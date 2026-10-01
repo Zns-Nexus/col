@@ -31,4 +31,10 @@ Steps:
 6. Smoke test by rendering a visible Button: import { Button, HStack } from "@chakra-ui/react".
 
 Consult the official docs at https://chakra-ui.com/docs/get-started/installation and its framework guide for your stack before deviating, since setup differs per framework. When done, list the files you changed and how to start the dev server.`,
+  pricing: {
+    model: "freemium",
+    summary: "Chakra UI is free; Chakra UI Pro blocks and page layouts are paid.",
+    license: "MIT",
+    source: "https://pro.chakra-ui.com/pricing",
+  },
 } satisfies LibraryDetails;

@@ -8,7 +8,8 @@
  * renders at half resolution and at most 30 fps, it pauses while off-screen
  * or in a background tab, and draws a single still frame under reduced
  * motion. `raysAngle` is new: it tilts the beam away from the origin's
- * default direction.
+ * default direction. `paused` is new too: it holds the current frame and stops
+ * rendering, for when the rays are dimmed behind other content.
  */
 "use client";
 
@@ -32,6 +33,8 @@ type LightRaysSettings = {
   noiseAmount: number;
   distortion: number;
   lightMode: boolean;
+  /** Holds the last frame and stops the render loop. */
+  paused: boolean;
 };
 
 export type LightRaysProps = Partial<LightRaysSettings> & { className?: string };
@@ -51,6 +54,7 @@ const DEFAULTS: LightRaysSettings = {
   noiseAmount: 0,
   distortion: 0,
   lightMode: false,
+  paused: false,
 };
 
 /** Share of CSS pixels actually rendered; the rays are soft, so upscaling is invisible. */
@@ -215,10 +219,16 @@ function compile(gl: WebGLRenderingContext, type: number, source: string) {
 export function LightRays({ className, ...props }: LightRaysProps) {
   const container = useRef<HTMLDivElement>(null);
   const settings = useRef<LightRaysSettings>({ ...DEFAULTS, ...props });
+  /** The render loop's restart hook, so `paused` can stop and resume it without rebuilding the context. */
+  const restart = useRef<(() => void) | null>(null);
+  const redraw = useRef<(() => void) | null>(null);
 
   // The render loop reads the latest props from here, so prop changes never rebuild the WebGL context.
   useEffect(() => {
-    settings.current = { ...DEFAULTS, ...props };
+    const nextSettings = { ...DEFAULTS, ...props };
+    const lightModeChanged = settings.current.lightMode !== nextSettings.lightMode;
+    settings.current = nextSettings;
+    if (lightModeChanged) redraw.current?.();
   });
 
   useEffect(() => {
@@ -229,25 +239,31 @@ export function LightRays({ className, ...props }: LightRaysProps) {
     const gl = canvas.getContext("webgl", { alpha: true, premultipliedAlpha: true, antialias: false, depth: false, stencil: false, powerPreference: "low-power" });
     if (!gl) return;
 
-    let program: WebGLProgram;
-    try {
-      program = gl.createProgram();
-      gl.attachShader(program, compile(gl, gl.VERTEX_SHADER, VERTEX_SHADER));
-      gl.attachShader(program, compile(gl, gl.FRAGMENT_SHADER, FRAGMENT_SHADER));
-      gl.linkProgram(program);
-      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program) ?? "Shader failed to link.");
-    } catch (error) {
-      console.warn("Light rays disabled:", error);
-      return;
-    }
-    gl.useProgram(program);
-    // One triangle that covers the whole viewport.
-    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-    const position = gl.getAttribLocation(program, "position");
-    gl.enableVertexAttribArray(position);
-    gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
-    const uniform = Object.fromEntries(UNIFORMS.map((name) => [name, gl.getUniformLocation(program, name)])) as Record<(typeof UNIFORMS)[number], WebGLUniformLocation | null>;
+    const createResources = () => {
+      try {
+        const program = gl.createProgram();
+        if (!program) throw new Error("Could not create a WebGL program.");
+        gl.attachShader(program, compile(gl, gl.VERTEX_SHADER, VERTEX_SHADER));
+        gl.attachShader(program, compile(gl, gl.FRAGMENT_SHADER, FRAGMENT_SHADER));
+        gl.linkProgram(program);
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program) ?? "Shader failed to link.");
+        gl.useProgram(program);
+        // One triangle that covers the whole viewport.
+        const buffer = gl.createBuffer();
+        if (!buffer) throw new Error("Could not create a WebGL buffer.");
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+        const position = gl.getAttribLocation(program, "position");
+        gl.enableVertexAttribArray(position);
+        gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+        return Object.fromEntries(UNIFORMS.map((name) => [name, gl.getUniformLocation(program, name)])) as Record<(typeof UNIFORMS)[number], WebGLUniformLocation | null>;
+      } catch (error) {
+        console.warn("Light rays disabled:", error);
+        return null;
+      }
+    };
+    let uniform = createResources();
+    if (!uniform) return;
     element.appendChild(canvas);
 
     const stillness = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -257,6 +273,7 @@ export function LightRays({ className, ...props }: LightRaysProps) {
     let last = 0;
 
     const draw = (time: number) => {
+      if (!uniform || gl.isContextLost()) return;
       const s = settings.current;
       const { width: w, height: h } = canvas;
       const { anchor, dir } = anchorAndDir(s.raysOrigin, w, h);
@@ -303,9 +320,23 @@ export function LightRays({ className, ...props }: LightRaysProps) {
     };
     const start = () => {
       stop();
-      if (!visible || document.hidden || gl.isContextLost()) return;
-      if (stillness.matches) draw(STILL_TIME);
+      if (!visible || document.hidden || gl.isContextLost() || !uniform) return;
+      if (stillness.matches || settings.current.paused) draw(stillness.matches ? STILL_TIME : last / 1000);
       else frame = requestAnimationFrame(tick);
+    };
+    redraw.current = () => {
+      if ((!stillness.matches && !settings.current.paused) || !visible || document.hidden || gl.isContextLost()) return;
+      draw(stillness.matches ? STILL_TIME : last / 1000);
+    };
+
+    const contextLost = (event: Event) => {
+      event.preventDefault();
+      stop();
+      uniform = null;
+    };
+    const contextRestored = () => {
+      uniform = createResources();
+      start();
     };
 
     const resize = () => {
@@ -331,20 +362,29 @@ export function LightRays({ className, ...props }: LightRaysProps) {
     document.addEventListener("visibilitychange", start);
     stillness.addEventListener("change", start);
     window.addEventListener("pointermove", pointer, { passive: true });
-    canvas.addEventListener("webglcontextlost", stop);
+    canvas.addEventListener("webglcontextlost", contextLost);
+    canvas.addEventListener("webglcontextrestored", contextRestored);
+    restart.current = start;
 
     return () => {
+      restart.current = null;
+      redraw.current = null;
       stop();
       sizeObserver.disconnect();
       viewObserver.disconnect();
       document.removeEventListener("visibilitychange", start);
       stillness.removeEventListener("change", start);
       window.removeEventListener("pointermove", pointer);
-      canvas.removeEventListener("webglcontextlost", stop);
+      canvas.removeEventListener("webglcontextlost", contextLost);
+      canvas.removeEventListener("webglcontextrestored", contextRestored);
       gl.getExtension("WEBGL_lose_context")?.loseContext();
       canvas.remove();
     };
   }, []);
+
+  useEffect(() => {
+    restart.current?.();
+  }, [props.paused]);
 
   return <div ref={container} className={className} aria-hidden />;
 }

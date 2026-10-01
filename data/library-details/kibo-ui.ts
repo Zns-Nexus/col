@@ -41,4 +41,10 @@ Steps:
 5. If I want the catalog searchable from my editor, add the Kibo UI MCP server to my MCP config: { "mcpServers": { "kibo-ui": { "command": "npx", "args": [ "-y", "mcp-remote", "https://www.kibo-ui.com/api/mcp/mcp" ] } } }, then restart the tool. The instructions are at https://www.kibo-ui.com/docs/mcp.
 
 Treat the installed components as my own source code and edit them directly. Source for the library is at https://github.com/shadcnblocks/kibo, and the shadcn registry JSON is served at https://www.kibo-ui.com/r/registry.json.`,
+  pricing: {
+    model: "free",
+    summary: "Kibo UI is free and open source forever, with no paid tier.",
+    license: "MIT",
+    source: "https://github.com/shadcnblocks/kibo",
+  },
 } satisfies LibraryDetails;

@@ -59,4 +59,10 @@ Steps:
 Some components need extra npm packages, for example Three.js for particle-sphere or curious-ai, and Motion for animation. Install whatever the registry item lists as dependencies. Free components are MIT; premium components, design systems and templates need a paid token.
 
 The installed code lives in my repo and is mine to edit.`,
+  pricing: {
+    model: "freemium",
+    summary: "The free library is MIT licensed; Premium adds closed-source components, blocks and templates as a monthly or yearly subscription.",
+    license: "MIT",
+    source: "https://aicanvas.me/pricing",
+  },
 } satisfies LibraryDetails;

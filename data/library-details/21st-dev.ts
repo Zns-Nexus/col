@@ -46,4 +46,10 @@ Steps:
 5. Optional: if I want the catalog searchable from my editor, run npx @21st-dev/cli@latest init --client <my agent name> and set my API key where it asks for it.
 
 Keep the installed code in my repo and treat it as mine to edit.`,
+  pricing: {
+    model: "freemium",
+    summary: "Browsing is free with a daily limit on free component copies; unlimited copies, premium templates and 21st AI need a paid subscription.",
+    source: "https://21st.dev/pricing",
+  },
+  collection: "Anyone can publish to the registry, so components come from many community authors and terms can vary from one component to the next.",
 } satisfies LibraryDetails;

@@ -49,4 +49,10 @@ Steps:
 6. Respect accessibility: components use \`useReducedMotion\` from motion for animation fallbacks and ship keyboard patterns (roving tabindex, arrow-key navigation, focus traps). Do not remove those. If the UI sound cues are unwanted, keep \`lib/sound.ts\` but do not wire the \`play*\` helpers into your call sites.
 
 Use only the registry JSON and the component pages on https://ui.nexvyn.dev as the source of truth, and re-read the item JSON whenever a component needs behavior that is not visible in the demo. The installed code is yours to edit.`,
+  pricing: {
+    model: "free",
+    summary: "The components are free to use, but the license forbids selling the library itself, and the diagram components are non-commercial (CC BY-NC).",
+    license: "MIT + Commons Clause",
+    source: "https://github.com/Nexvyn/Nexvyn-ui/blob/main/LICENSE",
+  },
 } satisfies LibraryDetails;

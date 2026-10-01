@@ -37,4 +37,10 @@ Steps:
 6. Check the component renders correctly at each breakpoint, and verify dark mode variants if the project uses dark mode.
 
 Consult https://www.hyperui.dev for the exact current markup of each component before writing it out.`,
+  pricing: {
+    model: "free",
+    summary: "Every component is free and open source, with no paid tier.",
+    license: "MIT",
+    source: "https://www.hyperui.dev",
+  },
 } satisfies LibraryDetails;

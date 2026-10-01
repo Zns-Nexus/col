@@ -36,4 +36,10 @@ Steps:
 Notes: Tailwind only generates CSS for class names it finds as plain-text tokens in your source files, and it skips .gitignore entries, node_modules, binary files, CSS files and lock files. If you use a class from a shipped UI library, register it with @source "../node_modules/<package>";. If the project is still on v3, run npx @tailwindcss/upgrade@latest to migrate the config and directives, then read the result.
 
 Use the current docs as the source of truth: https://tailwindcss.com/docs/installation, https://tailwindcss.com/docs/theme, https://tailwindcss.com/docs/functions-and-directives, https://tailwindcss.com/docs/detecting-classes-in-source-files and https://tailwindcss.com/docs/upgrade-guide. The Play CDN script at https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4 is for prototyping only and is not meant for production.`,
+  pricing: {
+    model: "freemium",
+    summary: "The framework is free and open source; Tailwind Plus components, templates and UI kit are a separate paid product.",
+    license: "MIT",
+    source: "https://tailwindcss.com/plus",
+  },
 } satisfies LibraryDetails;

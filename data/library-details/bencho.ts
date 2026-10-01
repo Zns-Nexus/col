@@ -37,4 +37,10 @@ Steps:
 9. Confirm the app still builds and the block behaves as it did on the site.
 
 Keep the comments. They say why the numbers are what they are, and they are most of what makes this worth copying rather than rewriting.`,
+  pricing: {
+    model: "free",
+    summary: "The blocks are free to copy, with no paid tier.",
+    license: "MIT",
+    source: "https://bencho.dev/licence",
+  },
 } satisfies LibraryDetails;

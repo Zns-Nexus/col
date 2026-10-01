@@ -20,4 +20,10 @@ export default {
   },
   agentPrompt:
     "I have an existing React project (React 18 or newer, TypeScript optional) and want to add Radix UI Primitives for accessible, unstyled components. Install them with `npm install radix-ui@latest`; individual primitives are also published as their own packages, for example `npm install @radix-ui/react-dialog`. There is no config step and no global CSS file to import, since the primitives ship unstyled. Add a first component as a working example: import { Popover } from \"radix-ui\" and render Popover.Root with Popover.Trigger, Popover.Portal and Popover.Content, then apply our own classNames to each part. Do not rebuild keyboard handling, focus management or ARIA roles, those are included. Before choosing props, read the component's page in the official docs at https://www.radix-ui.com/primitives/docs.",
+  pricing: {
+    model: "free",
+    summary: "Radix Primitives are free and open source, with no paid tier.",
+    license: "MIT",
+    source: "https://github.com/radix-ui/primitives",
+  },
 } satisfies LibraryDetails;
