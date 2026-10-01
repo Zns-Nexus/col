@@ -662,3 +662,10 @@ export const libraries: Library[] = [
     tags: ["css", "snippets", "motion"],
   },
 ];
+
+/** Looks up a library by slug, throwing so a stale hard-coded slug fails the build instead of rendering a broken link. */
+export function libraryBySlug(slug: string): Library {
+  const library = libraries.find((entry) => entry.slug === slug);
+  if (!library) throw new Error(`Unknown library "${slug}"`);
+  return library;
+}

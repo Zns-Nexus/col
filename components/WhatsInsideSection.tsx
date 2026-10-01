@@ -1,148 +1,129 @@
-import { ArrowRight, ArrowUpRight, BookOpen, Bot, FileText, Layers3, PlugZap, Search } from "lucide-react";
-import { BentoCard, BentoGrid } from "@/components/ui/bento-grid";
-import { LibraryLogo } from "@/components/LibraryLogo";
-import { CATEGORIES, STACKS, libraries } from "@/data/libraries";
-import { libraryPath } from "@/lib/site";
+import Link from "next/link";
+import { ArrowRight, ArrowUpRight, Heart, Search } from "lucide-react";
+import { CATEGORIES, STACKS, libraries, libraryBySlug } from "@/data/libraries";
+import { libraryDetails } from "@/data/library-details";
+import { LibraryLogo } from "./LibraryLogo";
+import styles from "./HomePage.module.css";
 
-const featuredLibraries = ["21st-dev", "react-bits", "shadcn-ui"]
-  .map((slug) => libraries.find((library) => library.slug === slug))
-  .filter((library) => library !== undefined);
-const sourceLibrary = libraries.find((library) => library.slug === "shadcn-ui");
-const detailLibrary = libraries.find((library) => library.slug === "react-bits");
+const popularSearches = ["React", "Animation", "Tailwind", "Components", "Icons", "3D"] as const;
 
-const features = [
-  {
-    Icon: BookOpen,
-    name: `${libraries.length} curated libraries`,
-    description: "Find UI libraries, animation tools, icon sets, and more in one place.",
-    href: "/libraries",
-    cta: "Browse libraries",
-    background: (
-      <div className="bento-preview rounded-lg border p-3">
-        {featuredLibraries.map((library) => (
-          <div key={library.slug} className="theme-border flex items-center gap-3 border-b py-3 last:border-0">
-            <LibraryLogo url={library.url} name={library.name} size={26} />
-            <span className="theme-text min-w-0 flex-1 truncate text-sm font-medium">{library.name}</span>
-            <ArrowUpRight className="theme-muted size-4 shrink-0" />
-          </div>
-        ))}
-      </div>
-    ),
-  },
-  {
-    Icon: Search,
-    name: "Search and filter",
-    description: "Narrow the directory by name, category, stack, or use case.",
-    href: "/libraries#library-search",
-    cta: "Search libraries",
-    background: (
-      <div className="bento-preview rounded-lg border p-4">
-        <div className="theme-border theme-control flex h-11 items-center gap-3 rounded-md border px-3">
-          <Search className="theme-muted size-4" />
-          <span className="theme-muted min-w-0 truncate text-sm">dashboard accessibility</span>
-          <kbd className="theme-muted ml-auto shrink-0 text-xs">⌘ K</kbd>
-        </div>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {STACKS.slice(0, 4).map((stack, index) => (
-            <span key={stack} className={`bento-preview-chip rounded-md border px-3 py-1.5 text-xs ${index === 0 ? "bento-preview-chip-active" : ""}`}>{stack}</span>
-          ))}
-        </div>
-      </div>
-    ),
-  },
-  {
-    Icon: Layers3,
-    name: "Browse by category",
-    description: `${CATEGORIES.length} clear categories help you find the right kind of tool.`,
-    href: "/libraries",
-    cta: "Explore categories",
-    background: (
-      <div className="bento-preview grid grid-cols-2 gap-2 rounded-lg border p-4">
-        {CATEGORIES.slice(0, 4).map((category) => (
-          <div key={category} className="bento-preview-chip theme-muted flex min-w-0 items-center gap-2 rounded-md border px-3 py-3 text-xs">
-            <Layers3 className="size-4 shrink-0" />
-            <span className="min-w-0 break-words">{category}</span>
-          </div>
-        ))}
-      </div>
-    ),
-  },
-  {
-    Icon: ArrowUpRight,
-    name: "Go to the source",
-    description: "Every listing links to its official project site or documentation.",
-    href: sourceLibrary?.url ?? "/libraries",
-    cta: "Visit a project",
-    background: sourceLibrary ? (
-      <div className="bento-preview rounded-lg border p-4">
-        <div className="flex items-center gap-3">
-          <LibraryLogo url={sourceLibrary.url} name={sourceLibrary.name} size={32} />
-          <div className="min-w-0">
-            <p className="theme-text truncate text-sm font-semibold">{sourceLibrary.name}</p>
-            <p className="theme-muted truncate text-xs">{new URL(sourceLibrary.url).hostname}</p>
-          </div>
-          <ArrowUpRight className="theme-muted ml-auto size-4 shrink-0" />
-        </div>
-        <div className="theme-border mt-4 border-t pt-3">
-          <span className="bento-preview-chip rounded-md border px-2 py-1 text-[11px]">{sourceLibrary.category}</span>
-        </div>
-      </div>
-    ) : null,
-  },
-  {
-    Icon: FileText,
-    name: "Dedicated library pages",
-    description: "Explore each library's official links, setup steps, and agent prompt.",
-    href: detailLibrary ? libraryPath(detailLibrary.slug) : "/libraries",
-    cta: "Explore a library",
-    background: detailLibrary ? (
-      <div className="bento-preview rounded-lg border p-4">
-        <div className="flex items-center gap-3">
-          <LibraryLogo url={detailLibrary.url} name={detailLibrary.name} size={32} />
-          <div className="min-w-0">
-            <p className="theme-text truncate text-sm font-semibold">{detailLibrary.name}</p>
-            <p className="theme-muted truncate text-xs">{new URL(detailLibrary.url).hostname}</p>
-          </div>
-        </div>
-        <div className="theme-border mt-4 flex flex-wrap gap-2 border-t pt-4">
-          <span className="bento-preview-chip rounded-md border px-2 py-1 text-xs">{detailLibrary.category}</span>
-          {detailLibrary.stacks.slice(0, 2).map((stack) => (
-            <span key={stack} className="bento-preview-chip rounded-md border px-2 py-1 text-xs">{stack}</span>
-          ))}
-        </div>
-        <div className="theme-border mt-4 flex items-center gap-2 border-t pt-3">
-          <Bot className="bento-card-cta size-4" />
-          <span className="theme-text text-xs font-medium">Agent-specific setup guides</span>
-        </div>
-      </div>
-    ) : null,
-  },
-  {
-    Icon: PlugZap,
-    name: "MCP connector",
-    description: "Find libraries from your AI tools with a Col MCP connector.",
-    status: "Coming soon",
-    background: (
-      <div className="bento-preview rounded-lg border p-4">
-        <p className="theme-text text-sm font-semibold">Col MCP</p>
-        <div className="theme-border mt-4 flex items-center gap-3 border-t pt-4">
-          <span className="bento-preview-chip rounded-md border px-2 py-1 text-xs">AI tool</span>
-          <ArrowRight className="theme-muted size-4 shrink-0" />
-          <span className="bento-preview-chip-active rounded-md border px-2 py-1 text-xs">Libraries</span>
-        </div>
-      </div>
-    ),
-  },
-];
+const featuredLibraries = ["21st-dev", "react-bits", "shadcn-ui"].map(libraryBySlug);
 
+const stats = [
+  { value: libraries.length, label: "libraries" },
+  { value: CATEGORIES.length, label: "categories" },
+  { value: STACKS.length, label: "stacks" },
+] as const;
+
+/** A real install command from the React Bits page, so the example never drifts from the data. */
+const exampleInstall = (() => {
+  const install = libraryDetails["react-bits"]?.install?.find(({ label }) => label === "shadcn (registry alias)");
+  if (!install) throw new Error("React Bits install example is missing from data/library-details");
+  return install.command;
+})();
+
+const newTab = { target: "_blank", rel: "noopener noreferrer" } as const;
+
+/** Tracking issue for Col's own MCP server and agent plugin. */
+const MCP_ISSUE_URL = "https://github.com/screen-gd/Col/issues/40";
+
+/** The three jobs the planned Col MCP does for a coding agent, in order. */
+const mcpSteps = [
+  { title: "Find a fit", text: "Compare components across libraries for your stack." },
+  { title: "Inspect it", text: "Get the documented setup, dependencies, and variants." },
+  { title: "Implement it", text: "Your agent adds it to the project from the sources." },
+] as const;
+
+/**
+ * Homepage "Details" bento: six tiles on a three-column grid. Search spans two
+ * columns, the planned Col MCP spans a full row, the rest take one. Each pairs
+ * a short description with a real way in: search shortcuts, directory counts,
+ * featured libraries, an install command, the saved list, and the MCP issue.
+ */
 export function WhatsInsideSection() {
   return (
-    <section aria-labelledby="whats-inside-title" className="whats-inside-section px-5 py-16 sm:px-8 sm:py-20">
-      <div className="mx-auto max-w-7xl">
-        <h2 id="whats-inside-title" className="theme-text mb-8 text-4xl font-semibold tracking-[-0.04em] sm:mb-10 sm:text-5xl">What&apos;s inside</h2>
-        <BentoGrid>
-          {features.map((feature) => <BentoCard key={feature.name} {...feature} />)}
-        </BentoGrid>
+    <section className={styles.section} aria-labelledby="details-title">
+      <div className={styles.sectionHeading}>
+        <div>
+          <h2 id="details-title">Details</h2>
+          <p>From finding a library to adding it to your project.</p>
+        </div>
+      </div>
+      <div className={styles.bento}>
+        <article className={`${styles.cell} ${styles.cellWide}`}>
+          <h3><Link href="/libraries" className={styles.cellTitle}>Search and filter <ArrowRight aria-hidden /></Link></h3>
+          <p>Find libraries by name, component, category, stack, or use case.</p>
+          <div className={styles.cellFoot}>
+            <Link href="/libraries" className={styles.searchField}>
+              <Search aria-hidden />
+              <span>Search libraries and components</span>
+            </Link>
+            <nav className={styles.chips} aria-label="Popular library searches">
+              {popularSearches.map((query) => (
+                <Link key={query} href={`/libraries?q=${encodeURIComponent(query)}`}>{query}</Link>
+              ))}
+            </nav>
+          </div>
+        </article>
+
+        <article className={styles.cell}>
+          <h3><Link href="/libraries" className={styles.cellTitle}>The directory <ArrowRight aria-hidden /></Link></h3>
+          <dl className={styles.stats}>
+            {stats.map(({ value, label }) => (
+              <div key={label}>
+                <dt>{label}</dt>
+                <dd>{value}</dd>
+              </div>
+            ))}
+          </dl>
+        </article>
+
+        <article className={styles.cell}>
+          <h3><Link href="/libraries/shadcn-ui" {...newTab} className={styles.cellTitle}>Official sources <ArrowUpRight aria-hidden /></Link></h3>
+          <p>Go straight to each library&apos;s website, documentation, and repository.</p>
+          <ul className={`${styles.cellFoot} ${styles.featured}`}>
+            {featuredLibraries.map((library) => (
+              <li key={library.slug}>
+                <Link href={`/libraries/${library.slug}`} {...newTab} className={styles.libraryLink}>
+                  <LibraryLogo url={library.url} name={library.name} size={28} />
+                  <span><strong>{library.name}</strong><span>{library.category}</span></span>
+                  <ArrowUpRight aria-hidden />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </article>
+
+        <article className={styles.cell}>
+          <h3><Link href="/libraries/react-bits" {...newTab} className={styles.cellTitle}>Installation guides <ArrowUpRight aria-hidden /></Link></h3>
+          <p>Set up registries, copy install commands, and get an agent setup prompt.</p>
+          <code className={`${styles.cellFoot} ${styles.command}`}>{exampleInstall}</code>
+        </article>
+
+        <article className={styles.cell}>
+          <h3><Link href="/libraries" className={styles.cellTitle}>Save for later <ArrowRight aria-hidden /></Link></h3>
+          <p>Keep useful libraries saved in your browser while you compare options.</p>
+          <span className={`${styles.cellFoot} ${styles.cellIcon}`} aria-hidden><Heart /></span>
+        </article>
+
+        <article className={`${styles.cell} ${styles.cellFull}`}>
+          <div className={styles.mcpCopy}>
+            <h3>
+              <a href={MCP_ISSUE_URL} {...newTab} className={styles.cellTitle}>Col MCP <ArrowUpRight aria-hidden /></a>
+              <span className={styles.soon}>Coming soon</span>
+            </h3>
+            <p>Let your coding agent choose UI components from Col, with source-linked setup it can trust.</p>
+          </div>
+          <ol className={styles.flow}>
+            {mcpSteps.map(({ title, text }, index) => (
+              <li key={title}>
+                <span className={styles.flowIndex}>{index + 1}</span>
+                <strong>{title}</strong>
+                <span>{text}</span>
+              </li>
+            ))}
+          </ol>
+        </article>
       </div>
     </section>
   );
