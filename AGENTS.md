@@ -69,7 +69,7 @@ review that challenges the work.
 
 - Use white for the primary text in dark mode.
 
-- Never use light gray/white text text in dark mode.
+- Secondary text in dark mode must meet WCAG AA contrast against its background: at least 4.5:1 for normal text and 3:1 for large text.
 
 - Do not add decorative card frames or pill shapes.
 
