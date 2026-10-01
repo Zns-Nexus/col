@@ -211,9 +211,10 @@
  * tall per scene; HomeStory marks each scene past, current or next, and only the current one shows.
  */
 @media (min-width: 1280px) and (min-height: 800px) and (prefers-reduced-motion: no-preference) {
+  :global(.app-frame-panel):has(.story) { scroll-snap-type: y mandatory; }
   .story { height: calc(var(--scenes) * var(--hero-height)); }
   .stage { position: sticky; top: 0; height: var(--hero-height); overflow: hidden; }
-  .marker { display: block; position: absolute; top: calc(var(--index) * var(--hero-height)); left: 0; width: 1px; height: var(--hero-height); pointer-events: none; }
+  .marker { display: block; position: absolute; top: calc(var(--index) * var(--hero-height)); left: 0; width: 1px; height: var(--hero-height); pointer-events: none; scroll-snap-align: start; scroll-snap-stop: always; }
   .scene { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 40px var(--gutter) 0; opacity: 0; translate: 0 40px; transition: opacity .45s ease, translate .7s var(--ease-out); }
   .scene[data-scene-index="0"] { display: grid; min-height: 0; padding-block: 96px; }
   .scene[data-position="past"] { translate: 0 -40px; }
