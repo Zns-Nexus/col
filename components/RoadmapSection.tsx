@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { ArrowUpRight, Check } from "lucide-react";
 import { getRoadmap, type Milestone } from "@/lib/github-roadmap";
 import styles from "./HomePage.module.css";
@@ -40,7 +41,7 @@ export async function RoadmapSection() {
       {milestones.length > 0 ? (
         <ol className={styles.timeline}>
           {milestones.map((milestone, index) => (
-            <li key={milestone.number} data-status={milestone.status}>
+            <li key={milestone.number} data-status={milestone.status} style={{ "--i": index } as CSSProperties}>
               <a href={milestone.url} target="_blank" rel="noopener noreferrer" className={styles.milestone}>
                 <span className={styles.node} aria-hidden>{milestone.status === "shipped" && <Check />}</span>
                 <span className={styles.when}>{when(milestone)}</span>
