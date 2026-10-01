@@ -1,0 +1,195 @@
+.page {
+  --gutter: clamp(24px, 4vw, 64px);
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  color: #fff;
+}
+.page, .footer { --home-text: #fff; --hero-light: rgba(255,255,255,.035); --hero-orbit: rgba(255,255,255,.09); --hero-shadow: rgba(0,0,0,.6); --hero-shade: rgba(0,0,0,.4); --hero-rays: .7; }
+:global(html.light) .page, :global(html.light) .footer { --home-text: var(--lib-text); --hero-light: rgba(0,0,0,.025); --hero-orbit: rgba(0,0,0,.1); --hero-shadow: rgba(0,0,0,.18); --hero-shade: transparent; --hero-rays: .5; color: var(--lib-text); }
+.page h1, .page h2, .page h3, .page p { margin: 0; }
+.page a, .footer a { color: inherit; text-decoration: none; }
+.page a:focus-visible, .footer a:focus-visible { outline: 2px solid var(--lib-focus); outline-offset: 5px; }
+.page a:hover, .footer a:hover { text-decoration: underline; text-underline-offset: 4px; }
+/* Full-bleed stage: tiles and the orbit are placed in % of the hero, sized in cqi so they scale with the panel. */
+.hero { position: relative; isolation: isolate; container-type: inline-size; display: grid; place-items: center; min-height: calc(100dvh - 8px); margin: 0 calc(var(--gutter) * -1); padding: 96px var(--gutter); overflow: hidden; clip-path: inset(0 round var(--frame-radius) 0 0 0); }
+/* Darker at the top so the rays read as light, easing back to the panel colour at the bottom. */
+.hero::before { content: ""; position: absolute; inset: 0; z-index: -3; pointer-events: none; background: radial-gradient(50% 40% at 50% 48%, var(--hero-light), transparent 72%), linear-gradient(to bottom, var(--hero-shade), transparent 65%); }
+/* Fades the rays, orbit and far tiles into the panel colour so the hero has no bottom edge. */
+.hero::after { content: ""; position: absolute; inset: auto 0 0; z-index: -1; height: 22%; background: linear-gradient(to bottom, transparent, var(--lib-panel)); pointer-events: none; }
+/* React Bits Light Rays (see LightRays.tsx), mounted by HeroStage on wide screens. In light mode the shader paints dark ink on white, so multiply drops the white. */
+.rays { position: absolute; inset: 0; z-index: -2; opacity: var(--hero-rays); pointer-events: none; animation: fade-in 1.6s ease .2s both; }
+:global(html.light) .rays canvas { mix-blend-mode: multiply; }
+/* The orbit draws itself in once: a conic mask sweeps round the ellipse and leaves a soft fade where it started. */
+.orbit { --sweep: 360deg; position: absolute; left: 50%; top: 50%; z-index: -1; width: 104cqi; height: min(80%, 56cqi); border: 1px solid var(--hero-orbit); border-radius: 50%; transform: translate(-50%, -50%) rotate(9deg); mask-image: conic-gradient(from 210deg, #000 calc(var(--sweep) - 40deg), transparent var(--sweep)); pointer-events: none; animation: orbit-in 2.2s var(--ease-out) .2s both; }
+/* HeroStage sets --px/--py from the pointer; each tile follows by its own --depth. */
+.tile, .distantTile { position: absolute; left: var(--x); top: calc(50% + (var(--y) - 50%) * var(--spread, 1)); width: calc(var(--size) * var(--scale, 1)); height: auto; aspect-ratio: 1; translate: calc(-50% + var(--px, 0) * var(--depth)) calc(-50% + var(--py, 0) * var(--depth)); rotate: var(--tilt); transition: translate 1s var(--ease-out); }
+.tile { z-index: 1; filter: drop-shadow(0 24px 40px var(--hero-shadow)); will-change: transform, translate; transition: translate 1s var(--ease-out), scale .4s var(--ease-out); animation: tile-float calc(7s + var(--order) * 1.3s) ease-in-out calc(var(--order) * -1.9s) infinite alternate; }
+.tile img { display: block; width: 100%; height: 100%; animation: tile-in 1.1s var(--ease-out) calc(.5s + var(--order) * 90ms) both; }
+.tile:hover { scale: 1.05; }
+.tile:active { scale: 1.02; }
+.distantTile { z-index: -1; opacity: .3; filter: blur(3px) grayscale(1); pointer-events: none; will-change: translate; animation: fade-in 1.6s ease calc(.5s + var(--order) * 120ms) both; }
+.heroCopy { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.heroCopy > :not(h1) { animation: rise .9s var(--ease-out) .5s both; }
+.heroCopy > :nth-child(3) { animation-delay: .6s; }
+/* After React Bits Blur Text, toned down: each word rises out of a light blur, staggered by --word. */
+.word { display: inline-block; animation: blur-in 1.1s var(--ease-out) calc(.1s + var(--word) * 45ms) both; }
+.heroCopy h1 { font-size: clamp(40px, 4.3cqi, 68px); font-weight: 800; line-height: 1.08; letter-spacing: -.03em; text-wrap: balance; }
+.heroCopy > p { max-width: 62ch; margin-top: 20px; font-size: clamp(16px, 1.35cqi, 20px); line-height: 1.6; }
+.actions { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 32px; margin-top: 40px; }
+.button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 0 24px; border-radius: 10px; background: var(--col-brand); color: #fff !important; font-size: 15px; font-weight: 700; box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 10px 24px -12px rgba(8,0,255,.8); transition: scale .25s var(--ease-out); }
+.starLink { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; transition: scale .25s var(--ease-out); }
+.button:active, .starLink:active { scale: .97; }
+.actions a:hover { text-decoration: none; }
+/* Arrow slides out to the right while a second one slides in from the left. */
+.arrowSwap { display: inline-grid; width: 16px; height: 16px; overflow: hidden; }
+.arrowSwap svg { grid-area: 1 / 1; transition: translate .45s var(--ease-out); }
+.arrowSwap svg:last-child { translate: -125% 0; }
+.button:is(:hover, :focus-visible) .arrowSwap svg:first-child { translate: 125% 0; }
+.button:is(:hover, :focus-visible) .arrowSwap svg:last-child { translate: 0 0; }
+.starLink > svg { width: 16px; height: 16px; transition: rotate .6s var(--ease-out), fill .3s ease; }
+.starLink:is(:hover, :focus-visible) > svg { rotate: 144deg; fill: currentColor; }
+/* RollText: every letter is a small cube (front face + bottom face) that turns 90deg to bring the copy underneath to the front, staggered by --i. */
+.roll { display: inline-block; }
+.rollLetters { display: inline-flex; perspective: 500px; }
+.rollChar { position: relative; display: inline-block; line-height: 1.25; transform-style: preserve-3d; transform-origin: 50% 50% -.625em; transition: transform .55s var(--ease-out) calc(var(--i) * 16ms); }
+.rollChar > :last-child { position: absolute; top: 100%; left: 0; transform-origin: 50% 0; transform: rotateX(-90deg); }
+:is(a, button):is(:hover, :focus-visible) .rollChar { transform: rotateX(90deg); }
+.srOnly { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.button svg, .textLink svg, .libraryLink > svg { width: 16px; height: 16px; flex-shrink: 0; }
+.textLink { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+
+.libraryLink { display: flex; align-items: center; gap: 12px; padding: 10px 0; }
+.libraryLink > span { display: grid; gap: 4px; flex: 1; min-width: 0; }
+.libraryLink strong { font-size: 14.5px; font-weight: 700; }
+.libraryLink > span > span { color: var(--lib-text-2); font-size: 12px; }
+.section { max-width: 1056px; margin: 0 auto; padding: 64px 0 72px; border-top: 1px solid var(--lib-edge); }
+.hero + .section { border-top: 0; }
+.sectionHeading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px 32px; margin-bottom: 32px; }
+.sectionHeading h2 { font-size: 25px; font-weight: 800; line-height: 1.2; letter-spacing: -.025em; }
+.sectionHeading p { margin-top: 6px; color: var(--lib-text-2); font-size: 14px; line-height: 1.6; }
+/* Details bento: 3 columns x 2 rows, search spans two columns, so five tiles fill every cell. */
+.bento { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-flow: dense; gap: 16px; }
+.cell { display: flex; flex-direction: column; gap: 8px; min-width: 0; padding: 20px; border-radius: 16px; background: var(--lib-surface); box-shadow: var(--lib-depth-2); }
+.cellWide { grid-column: span 2; }
+.cell > p { max-width: 46ch; margin-bottom: 12px; color: var(--lib-text-2); font-size: 14px; line-height: 1.6; }
+.cellTitle { display: inline-flex; align-items: center; gap: 6px; font-size: 16px; font-weight: 700; }
+.cellTitle svg { width: 15px; height: 15px; transition: translate .3s var(--ease-out); }
+.cellTitle:is(:hover, :focus-visible) svg { translate: 2px 0; }
+.cellFoot { margin-top: auto; }
+.searchField { display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 14px; border-radius: 12px; background: var(--lib-field); box-shadow: var(--lib-depth-1); color: var(--lib-text-2); font-size: 14px; }
+.searchField svg { width: 16px; height: 16px; flex-shrink: 0; }
+.page .searchField:hover { text-decoration: none; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.chips a { display: inline-flex; align-items: center; height: 28px; padding: 0 10px; border-radius: 8px; background: var(--lib-chip); font-size: 13px; font-weight: 600; transition: translate .2s var(--ease-out); }
+.page .chips a:hover { text-decoration: none; translate: 0 -1px; }
+.stats { display: grid; gap: 14px; margin: auto 0 0; padding-top: 16px; }
+.stats > div { display: flex; flex-direction: row-reverse; justify-content: flex-end; align-items: baseline; gap: 8px; }
+.stats dt { color: var(--lib-text-2); font-size: 14px; }
+.stats dd { margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+.featured { margin-bottom: -10px; list-style: none; padding-left: 0; padding-right: 0; }
+.featured li + li { box-shadow: inset 0 1px 0 var(--lib-line); }
+.command { display: block; margin-top: auto; padding: 12px 14px; overflow-x: auto; border-radius: 12px; background: var(--lib-field); box-shadow: var(--lib-depth-1); font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; overflow-wrap: anywhere; }
+.cellIcon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--lib-chip); }
+.cellIcon svg { width: 20px; height: 20px; }
+/* Col MCP: a full-width row under the grid, copy on the left and its three steps on the right. */
+.cellFull { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); align-items: center; gap: 20px 32px; }
+.mcpCopy h3 { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.mcpCopy p { max-width: 40ch; margin-top: 8px; color: var(--lib-text-2); font-size: 14px; line-height: 1.6; }
+.soon { display: inline-flex; align-items: center; height: 24px; padding: 0 9px; border-radius: 8px; background: var(--lib-chip); color: var(--lib-text-2); font-size: 12px; font-weight: 700; }
+.flow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+.flow li { display: grid; align-content: start; gap: 4px; padding: 14px; border-radius: 12px; background: var(--lib-field); box-shadow: var(--lib-depth-1); }
+.flow strong { margin-top: 6px; font-size: 14px; font-weight: 700; }
+.flow li > span:last-child { color: var(--lib-text-2); font-size: 13px; line-height: 1.5; }
+.flowIndex { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 8px; background: var(--lib-chip); color: var(--lib-text-2); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.page :global(.ld-button):hover { text-decoration: none; }
+/* Roadmap timeline: one column per milestone. Each item draws the line from its node to the next one: solid between shipped milestones, dashed towards upcoming work. */
+.timeline { display: grid; grid-auto-columns: minmax(0, 1fr); grid-auto-flow: column; margin: 8px 0 0; padding: 0; list-style: none; }
+.timeline li { position: relative; }
+.timeline li::before { content: ""; position: absolute; top: 11px; left: 12px; right: -12px; height: 2px; background: repeating-linear-gradient(to right, var(--lib-text-3) 0 6px, transparent 6px 12px); }
+.timeline li[data-status="shipped"]:has(+ li[data-status="shipped"])::before { background: var(--lib-text); }
+.timeline li:last-child::before { right: 0; mask-image: linear-gradient(to right, #000 40%, transparent); }
+.milestone { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding-right: 28px; }
+.page .milestone:hover { text-decoration: none; }
+.node { display: grid; place-items: center; width: 24px; height: 24px; margin-bottom: 10px; border-radius: 999px; background: var(--lib-panel); box-shadow: inset 0 0 0 2px var(--lib-text-3); transition: scale .3s var(--ease-out); }
+.node svg { width: 14px; height: 14px; stroke-width: 3; }
+[data-status="shipped"] .node { background: var(--lib-text); box-shadow: none; color: var(--lib-panel); }
+[data-status="in-progress"] .node { background: radial-gradient(circle, var(--lib-text) 0 4px, var(--lib-panel) 4.5px); box-shadow: inset 0 0 0 2px var(--lib-text); }
+.milestone:is(:hover, :focus-visible) .node { scale: 1.15; }
+.when { color: var(--lib-text-2); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+[data-status="in-progress"] .when { color: var(--lib-text); }
+.milestoneTitle { font-size: 15px; font-weight: 700; line-height: 1.4; text-wrap: pretty; }
+.milestone:is(:hover, :focus-visible) .milestoneTitle { text-decoration: underline; text-decoration-color: var(--lib-text-3); text-underline-offset: 4px; }
+.issue { display: inline-flex; align-items: center; justify-content: center; height: 24px; min-width: 38px; margin-top: 4px; padding: 0 8px; border-radius: 8px; background: var(--lib-chip); color: var(--lib-text-2); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+/* "Now" sits on the line halfway between the last shipped milestone and the first upcoming one. */
+.now { position: absolute; top: 0; left: calc(50% + 12px); translate: -50% 0; height: 24px; padding: 0 9px; border-radius: 8px; background: var(--lib-surface); box-shadow: 0 0 0 4px var(--lib-panel); font-size: 12px; font-weight: 700; line-height: 24px; }
+.timelineEmpty { color: var(--lib-text-2); font-size: 14px; }
+/* Milestones rise in as they scroll into view, where the browser supports scroll-driven animations (compositor-only). */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .timeline li { animation: rise linear both; animation-timeline: view(); animation-range: entry 10% entry 70%; }
+  }
+}
+/* Footer: one slim row (brand, links, legal line) that wraps on narrow screens. Also used on the 404 page. */
+.footer { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; max-width: 1056px; margin: 0 auto; padding: 22px 24px 26px; box-shadow: inset 0 1px 0 var(--lib-line); color: var(--lib-text); }
+.page .footer { padding-left: 0; padding-right: 0; }
+.brand { display: inline-flex; align-items: center; gap: 7px; font-size: 15px; font-weight: 800; }
+:global(html.light) .brand img { filter: invert(1); }
+.footerNav { display: flex; flex: 1; flex-wrap: wrap; gap: 0 20px; }
+.footerNav a { display: inline-flex; align-items: center; gap: 3px; min-height: 30px; font-size: 13px; font-weight: 600; }
+.footerNav a svg { width: 12px; height: 12px; opacity: .7; }
+.footerLegal { margin: 0; color: var(--lib-text-3); font-size: 12.5px; white-space: nowrap; }
+@media (max-width: 1200px) {
+  .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@property --sweep { syntax: "<angle>"; inherits: false; initial-value: 360deg; }
+@keyframes fade-in { from { opacity: 0; } }
+@keyframes rise { from { opacity: 0; transform: translateY(16px); } }
+@keyframes blur-in { from { opacity: 0; filter: blur(4px); transform: translateY(.12em); } }
+@keyframes orbit-in { from { opacity: 0; --sweep: 0deg; } }
+@keyframes tile-in { from { opacity: 0; transform: translateY(20px) scale(.86); } }
+@keyframes tile-float { from { transform: translateY(-6px); } to { transform: translateY(8px); } }
+@media (prefers-reduced-motion: reduce) {
+  .rays, .orbit, .word, .tile, .tile img, .distantTile, .heroCopy > * { animation: none; }
+  .tile, .distantTile, .button, .starLink, .arrowSwap svg, .starLink > svg, .rollChar, .node, .cellTitle svg, .chips a { transition: none; }
+}
+/* Short viewports: tiles size by width but sit by height, so shrink them and push them toward the edges to keep the headline clear. */
+@media (max-height: 820px) {
+  .hero { --spread: 1.15; --scale: .75; }
+}
+/* Below this width the tiles would crowd the headline, so the orbit stands alone. */
+@container (max-width: 900px) {
+  .tile, .distantTile { display: none; }
+}
+@media (max-width: 1023px) {
+  .hero { min-height: calc(100dvh - var(--site-header-height)); }
+  .hero { clip-path: none; }
+}
+@media (max-width: 900px) {
+  .hero { padding-block: 64px; }
+  .cellFull { grid-template-columns: minmax(0, 1fr); }
+  /* The timeline turns vertical: nodes down the left, the line running between them. */
+  .timeline { grid-auto-flow: row; gap: 0; }
+  .timeline li { padding: 0 0 28px 40px; }
+  .timeline li::before { top: 12px; bottom: -12px; left: 11px; right: auto; width: 2px; height: auto; background: repeating-linear-gradient(to bottom, var(--lib-text-3) 0 6px, transparent 6px 12px); }
+  .timeline li:last-child::before { display: none; }
+  .node { position: absolute; top: 0; left: 0; margin: 0; }
+  .milestone { gap: 6px; padding-right: 0; }
+  .now { top: auto; right: auto; bottom: 0; left: 0; translate: 0 50%; }
+  .libraryLink { gap: 10px; }
+  .libraryLink > svg { display: none; }
+}
+@media (max-width: 560px) {
+  .page { --gutter: 24px; }
+  .hero { padding-block: 48px; }
+  .heroCopy h1 { font-size: clamp(34px, 9vw, 44px); }
+  .heroCopy > p { font-size: 16px; }
+  .libraryLink > svg { display: block; }
+  .actions { gap: 18px; }
+  .section { padding: 36px 0 40px; }
+  .sectionHeading { margin-bottom: 24px; }
+  .bento { grid-template-columns: minmax(0, 1fr); }
+  .cellWide { grid-column: auto; }
+  .flow { grid-template-columns: minmax(0, 1fr); }
+  .footer { flex-direction: column; align-items: flex-start; }
+}
