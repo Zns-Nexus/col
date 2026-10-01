@@ -30,4 +30,10 @@ Steps:
 5. For date pickers with a non-default locale, also import the matching dayjs locale file, since antd uses dayjs for date handling.
 
 Consult the official docs before deviating: getting started at https://ant.design/docs/react/getting-started, Vite setup at https://ant.design/docs/react/use-with-vite, theming at https://ant.design/docs/react/customize-theme, and the v5 to v6 migration notes at https://ant.design/docs/react/migration-v6.`,
+  pricing: {
+    model: "free",
+    summary: "Ant Design is free and open source, with no paid tier.",
+    license: "MIT",
+    source: "https://github.com/ant-design/ant-design/blob/master/LICENSE",
+  },
 } satisfies LibraryDetails;

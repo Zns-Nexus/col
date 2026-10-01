@@ -62,4 +62,10 @@ Notes:
 - GodUI is font-agnostic. The theme ships a neutral system font stack; override --font-sans (and optionally --font-mono or --font-serif) in the global stylesheet, or install the geist package to match the docs site.
 - The project is MIT licensed and the installed files are mine to edit. Third-party packages and demo media keep their own licenses.
 - For reproducible installs, the MCP server can be pinned to a commit-addressed registry snapshot with GODUI_REGISTRY_URL and GODUI_REGISTRY_REVISION (https://github.com/LucasBassetti/godui/blob/main/MCP_REGISTRY_POLICY.md).`,
+  pricing: {
+    model: "free",
+    summary: "All motion components are free for personal and commercial use, with no pro tier.",
+    license: "MIT",
+    source: "https://godui.design",
+  },
 } satisfies LibraryDetails;

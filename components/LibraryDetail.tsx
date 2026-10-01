@@ -1,9 +1,11 @@
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
-import { ArrowLeft, ArrowUpRight, BookOpen, GitBranch } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, CircleDollarSign, GitBranch, UsersRound } from "lucide-react";
 import type { Library } from "@/data/libraries";
 import type { LibraryDetails } from "@/data/library-details";
 import { libraryPreviews } from "@/data/library-previews";
+import type { RelatedLibraries } from "@/lib/related-libraries";
+import { libraryPath } from "@/lib/site";
 import { hostname } from "@/lib/utils";
 import { AgentPrompt, InstallTabs } from "./LibraryDetailParts";
 import { LibraryLogo } from "./LibraryLogo";
@@ -12,6 +14,8 @@ import { categoryIcons } from "./MaskIcon";
 interface LibraryDetailProps {
   library: Library;
   details: LibraryDetails;
+  /** Alternatives and complements picked from the registry (see lib/related-libraries.ts). */
+  related: RelatedLibraries;
 }
 
 const URL_PATTERN = /(https?:\/\/[^\s)"'<>]+[^\s).,;"'<>])/g;
@@ -28,15 +32,22 @@ function linkify(text: string): ReactNode[] {
   });
 }
 
+/** Short labels for each pricing model, used on the chip and the notice. */
+const pricingLabel = { free: "Free", freemium: "Free + paid", paid: "Paid" } satisfies Record<LibraryDetails["pricing"]["model"], string>;
+
 /** Staggered entrance order for each block of the page. */
 const reveal = (index: number) => ({ "--i": index }) as CSSProperties;
 
 /** Shared detail-page layout for a single library; all content comes from props. */
-export function LibraryDetail({ library, details }: LibraryDetailProps) {
+export function LibraryDetail({ library, details, related }: LibraryDetailProps) {
   const install = details.install ?? [];
   const preview = libraryPreviews[library.slug] ?? (details.preview ? { src: details.preview.src, width: 1200, height: 630 } : undefined);
   const previewAlt = details.preview?.alt ?? `${library.name} website preview`;
   const CategoryIcon = categoryIcons[library.category];
+  const relatedGroups = [
+    { title: "Alternatives", items: related.alternatives },
+    { title: "Pairs well with", items: related.pairsWith },
+  ].filter(({ items }) => items.length > 0);
 
   return (
     <article className="ld">
@@ -61,6 +72,25 @@ export function LibraryDetail({ library, details }: LibraryDetailProps) {
               </div>
             </div>
             <p className="ld-description">{library.description}</p>
+            {(details.pricing.model !== "free" || details.collection) && (
+              <div className="ld-notices">
+                {details.pricing.model !== "free" && (
+                  <p className="ld-notice">
+                    <CircleDollarSign aria-hidden />
+                    <span>
+                      <strong>{pricingLabel[details.pricing.model]}.</strong> {details.pricing.summary}{" "}
+                      <a href={details.pricing.source} target="_blank" rel="noopener noreferrer">Pricing</a>
+                    </span>
+                  </p>
+                )}
+                {details.collection && (
+                  <p className="ld-notice">
+                    <UsersRound aria-hidden />
+                    <span><strong>Community collection.</strong> {details.collection}</span>
+                  </p>
+                )}
+              </div>
+            )}
           </header>
 
           {details.registrySetup && (
@@ -103,6 +133,33 @@ export function LibraryDetail({ library, details }: LibraryDetailProps) {
             <p className="ld-section-note">Paste this into a coding agent to set {library.name} up in an existing project.</p>
             <AgentPrompt prompt={details.agentPrompt} />
           </section>
+
+          {relatedGroups.length > 0 && (
+            <section className="ld-section ld-reveal" style={reveal(6)} aria-labelledby="ld-related">
+              <h2 id="ld-related">Related libraries</h2>
+              <div className="ld-related">
+                {relatedGroups.map(({ title, items }) => (
+                  <div key={title}>
+                    <h3 className="ld-related-title">{title}</h3>
+                    <ul className="ld-related-list">
+                      {items.map((other) => (
+                        <li key={other.slug}>
+                          <Link href={libraryPath(other.slug)} className="ld-related-row">
+                            <span className="ld-related-logo"><LibraryLogo url={other.url} name={other.name} size={20} /></span>
+                            <span className="ld-related-copy">
+                              <span className="ld-related-name">{other.name}</span>
+                              <span className="ld-related-meta">{other.category}</span>
+                            </span>
+                            <ArrowRight aria-hidden />
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
 
         <aside className="ld-side ld-reveal" style={reveal(2)} aria-label={`About ${library.name}`}>
@@ -134,6 +191,15 @@ export function LibraryDetail({ library, details }: LibraryDetailProps) {
               </div>
 
               <dl className="ld-facts">
+                <div>
+                  <dt>Pricing</dt>
+                  <dd>
+                    <a href={details.pricing.source} target="_blank" rel="noopener noreferrer" className="ld-chip ld-chip-link" title={details.pricing.summary}>
+                      <span className="cap">{pricingLabel[details.pricing.model]}</span>
+                    </a>
+                    {details.pricing.license && <span className="ld-chip"><span className="cap">{details.pricing.license}</span></span>}
+                  </dd>
+                </div>
                 <div>
                   <dt>Category</dt>
                   <dd>

@@ -46,4 +46,10 @@ Steps:
 5. If I want a different look, the site offers six color themes (neutral, blue, green, violet, rose, orange), each with light and dark mode; use the project's existing theme switcher rather than adding a second one.
 
 Check the item page for exact deps and any per-component notes before writing code, and keep the installed source in my repo rather than wrapping it in an abstraction.`,
+  pricing: {
+    model: "free",
+    summary: "All components, blocks and layouts are free and open source, with no paid tier.",
+    license: "MIT",
+    source: "https://ui.hampton.io/license",
+  },
 } satisfies LibraryDetails;

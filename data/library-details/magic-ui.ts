@@ -38,4 +38,10 @@ Steps:
 5. Repeat step 3 for any other component you need. npm dependencies listed by each component are installed by the CLI automatically; install peers yourself only if the docs page for that component says so.
 
 Keep the copied component files in the repo and edit them freely to match this project's theme.`,
+  pricing: {
+    model: "freemium",
+    summary: "The components are free; Magic UI Pro sections and templates are a paid one-time purchase.",
+    license: "MIT",
+    source: "https://pro.magicui.design",
+  },
 } satisfies LibraryDetails;

@@ -62,4 +62,10 @@ Notes:
 - If meta.remoteAssets lists demo images or videos, swap in the project's own assets, and implement any meta.requiredEndpoints myself. Check the result with real content, keyboard input, the reduced-motion setting and the target viewport.
 - Known upstream quirk: the top-level name and homepage fields in https://www.obsidianui.dev/r/registry.json still say rare-ui. The individual item manifests are correct.
 - ObsidianUI is MIT licensed and the installed files are mine to edit; third-party packages and demo media keep their own licenses.`,
+  pricing: {
+    model: "free",
+    summary: "Obsidian UI is free and open source, with no paid tier.",
+    license: "MIT",
+    source: "https://obsidianui.dev",
+  },
 } satisfies LibraryDetails;

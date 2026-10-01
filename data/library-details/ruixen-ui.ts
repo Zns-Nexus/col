@@ -59,4 +59,10 @@ getRegistryItem, so component sources and props come from the registry rather th
 Components animate with spring physics from motion/react, and many play a short Web Audio API tick on
 interaction; pass sound={false} to silence it. The installed files are plain source in this repo, so treat
 them as yours to edit.`,
+  pricing: {
+    model: "freemium",
+    summary: "The component library is free and MIT licensed; Ruixen Pro adds premium components and templates as a one-time lifetime purchase.",
+    license: "MIT",
+    source: "https://ruixen.com/pricing",
+  },
 } satisfies LibraryDetails;

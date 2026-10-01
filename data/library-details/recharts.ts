@@ -48,4 +48,10 @@ Version 3 notes worth checking against existing chart code:
 - In TypeScript projects, data and dataKey are untyped by default. From 3.8 you can pass generics to components, e.g. <Area<MyData, number>>, to type-check dataKeys. See https://recharts.github.io/en-US/guide/typescript.
 
 Use only components, props and URLs documented on https://recharts.github.io, and re-check the docs rather than assuming 2.x-era APIs still apply.`,
+  pricing: {
+    model: "free",
+    summary: "Recharts is free and open source, with no paid tier.",
+    license: "MIT",
+    source: "https://github.com/recharts/recharts/blob/main/LICENSE",
+  },
 } satisfies LibraryDetails;

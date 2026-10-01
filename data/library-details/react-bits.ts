@@ -52,4 +52,10 @@ Steps:
 5. Import the added component file into an existing page and render it with its props to confirm it works, then add further components the same way.
 
 If a command or registry URL is not documented on https://reactbits.dev/get-started/installation, stop and follow the docs instead of guessing.`,
+  pricing: {
+    model: "freemium",
+    summary: "The components are free to use; React Bits Pro blocks and templates are a paid one-time purchase from the same author.",
+    license: "MIT + Commons Clause",
+    source: "https://pro.reactbits.dev/compare/react-bits-pro-vs-free-react-bits",
+  },
 } satisfies LibraryDetails;

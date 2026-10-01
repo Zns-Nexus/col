@@ -31,4 +31,10 @@ Steps:
 5. Rebuild or restart the dev server and confirm the component styles change.
 
 Consult the official docs at https://daisyui.com/docs/ for your setup: install guides per framework at https://daisyui.com/docs/install/, component usage at https://daisyui.com/docs/use/, and theme config at https://daisyui.com/docs/config/. Use only class names documented there, since component classes and theme options change between major versions.`,
+  pricing: {
+    model: "freemium",
+    summary: "The component library is free and open source; store templates, the Figma library and the Blueprint MCP server are paid extras.",
+    license: "MIT",
+    source: "https://daisyui.com",
+  },
 } satisfies LibraryDetails;

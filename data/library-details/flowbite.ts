@@ -30,4 +30,10 @@ Steps:
 5. If this is a React project, prefer running npx flowbite-react@latest init instead of the manual setup, and use components from the flowbite-react package.
 
 Consult https://flowbite.com/docs/ for the framework specific guides (Next.js, Vue, Svelte, Angular, Astro, Laravel and others), the Tailwind v3 to v4 upgrade guide if the project still runs Tailwind v3, and the configuration page for theming and dark mode.`,
+  pricing: {
+    model: "freemium",
+    summary: "The open-source component library is free; Flowbite Pro (Figma design system, blocks and dashboard) is a one-time purchase with lifetime updates.",
+    license: "MIT",
+    source: "https://flowbite.com/pro/",
+  },
 } satisfies LibraryDetails;

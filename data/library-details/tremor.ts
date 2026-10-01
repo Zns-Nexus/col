@@ -48,4 +48,10 @@ Steps:
 6. Follow my existing conventions: the examples on the docs site use Geist, antialiased and a dark:bg-gray-950 background on the <html> tag. Match whatever my project already does rather than forcing the docs' font, and note that dark mode is class-based, not prefers-color-scheme.
 
 Treat the copied source as part of my codebase, match the surrounding file style, and check the component page before adding a prop so the API matches the version in the changelog at https://www.tremor.so/changelog.`,
+  pricing: {
+    model: "free",
+    summary: "The components are open source, and the former paid blocks and templates are now free and open source too.",
+    license: "Apache-2.0",
+    source: "https://blocks.tremor.so",
+  },
 } satisfies LibraryDetails;

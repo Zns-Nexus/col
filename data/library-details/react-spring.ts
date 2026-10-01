@@ -38,4 +38,10 @@ Steps:
 6. If I am animating inside react-three-fiber, install a separate package: npm install @react-spring/three (v10 targets @react-three/fiber >=6.0 and three >=0.126). Import \`animated\` and \`useSpring\` from "@react-spring/three" in that scene, not from "@react-spring/web".
 
 Keep the existing styling, TypeScript setup and build tooling unchanged. Read the docs at https://react-spring.dev before writing code; the reference for the common hooks is at https://react-spring.dev/docs/common-hooks/use-spring.`,
+  pricing: {
+    model: "free",
+    summary: "React Spring is free and open source, funded through Open Collective, with no paid products.",
+    license: "MIT",
+    source: "https://github.com/pmndrs/react-spring/blob/main/LICENSE",
+  },
 } satisfies LibraryDetails;
