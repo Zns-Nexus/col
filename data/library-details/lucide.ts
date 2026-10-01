@@ -40,4 +40,10 @@ Notes:
 - Dynamic usage exists (import { DynamicIcon } from 'lucide-react/dynamic' and pass a name) but the docs list the caveats: every icon is imported at build time, a module is created per icon, and you can see loading flashes. Prefer direct imports for static UI.
 - For non-framework use, install lucide-static to get individual SVG files, an SVG sprite, icon fonts, or SVG strings for Node.js. The sprite includes every icon, so the docs warn against it for high-traffic production.
 - Icons are decorative by default. For standalone icons that convey meaning, add an accessible label such as aria-label plus role="img", and for icons paired with visible text, mark them aria-hidden="true" to avoid duplicate announcements. See https://lucide.dev/how-to/accessibility.`,
+  pricing: {
+    model: "free",
+    summary: "Every icon and package is free and open source, with no paid tier.",
+    license: "ISC",
+    source: "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
+  },
 } satisfies LibraryDetails;

@@ -46,4 +46,9 @@ Steps:
 8. Optional style presets: the Create preset studio (https://ui.wensity.com/create-preset) emits a \`wsty1…\` code for icon library, radius, fonts and control colors. Apply it with \`npx wensity@latest init --preset <wsty1-code>\` on a new project or \`npx wensity@latest apply --preset <wsty1-code>\` on an existing one. Presets affect UI primitives only; premium components and blocks ignore the stored icon library.
 
 Keep the installed files in the repo and treat them as my own editable code. \`wensity add\` never overwrites an existing file — use \`npx wensity@latest update <slug>\` when I want a fresh upstream copy, and review the diff. Components are tuned against Framer Motion 12, so bump to \`^12\` if layout animations jitter.`,
+  pricing: {
+    model: "freemium",
+    summary: "A free React and Tailwind component catalog is available; Wensity Pro is a yearly or lifetime purchase, and templates are sold separately.",
+    source: "https://ui.wensity.com/pricing",
+  },
 } satisfies LibraryDetails;

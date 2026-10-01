@@ -42,4 +42,10 @@ Steps:
 6. Optional: give your editor the docs. Point your tool at https://ark-ui.com/llms.txt (or the per-framework file, for example https://ark-ui.com/llms-react.txt), or add the official MCP server with "claude mcp add ark-ui -- npx -y @ark-ui/mcp", documented at https://ark-ui.com/react/docs/ai/mcp-server.
 
 Do not add a second component library, and do not invent props or parts: check the component page at https://ark-ui.com/<framework>/docs/components/<component> first.`,
+  pricing: {
+    model: "free",
+    summary: "Ark UI is free and open source, with no paid tier.",
+    license: "MIT",
+    source: "https://github.com/chakra-ui/ark",
+  },
 } satisfies LibraryDetails;

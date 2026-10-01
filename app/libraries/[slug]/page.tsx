@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { LibraryDetail } from "@/components/LibraryDetail";
 import { libraries } from "@/data/libraries";
 import { libraryDetails } from "@/data/library-details";
+import { relatedLibraries } from "@/lib/related-libraries";
 import { socialImage, libraryPath } from "@/lib/site";
 
 interface LibraryPageProps {
@@ -43,5 +44,5 @@ export default async function LibraryPage({ params }: LibraryPageProps) {
   const details = libraryDetails[slug];
   if (!library || !details) notFound();
 
-  return <LibraryDetail library={library} details={details} />;
+  return <LibraryDetail library={library} details={details} related={relatedLibraries(library, libraries)} />;
 }

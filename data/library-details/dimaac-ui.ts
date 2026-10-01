@@ -36,4 +36,9 @@ Steps:
 5. If the component imports next/image, keep it on a Next.js page or swap it for a plain img in another React setup, since the gallery components are written against next/image.
 
 Consult the component page on https://ui.dimaac.com for the current CLI command, the prop list and the full source before changing anything. Each page shows both a "Using CLI" command and a "Manual Installation" alternative. Keep the copied files in my repo and treat them as mine to edit.`,
+  pricing: {
+    model: "freemium",
+    summary: "The UI components are free; DiMaac Pro templates are a separate paid subscription.",
+    source: "https://ui.dimaac.com/templates/pricing",
+  },
 } satisfies LibraryDetails;

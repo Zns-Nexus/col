@@ -44,4 +44,10 @@ Steps:
 5. Theming and dark mode: colors are CSS variables (--background, --primary, --card, --border, --ring, --chart-1..5, sidebar tokens) defined on :root and .dark, with the dark class toggled per the guide at https://www.shadcn-svelte.com/docs/dark-mode/svelte. Add new tokens in both blocks and expose them with a --color-<name> entry inside @theme inline.
 
 Component behaviour comes from Bits UI (https://bits-ui.com), so consult the component page and its API reference on https://www.shadcn-svelte.com/docs/components before guessing props. Check the CLI reference at https://www.shadcn-svelte.com/docs/cli before deviating from these steps, since flags and prompts change between releases.`,
+  pricing: {
+    model: "free",
+    summary: "Components and the CLI are free and open source, with no paid tier.",
+    license: "MIT",
+    source: "https://github.com/huntabyte/shadcn-svelte/blob/main/LICENSE.md",
+  },
 } satisfies LibraryDetails;

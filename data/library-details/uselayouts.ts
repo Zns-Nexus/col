@@ -59,4 +59,10 @@ Steps:
 5. Treat the copied file as mine. Tune the spring and easing values, prop names, and Tailwind classes to match this design system instead of wrapping the component in a new abstraction.
 
 Keep the copied source in my repo and leave the registries entry in components.json so later components install the same way.`,
+  pricing: {
+    model: "free",
+    summary: "Every component is free and open source, with no paid tier.",
+    license: "MIT",
+    source: "https://github.com/iurvish/uselayouts",
+  },
 } satisfies LibraryDetails;

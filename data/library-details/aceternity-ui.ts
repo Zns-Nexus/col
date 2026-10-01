@@ -45,4 +45,9 @@ Steps:
 5. Import the component from the components directory and render it in an existing page, adjusting classes to match this project's theme.
 
 Check the official docs at https://ui.aceternity.com (CLI reference: https://ui.aceternity.com/components/cli) for per component options and extra dependencies before adding more components.`,
+  pricing: {
+    model: "freemium",
+    summary: "Free components are copy and paste; Aceternity UI Pro blocks and templates are paid, as yearly, lifetime or team plans.",
+    source: "https://ui.aceternity.com/pricing",
+  },
 } satisfies LibraryDetails;

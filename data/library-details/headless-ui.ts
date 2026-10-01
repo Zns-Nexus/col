@@ -35,4 +35,10 @@ Steps:
 If my project already uses Tailwind CSS, the separate \`@headlessui/tailwindcss\` package is an optional complementary plugin (peers on Tailwind \`^3.0 || ^4.0\`). Component pages also list a "Styled examples" section with ready-made Tailwind markup.
 
 Keep component state in my own React or Vue code and treat the library as the behavior layer only, so my styling and markup stay editable.`,
+  pricing: {
+    model: "free",
+    summary: "Headless UI is free and open source, with no paid tier.",
+    license: "MIT",
+    source: "https://github.com/tailwindlabs/headlessui",
+  },
 } satisfies LibraryDetails;

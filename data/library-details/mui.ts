@@ -31,4 +31,10 @@ Steps:
 5. Install "npm install @mui/icons-material" when you need prebuilt Material icons. When the app needs custom colors, spacing or typography, build a theme with createTheme and wrap the tree in ThemeProvider, both imported from "@mui/material/styles". If the project also uses Tailwind CSS, follow the official Tailwind integration guide rather than mixing the two styling approaches freely.
 
 Consult the official docs before deviating from these steps: installation at https://mui.com/material-ui/getting-started/installation/ and theming at https://mui.com/material-ui/customization/theming/, since setup details change between major versions. The current stable release is Material UI v9.`,
+  pricing: {
+    model: "freemium",
+    summary: "Material UI is free; MUI X Pro and Premium components and support are paid yearly per-developer licenses.",
+    license: "MIT",
+    source: "https://mui.com/pricing/",
+  },
 } satisfies LibraryDetails;

@@ -64,4 +64,9 @@ Steps:
 Only the paid tiers are gated. Every block lands in my repo as editable source that I own, so adapt it to my theme
 tokens and import paths rather than leaving it as shipped. Prefer the CLI over the site Code tab: copy and paste
 skips the npm packages and the shadcn components a block builds on.`,
+  pricing: {
+    model: "freemium",
+    summary: "Free blocks only need a login; Pro, Premium and Elite plans unlock the full catalog as one-time lifetime purchases.",
+    source: "https://www.shadcnblocks.com/pricing",
+  },
 } satisfies LibraryDetails;

@@ -36,4 +36,10 @@ Steps:
 Optional: bookmark promising demos with the nav bookmark icon and review them later in the localStorage-backed list at https://codefronts.com/saved/.
 
 Use only code from the current demo pages, generators and tools on https://codefronts.com, and open the docs again whenever a demo needs behavior you do not see in the copied example.`,
+  pricing: {
+    model: "free",
+    summary: "All collections and demos are free and copy-paste ready, with no signup or paywall.",
+    license: "MIT",
+    source: "https://codefronts.com",
+  },
 } satisfies LibraryDetails;

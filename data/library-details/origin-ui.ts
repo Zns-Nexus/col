@@ -35,4 +35,10 @@ Steps:
 5. First usage: import { Button } from "@/components/ui/button", render <Button>Button</Button> in an existing page, and confirm the build still passes. Repeat step 4 for the other components you need, and check each component page for extra dependencies.
 
 If you specifically need the legacy Origin UI components (copy-and-paste, Radix based), browse https://coss.com/origin and copy the code from the component pages; that surface gets limited maintenance.`,
+  pricing: {
+    model: "free",
+    summary: "coss ui components are free and open source, with no paid tier.",
+    license: "MIT",
+    source: "https://github.com/cosscom/coss/blob/main/LICENSING.md",
+  },
 } satisfies LibraryDetails;

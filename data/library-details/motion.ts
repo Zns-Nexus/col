@@ -21,4 +21,10 @@ export default {
   },
   agentPrompt:
     "Add the Motion animation library (https://motion.dev) to this existing project. Prerequisites: a JavaScript or TypeScript project; for React, version 18.2 or higher. Install it with npm install motion (alternatives: pnpm add motion, yarn add motion). No build config changes are needed for Vite; for Next.js App Router files, add the \"use client\" directive to components that import Motion. In React code import from \"motion/react\"; in plain JavaScript import from \"motion\". First usage: create one demo component that renders <motion.div animate={{ x: 100 }} /> (React) or calls animate(\"#box\", { x: 100 }) (plain JavaScript), and confirm it animates on the existing dev server. Then apply Motion to the component(s) I name, keeping the current styling, TypeScript setup, and build tooling unchanged. Read the official docs at https://motion.dev/docs (React: https://motion.dev/docs/react, JavaScript: https://motion.dev/docs/quick-start) for current API details before writing code.",
+  pricing: {
+    model: "freemium",
+    summary: "The Motion library is free; Motion+ premium components, examples and tools are a paid one-time purchase.",
+    license: "MIT",
+    source: "https://motion.dev/pricing",
+  },
 } satisfies LibraryDetails;

@@ -30,4 +30,10 @@ Steps:
 4. Confirm it renders and behaves correctly (open and close, focus, keyboard navigation), then repeat the same pattern for other components.
 
 Consult the official docs before deviating from these steps: quick start at https://base-ui.com/react/overview/quick-start, component reference at https://base-ui.com/react/components/popover, and the text index at https://base-ui.com/llms.txt. Use only import paths and component parts documented there.`,
+  pricing: {
+    model: "free",
+    summary: "Base UI is free, including for commercial use, with no paid tier.",
+    license: "MIT",
+    source: "https://base-ui.com",
+  },
 } satisfies LibraryDetails;

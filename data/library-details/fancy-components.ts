@@ -65,4 +65,10 @@ Notes:
 - Some components require variable fonts, and the Gooey SVG Filter and Pixelate SVG Filter have limited or no Safari support.
 - Tailwind v4 is supported, with configuration in the CSS file. CSS variables from the registry may need to be added to global.css manually, because the CLI does not merge them when layers are used.
 - The installed files are mine to edit. Motion, Matter.js and the other third-party packages keep their own licenses.`,
+  pricing: {
+    model: "free",
+    summary: "Every component and microinteraction is free and open source, with no paid tier.",
+    license: "MIT",
+    source: "https://github.com/danielpetho/fancy/blob/main/LICENSE",
+  },
 } satisfies LibraryDetails;

@@ -45,4 +45,10 @@ Steps:
 5. Treat the installed files as the project's own source: adapt them to the existing theme tokens and import conventions instead of leaving them as-is.
 
 Notes: the CLI installs each component's npm dependencies for you (typically "motion", sometimes "vaul", "lucide-react", "flubber", "prism-react-renderer", "figma-squircle", "react-use-measure" or "@radix-ui/react-slot") and injects any keyframes it needs. The license is MIT with the Commons Clause plus an attribution requirement: shipping a Rare UI component requires a visible link back to https://rareui.com, and the components may not be resold or redistributed on their own.`,
+  pricing: {
+    model: "free",
+    summary: "The components are free to use with attribution, but the license forbids selling the library itself.",
+    license: "MIT + Commons Clause",
+    source: "https://github.com/swamimalode07/rare-ui",
+  },
 } satisfies LibraryDetails;

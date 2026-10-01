@@ -47,4 +47,10 @@ Steps:
 Read the docs before guessing: appending .md to any docs URL returns Markdown (for example https://primevue.dev/vite.md), an MCP server is documented at https://primevue.dev/mcp/, and running samples live at https://github.com/primefaces/primevue-examples. Theming details, including the 16px base font size and the per-preset \`-compat\` variants for apps still on a 14px root, are at https://primevue.dev/theming/styled/.
 
 Use only props, events and theme tokens documented on those pages. Note that v5 deprecated a number of v4 APIs (MultiSelect, Galleria, ColorPicker, Password, Chart, Editor and the @primevue/icons package among them) — the list is at https://primevue.dev/migration/v5/.`,
+  pricing: {
+    model: "freemium",
+    summary: "PrimeVue 5 is free for individuals, nonprofits and companies under $1M revenue, 5 developers and 10 employees; larger organizations need a paid commercial license.",
+    license: "PrimeUI License",
+    source: "https://unpkg.com/primevue@5.0.2/LICENSE.md",
+  },
 } satisfies LibraryDetails;

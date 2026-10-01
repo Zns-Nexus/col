@@ -33,4 +33,10 @@ Steps:
 4. Treat the generated files under components/ui as your own source code and edit them freely.
 
 Consult the official docs before deviating from these steps: installation at https://ui.shadcn.com/docs/installation and CLI reference at https://ui.shadcn.com/docs/cli, since flags and prompts change between releases.`,
+  pricing: {
+    model: "free",
+    summary: "Components and the CLI are free and open source, with no paid tier.",
+    license: "MIT",
+    source: "https://github.com/shadcn-ui/ui/blob/main/LICENSE.md",
+  },
 } satisfies LibraryDetails;

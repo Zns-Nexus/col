@@ -47,4 +47,10 @@ Steps:
 5. Verify the app still builds and that the animation runs, then check the component page for its props (for example the text-effect per and variants options) before adding more components.
 
 Keep the installed component source in my repo and treat it as mine to edit. Consult the component's docs page for real prop names and defaults rather than inventing them, since the README notes the project is in beta with frequent component and code updates.`,
+  pricing: {
+    model: "freemium",
+    summary: "The components are free and open source; Motion Primitives Pro adds paid premium sections and templates.",
+    license: "MIT",
+    source: "https://pro.motion-primitives.com",
+  },
 } satisfies LibraryDetails;

@@ -25,4 +25,10 @@ Steps:
 5. Verify the result in the browser at the real trigger point, then check it with prefers-reduced-motion enabled and with keyboard-only navigation. Confirm the element returns to its resting state and does not trap focus.
 
 Treat the gallery as inspiration, not as a source to copy into this repo. The motion is observed from a video, so the exact values are mine to decide: name the values you chose and why.`,
+  pricing: {
+    model: "free",
+    summary: "Browsing the collection is free, with no paid tier.",
+    source: "https://designspells.com",
+  },
+  collection: "It showcases design details from many other apps and sites; the work shown belongs to those products, so it is inspiration, not code you can reuse.",
 } satisfies LibraryDetails;

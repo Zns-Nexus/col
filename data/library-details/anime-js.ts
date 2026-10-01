@@ -55,4 +55,10 @@ Steps:
 Read the official docs before writing code: animation parameters and keyframes (https://animejs.com/documentation/animation),
 timelines (https://animejs.com/documentation/timeline), draggable (https://animejs.com/documentation/draggable) and
 easings including \`spring()\` (https://animejs.com/documentation/easings). Use only APIs documented there.`,
+  pricing: {
+    model: "free",
+    summary: "Anime.js is completely free and funded by sponsors, with no paid tiers or features.",
+    license: "MIT",
+    source: "https://github.com/juliangarnier/anime/blob/master/LICENSE.md",
+  },
 } satisfies LibraryDetails;

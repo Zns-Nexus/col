@@ -65,4 +65,10 @@ Steps:
 7. Optional for coding agents: run npx shadcn@latest mcp init --client <cursor|claude|vscode> to wire up the shadcn MCP server (setup notes at https://cult-ui.com/docs/mcp-server). The server reads the @cult-ui namespace from components.json, so the assistant can browse and install components from this registry directly.
 
 Keep the installed component files in the repo and treat them as editable code. Components rely on the shadcn theme CSS variables, so keep the globals.css theming block intact when restyling.`,
+  pricing: {
+    model: "freemium",
+    summary: "The components are free and open source; Cult Pro is a separate paid product.",
+    license: "MIT",
+    source: "https://cult-ui.com",
+  },
 } satisfies LibraryDetails;

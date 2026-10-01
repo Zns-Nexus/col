@@ -47,4 +47,10 @@ Steps:
 5. If an animation does not run, check whether the docs page omits CSS: copy the missing @keyframes or @theme values from the component source in https://github.com/codse/animata.
 
 Treat every installed file as mine to edit, and take component APIs, dependencies and CSS only from animata.design.`,
+  pricing: {
+    model: "free",
+    summary: "Animata is free and open source forever, with no paid tier.",
+    license: "MIT",
+    source: "https://animata.design",
+  },
 } satisfies LibraryDetails;

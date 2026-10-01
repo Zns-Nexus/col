@@ -42,4 +42,10 @@ Notes:
 - The former @park-ui/panda-preset package is no longer part of setup; recipes are written into the project so they stay editable.
 - The repository moved to the Chakra UI organization: https://github.com/chakra-ui/park-ui. The old https://github.com/cschroeter/park-ui URL redirects there.
 - Copy source and view component recipes at https://park-ui.com/docs/components/button, and use the props tables on each component page rather than inventing props.`,
+  pricing: {
+    model: "free",
+    summary: "Park UI is free and open source, with no paid tier.",
+    license: "MIT",
+    source: "https://github.com/chakra-ui/park-ui",
+  },
 } satisfies LibraryDetails;

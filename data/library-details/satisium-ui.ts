@@ -70,4 +70,9 @@ Notes:
 - Every component page has an isolated render at /preview/<registryKey> and an iframe render at /embed/<registryKey>, so the behaviour can be checked in a clean environment before installing.
 - Do not copy the site's Cloudinary preview media into a project; the docs state those assets are protected by signed URLs scoped to their own project. Use the project's own images.
 - The components are MIT licensed and the installed files are mine to edit. Preview media in the demos keeps its own license.`,
+  pricing: {
+    model: "free",
+    summary: "The whole component library is open source and free to use, with no paid tier.",
+    source: "https://ui.satisium.com/",
+  },
 } satisfies LibraryDetails;

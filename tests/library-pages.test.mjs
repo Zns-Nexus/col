@@ -111,6 +111,20 @@ test("detail pages explain third-party registry setup before installation", asyn
 });
 
 // The discovery suite already asserts sitemap coverage for every slug.
+test("related libraries link to other real library pages", () => {
+  const slugs = new Set(libraries.map(({ slug }) => slug));
+  for (const library of libraries) {
+    const html = readBuilt(`libraries/${library.slug}.html`) ?? "";
+    const section = html.match(/<section[^>]*aria-labelledby="ld-related"[\s\S]*?<\/section>/)?.[0];
+    if (!section) continue;
+    const linked = [...section.matchAll(/href="\/libraries\/([^"]+)"/g)].map(([, slug]) => slug);
+    assert.ok(linked.length > 0, `${library.slug}: related section has no links`);
+    for (const slug of linked) {
+      assert.ok(slugs.has(slug) && slug !== library.slug, `${library.slug}: related link to "${slug}" is not another library`);
+    }
+  }
+});
+
 test("unknown library slugs return 404", () => {
   const manifest = JSON.parse(readFileSync(new URL("../.next/prerender-manifest.json", import.meta.url), "utf8"));
   // Next serves only generated paths when the dynamic route has no fallback.
@@ -153,5 +167,8 @@ test("every registry slug has complete detail content", async () => {
       details.gettingStarted.every((step) => String(step).trim()),
       `${library.slug}: gettingStarted has an empty step`,
     );
+    assert.ok(["free", "freemium", "paid"].includes(details.pricing?.model), `${library.slug}: pricing.model must be free, freemium, or paid`);
+    assert.ok(details.pricing.summary.trim(), `${library.slug}: pricing.summary is empty`);
+    assert.match(details.pricing.source, /^https:\/\//, `${library.slug}: pricing.source must be an https URL`);
   }
 });

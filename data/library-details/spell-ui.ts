@@ -52,4 +52,10 @@ Steps:
 Optional: the source of the site itself is public at https://github.com/xxtomm/spell-ui (MIT), which is useful for checking how a component behaves or for reporting a fix upstream.
 
 Use only component names, props and install commands documented on spell.sh.`,
+  pricing: {
+    model: "free",
+    summary: "The components are free and open source; no paid tier is listed.",
+    license: "MIT",
+    source: "https://github.com/xxtomm/spell-ui",
+  },
 } satisfies LibraryDetails;

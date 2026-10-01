@@ -21,4 +21,24 @@ export interface LibraryDetails {
   preview?: { src: string; alt: string };
   /** Copyable prompt for setting the library up in an existing project. */
   agentPrompt: string;
+  /** What it costs, checked against the official pricing or license page. */
+  pricing: {
+    /**
+     * "free": everything is free to use. "freemium": the core is free but some
+     * assets, templates, tiers or features are paid. "paid": the main product
+     * needs payment, even if there is a trial or a small free tier.
+     */
+    model: "free" | "freemium" | "paid";
+    /** One plain sentence on what is free and what is paid. */
+    summary: string;
+    /** License of the free code, when the project states one (for example "MIT"). */
+    license?: string;
+    /** Official page that states the pricing or license. */
+    source: string;
+  };
+  /**
+   * Set when the site mostly hosts components made by many outside authors (a
+   * community marketplace or registry), so terms vary per item. One sentence.
+   */
+  collection?: string;
 }

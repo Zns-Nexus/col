@@ -36,4 +36,10 @@ Steps:
 5. Only then adopt container-specific features. Set animationId to select one animation from a multi-animation file, themeId or themeData to swap colors and tokens at runtime for dark mode or branding, and stateMachineId to load interactive behavior. Do not add these unless the animation file actually ships them. For heavy or off-screen animations, the same packages also export GPU and worker builds (for example @lottiefiles/dotlottie-react/webgl, @lottiefiles/dotlottie-react/webgpu, and DotLottieWorkerReact) — check the GPU rendering guide before switching.
 
 Use only packages, props and methods documented on https://docs.lottiefiles.com, and prefer the current v0.x docs pages. Keep the animation as a .lottie or .json URL rather than inlining large JSON, since the format exists to avoid that.`,
+  pricing: {
+    model: "free",
+    summary: "dotLottie is a free, open-source animation format and tooling; LottieFiles sells separate products that are not needed to use it.",
+    license: "MIT",
+    source: "https://dotlottie.io",
+  },
 } satisfies LibraryDetails;

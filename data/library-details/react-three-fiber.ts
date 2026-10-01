@@ -39,4 +39,10 @@ Notes:
 - If the project is on Fiber v8, read https://r3f.docs.pmnd.rs/tutorials/v9-migration-guide before upgrading; v9 renames Canvas \`Props\` to \`CanvasProps\`, drops automatic sRGB conversion for texture props, and changes StrictMode behavior.
 
 Use only the API documented at https://r3f.docs.pmnd.rs, and read the docs rather than guessing when a component needs behavior the examples do not show.`,
+  pricing: {
+    model: "free",
+    summary: "React Three Fiber is free and open source, with no paid tier.",
+    license: "MIT",
+    source: "https://github.com/pmndrs/react-three-fiber/blob/master/LICENSE",
+  },
 } satisfies LibraryDetails;
