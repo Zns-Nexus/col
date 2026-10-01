@@ -50,7 +50,8 @@
 .heroCopy h1 { font-size: clamp(40px, 4.3cqi, 68px); font-weight: 800; line-height: 1.08; letter-spacing: -.03em; text-wrap: balance; }
 .heroCopy > p { max-width: 62ch; margin-top: 20px; font-size: clamp(16px, 1.35cqi, 20px); line-height: 1.6; }
 .actions { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 32px; margin-top: 40px; }
-.button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 0 24px; border-radius: 10px; background: var(--col-brand); color: #fff !important; font-size: 15px; font-weight: 700; box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 10px 24px -12px rgba(8,0,255,.8); transition: scale .25s var(--ease-out); }
+/* The hero's one blue, matched to the reference design (a cleaner azure than the violet --col-brand), with a quiet shadow instead of a glow. */
+.button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 0 24px; border-radius: 10px; background: #082cfe; color: #fff !important; font-size: 15px; font-weight: 700; box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 1px 2px rgba(0,0,0,.3); transition: scale .25s var(--ease-out); }
 .starLink { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; transition: scale .25s var(--ease-out); }
 .button:active, .starLink:active { scale: .97; }
 .actions a:hover { text-decoration: none; }
