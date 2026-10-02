@@ -1,3 +1,7 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { robots: { index: false, follow: true } };
+
 export default function AlexandriaPage() {
   return (
     <main className="flex min-h-svh items-center justify-center px-6">

@@ -1,7 +1,11 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
 import { DocsButton, DocsHeader, DocsNote, DocsSection, DocsText } from "@/components/DocsUI";
 
-export const metadata: Metadata = { title: "Find a library — Col" };
+export const metadata = pageMetadata(
+  "/docs/find-a-library",
+  "Find a UI Library | Col",
+  "Search UI libraries by component, framework, category, and use case. Filter results and save useful libraries locally.",
+);
 
 export default function FindLibraryPage() {
   return (

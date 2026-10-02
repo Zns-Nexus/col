@@ -1,7 +1,11 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
 import { DocsButton, DocsHeader, DocsList, DocsSection, DocsText } from "@/components/DocsUI";
 
-export const metadata: Metadata = { title: "Request a library — Col" };
+export const metadata = pageMetadata(
+  "/docs/request-a-library",
+  "Request a Library | Col",
+  "Request a missing UI library on GitHub with its official URL, supported stacks, category, and use cases.",
+);
 
 export default function RequestLibraryPage() {
   return (

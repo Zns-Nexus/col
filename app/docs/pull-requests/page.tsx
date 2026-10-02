@@ -1,7 +1,11 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
 import { DocsButton, DocsCode, DocsHeader, DocsSection, DocsText } from "@/components/DocsUI";
 
-export const metadata: Metadata = { title: "Open a pull request — Col" };
+export const metadata = pageMetadata(
+  "/docs/pull-requests",
+  "Contribute a Library | Col",
+  "Prepare a focused contribution to Col, verify library metadata against official sources, and submit a pull request.",
+);
 
 export default function PullRequestsPage() {
   return (

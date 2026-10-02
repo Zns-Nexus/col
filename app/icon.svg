@@ -1,0 +1,3 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><rect width="128" height="128" fill="#000"/><g transform="translate(4 4) scale(0.9375)"><path fill="#fff" d="M32 8h44a16 16 0 0 1 0 32H48a8 8 0 0 0-8 8v28a16 16 0 0 1-32 0V32A24 24 0 0 1 32 8Z"/>
+  <path fill="#fff" d="M32 8h44a16 16 0 0 1 0 32H48a8 8 0 0 0-8 8v28a16 16 0 0 1-32 0V32A24 24 0 0 1 32 8Z" transform="rotate(180 64 64)"/>
+</g></svg>

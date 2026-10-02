@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
 import type { CSSProperties } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { getContributors } from "@/lib/github-contributors";
 
-export const metadata: Metadata = {
-  title: "Contributors — Col",
-  description: "Meet the people contributing to Col.",
-};
+export const metadata = pageMetadata(
+  "/contributors",
+  "Contributors | Col",
+  "See the GitHub contributors maintaining Col and learn how to contribute libraries, verified components, and fixes.",
+);
 
 const GRAPH_URL = "https://github.com/screen-gd/Col/graphs/contributors";
 const number = new Intl.NumberFormat("en");

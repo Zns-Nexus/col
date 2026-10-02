@@ -13,6 +13,7 @@ const sections: readonly { title: string; pages: readonly DocsPage[] }[] = [
     pages: [
       ["/docs", "Overview"],
       ["/docs/find-a-library", "Find a library"],
+      ["/docs/agents", "Agents and LLMs"],
     ],
   },
   {

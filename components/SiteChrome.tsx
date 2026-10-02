@@ -34,7 +34,7 @@ export function useGitHubStars() {
 export function BrandLink({ className = "" }: { className?: string }) {
   return (
     <a href="/" aria-label="Col, Collection of Libraries" className={`site-brand ${className}`}>
-      <Image src="/brand/col-mark.png" alt="" width={20} height={20} className="site-brand-mark" priority />
+      <Image src="/brand/col-mark.svg" alt="" width={20} height={20} className="site-brand-mark" priority />
       <span className="site-brand-name cap">Col</span>
     </a>
   );

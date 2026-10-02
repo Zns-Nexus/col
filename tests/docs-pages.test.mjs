@@ -4,7 +4,7 @@ import { join } from "node:path";
 import test from "node:test";
 
 test("docs pages render adjacent navigation without the footer or sidebar library search", () => {
-  const pages = ["", "find-a-library", "request-a-library", "report-issues", "pull-requests"];
+  const pages = ["", "find-a-library", "agents", "request-a-library", "report-issues", "pull-requests"];
 
   for (const [index, slug] of pages.entries()) {
     const html = readFileSync(join(process.cwd(), ".next/server/app", slug ? `docs/${slug}.html` : "docs.html"), "utf8");

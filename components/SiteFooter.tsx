@@ -19,7 +19,7 @@ export function SiteFooter() {
   return (
     <footer className={styles.footer}>
       <Link href="/" className={styles.brand} aria-label="Col home">
-        <Image src="/brand/col-mark.png" alt="" width={18} height={18} />Col
+        <Image src="/brand/col-mark.svg" alt="" width={20} height={20} />Col
       </Link>
       <nav className={styles.footerNav} aria-label="Footer">
         {links.map(([label, href]) => {

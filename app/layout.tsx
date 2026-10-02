@@ -23,16 +23,15 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Col — Collection of Libraries",
-  description: "We curate all the best libraries, so you don't have to.",
-  icons: { icon: "/brand/col-mark.png" },
+  title: "Col | UI Library Directory",
+  description: "Discover UI libraries by framework, category, and use case. Search documented components and visit official project sources.",
   openGraph: {
     type: "website",
     url: siteUrl,
     siteName: "Col",
     images: [{ url: socialImage, width: 1200, height: 630, type: "image/jpeg", alt: "Col: UI libraries. All in one place." }],
   },
-  twitter: { card: "summary_large_image", site: "@Screeendev", images: [socialImage] },
+  twitter: { card: "summary_large_image", site: "@Screeendev", images: [{ url: socialImage, alt: "Col: UI libraries. All in one place." }] },
   keywords: [
     "ui libraries",
     "component library",

@@ -20,7 +20,7 @@ test("build emits complete discovery files", () => {
   assert.ok(robots.includes("Allow: /"));
   assert.ok(robots.includes("Sitemap: https://collection-of-libs.vercel.app/sitemap.xml"));
 
-  for (const route of ["/", "/libraries", "/docs", "/contributors", "/sponsors"]) {
+  for (const route of ["/", "/libraries", "/docs", "/docs/agents", "/docs/find-a-library", "/docs/request-a-library", "/docs/report-issues", "/docs/pull-requests", "/contributors", "/sponsors"]) {
     assert.ok(sitemap.includes(`<loc>https://collection-of-libs.vercel.app${route}</loc>`));
   }
   for (const library of libraries) {
@@ -29,9 +29,12 @@ test("build emits complete discovery files", () => {
       `Sitemap is missing /libraries/${library.slug}`,
     );
   }
-  assert.equal((sitemap.match(/<lastmod>/g) ?? []).length, 5 + libraries.length);
+  assert.equal((sitemap.match(/<loc>/g) ?? []).length, 10 + libraries.length);
+  assert.equal(sitemap.includes("<lastmod>"), false, "Do not present build time as content modification time");
 
-  const entries = llms.split("\n## ").slice(1);
+  assert.ok(llms.includes("/docs/agents"));
+  assert.ok(llms.includes("component index is partial"));
+  const entries = llms.split("# Libraries\n")[1].split("\n## ").slice(1);
   assert.equal(entries.length, libraries.length);
   for (const library of libraries) {
     const entry = entries.find((item) => item.startsWith(`${library.name}\n`));
@@ -40,5 +43,27 @@ test("build emits complete discovery files", () => {
     assert.ok(entry.includes(`- Description: ${library.description}`));
     assert.ok(entry.includes(`- Stacks: ${library.stacks.join(", ")}`));
     assert.ok(entry.includes(`- Use cases: ${library.useCases.join(", ")}`));
+    assert.ok(entry.includes(`/libraries/${library.slug}`));
   }
+});
+
+test("public pages emit their own canonical and social identity", () => {
+  const routes = ["/", "/docs", "/docs/agents", "/docs/find-a-library", "/docs/request-a-library", "/docs/report-issues", "/docs/pull-requests", "/contributors", "/sponsors", ...libraries.map(({ slug }) => `/libraries/${slug}`)];
+  for (const route of routes) {
+    const html = readFileSync(new URL(`../.next/server/app/${route === "/" ? "index" : route.slice(1)}.html`, import.meta.url), "utf8");
+    const url = `https://collection-of-libs.vercel.app${route === "/" ? "" : route}`;
+    assert.ok(html.includes(`<link rel="canonical" href="${url}"`), route);
+    assert.ok(html.includes(`<meta property="og:url" content="${url}"`), route);
+    const title = html.match(/<title>(.*?)<\/title>/)?.[1];
+    assert.ok(title, route);
+    assert.ok(html.includes(`<meta property="og:title" content="${title}"`), route);
+    assert.ok(html.includes(`<meta name="twitter:title" content="${title}"`), route);
+  }
+  const homepage = readFileSync(new URL("../.next/server/app/index.html", import.meta.url), "utf8");
+  const schema = JSON.parse(homepage.match(/<script type="application\/ld\+json">(.*?)<\/script>/)?.[1] ?? "null");
+  assert.equal(schema?.["@type"], "WebSite");
+  assert.equal(schema.name, "Col");
+  assert.equal(schema.url, "https://collection-of-libs.vercel.app/");
+  const placeholder = readFileSync(new URL("../.next/server/app/Alexandria.html", import.meta.url), "utf8");
+  assert.ok(placeholder.includes('<meta name="robots" content="noindex, follow"'));
 });

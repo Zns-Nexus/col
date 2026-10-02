@@ -1,7 +1,11 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
 import { DocsButton, DocsHeader, DocsSection, DocsText } from "@/components/DocsUI";
 
-export const metadata: Metadata = { title: "Report issues — Col" };
+export const metadata = pageMetadata(
+  "/docs/report-issues",
+  "Report Issues | Col",
+  "Report a Col bug with reproduction steps or request a feature with a clear problem and expected outcome.",
+);
 
 export default function ReportIssuesPage() {
   return (

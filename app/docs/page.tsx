@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
 import { DocsHeader, DocsLinks, DocsList, DocsSection, DocsText } from "@/components/DocsUI";
 
-export const metadata: Metadata = {
-  title: "Docs — Col",
-  description: "Learn how to use and contribute to Col.",
-};
+export const metadata = pageMetadata(
+  "/docs",
+  "Docs | Col",
+  "Learn how to find UI libraries, search documented components, save a shortlist, and contribute to Col.",
+);
 
 export default function DocsPage() {
   return (
@@ -22,6 +23,7 @@ export default function DocsPage() {
           items={[
             { href: "/libraries", title: "Browse the directory", text: "Search by name, keyword, category, or use case." },
             { href: "/docs/find-a-library", title: "Find a library", text: "Filter by stack and compare the options that fit." },
+            { href: "/docs/agents", title: "Agents and LLMs", text: "Use the catalog with your agent and verify recommendations." },
             { href: "/docs/request-a-library", title: "Request a library", text: "Missing something useful? Ask for it on GitHub." },
           ]}
         />

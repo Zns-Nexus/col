@@ -4,7 +4,7 @@ import { LibraryDetail } from "@/components/LibraryDetail";
 import { libraries } from "@/data/libraries";
 import { libraryDetails } from "@/data/library-details";
 import { relatedLibraries } from "@/lib/related-libraries";
-import { socialImage, libraryPath } from "@/lib/site";
+import { pageMetadata, libraryPath } from "@/lib/site";
 
 interface LibraryPageProps {
   params: Promise<{ slug: string }>;
@@ -21,21 +21,9 @@ export async function generateMetadata({ params }: LibraryPageProps): Promise<Me
   const library = libraries.find((entry) => entry.slug === slug);
   if (!library) return {};
 
-  const title = `${library.name} — Col`;
+  const title = `${library.name} | Col`;
   const path = libraryPath(library.slug);
-  return {
-    title,
-    description: library.description,
-    alternates: { canonical: path },
-    openGraph: {
-      title,
-      description: library.description,
-      url: path,
-      siteName: "Col",
-      type: "website",
-      images: [{ url: socialImage, width: 1200, height: 630, type: "image/jpeg", alt: "Col: UI libraries. All in one place." }],
-    },
-  };
+  return pageMetadata(path, title, library.description);
 }
 
 export default async function LibraryPage({ params }: LibraryPageProps) {
