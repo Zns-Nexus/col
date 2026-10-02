@@ -14,10 +14,10 @@ const height = 630;
 const image = sharp(join(root, "artifacts/col-social-source.png"))
   .resize(width, height, { fit: "cover" }).grayscale().toColourspace("srgb");
 await image.clone().png().toFile(join(root, "public/col-social.png"));
-await image.jpeg({ quality: 94, chromaSubsampling: "4:4:4" }).toFile(join(root, "public/col-social-preview.jpg"));
+await image.jpeg({ quality: 94, chromaSubsampling: "4:4:4" }).toFile(join(root, "public/col-social-preview-v5.jpg"));
 
 // Check the files that the shared metadata serves, including their declared size.
-for (const file of ["col-social.png", "col-social-preview.jpg"]) {
+for (const file of ["col-social.png", "col-social-preview-v5.jpg"]) {
   const metadata = await sharp(join(root, "public", file)).metadata();
   assert.equal(metadata.width, width);
   assert.equal(metadata.height, height);

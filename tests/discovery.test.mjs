@@ -60,6 +60,14 @@ test("public pages emit their own canonical and social identity", () => {
     assert.ok(html.includes(`<meta name="twitter:title" content="${title}"`), route);
   }
   const homepage = readFileSync(new URL("../.next/server/app/index.html", import.meta.url), "utf8");
+  const preview = "/col-social-preview-v5.jpg";
+  assert.ok(homepage.includes(`<meta name="twitter:image" content="https://collection-of-libs.vercel.app${preview}"`));
+  assert.ok(readFileSync(new URL(`../public${preview}`, import.meta.url)).length > 0);
+  const { headers } = JSON.parse(readFileSync(new URL("../.next/routes-manifest.json", import.meta.url), "utf8"));
+  for (const path of [preview, "/col-social-preview.jpg"]) {
+    const rule = headers.find(({ regex }) => new RegExp(regex).test(path));
+    assert.ok(rule?.headers.some(({ key, value }) => key === "Cache-Control" && value === "public, max-age=60, s-maxage=60"));
+  }
   const schema = JSON.parse(homepage.match(/<script type="application\/ld\+json">(.*?)<\/script>/)?.[1] ?? "null");
   assert.equal(schema?.["@type"], "WebSite");
   assert.equal(schema.name, "Col");

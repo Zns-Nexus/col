@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const siteUrl = "https://collection-of-libs.vercel.app";
 
-export const socialImage = "/col-social-preview.jpg?v=4";
+export const socialImage = "/col-social-preview-v5.jpg";
 
 export const staticRoutes = ["/", "/libraries", "/docs", "/docs/agents", "/docs/find-a-library", "/docs/request-a-library", "/docs/report-issues", "/docs/pull-requests", "/contributors", "/sponsors"] as const;
 

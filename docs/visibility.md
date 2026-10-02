@@ -165,6 +165,14 @@ Local business profiles are not applicable to this online directory. Paid listin
 
 ## Verification
 
+### Social preview cache follow-up, 2026-10-02
+
+Production HTTP requests using Twitterbot and Discordbot user agents returned the same current card metadata. The current production JPEG matched the local image byte-for-byte (SHA-256). The supplied X screenshot showed an older title and artwork, consistent with a stale X card; X's internal cache was not directly inspected.
+
+Changed the shared image URL to `/col-social-preview-v5.jpg` and preserved the previous file. Updated the generator to produce the versioned file. Both old and versioned preview JPEG paths receive `Cache-Control: public, max-age=60, s-maxage=60`. This controls HTTP cache freshness, not X's independent card cache. On artwork changes, use another new filename and update the shared URL and generator together.
+
+Typecheck, production build, discovery tests and local HTTP checks passed. Twitterbot metadata points to the new filename; both JPEG responses returned 200 with the 60-second cache header. After release, share `https://collection-of-libs.vercel.app/?share=col-v5` to give X a fresh page URL to fetch. Canonical URLs remain clean. X preview refresh is not guaranteed or browser-verified.
+
 Production audit: 68 successful inventory requests as described above; additional probes established `/docs/agents` and a nonexistent route return 404, `/Alexandria` is currently indexable, query URL lacks canonical, and HTTP/trailing-slash redirects are 308. This did not audit every external library link or revalidate installation claims for all 56 libraries.
 
 Local: `npm run typecheck`, `npm run build` and `node --test` passed, 42/42 tests. Generated HTML checks cover public static metadata, schema syntax, sitemap coverage and placeholder noindex. Local HTTP checks confirmed `/libraries` and `/libraries?q=React` return 200 with canonical and Open Graph URL `/libraries`, `/docs/agents` returns 200, and `/Alexandria` serves noindex. An HTTP crawl checked all 66 local sitemap pages and 73 distinct internal link targets, with no broken destinations or missing same-page anchors. `git diff --check` passed. No provider verification, indexing, rankings, field performance or published campaign result claimed.
