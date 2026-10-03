@@ -55,6 +55,18 @@ import satisium_ui from "./satisium-ui";
 import wensity_ui from "./wensity-ui";
 import ai_canvas from "./ai-canvas";
 import codefronts from "./codefronts";
+import intent_ui from "./intent-ui";
+import reui from "./reui";
+import elevenlabs_ui from "./elevenlabs-ui";
+import inspira_ui from "./inspira-ui";
+import reka_ui from "./reka-ui";
+import melt_ui from "./melt-ui";
+import zard_ui from "./zard-ui";
+import spartan_ui from "./spartan-ui";
+import corvu from "./corvu";
+import starwind_ui from "./starwind-ui";
+import webcoreui from "./webcoreui";
+import web_awesome from "./web-awesome";
 
 export type { LibraryDetails };
 
@@ -122,4 +134,16 @@ export const libraryDetails: Record<string, LibraryDetails> = {
   "wensity-ui": wensity_ui,
   "ai-canvas": ai_canvas,
   "codefronts": codefronts,
+  "intent-ui": intent_ui,
+  "reui": reui,
+  "elevenlabs-ui": elevenlabs_ui,
+  "inspira-ui": inspira_ui,
+  "reka-ui": reka_ui,
+  "melt-ui": melt_ui,
+  "zard-ui": zard_ui,
+  "spartan-ui": spartan_ui,
+  "corvu": corvu,
+  "starwind-ui": starwind_ui,
+  "webcoreui": webcoreui,
+  "web-awesome": web_awesome,
 };

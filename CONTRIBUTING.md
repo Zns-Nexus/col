@@ -28,6 +28,7 @@ Checklist:
 
 - Use the official project name and canonical URL.
 - Use a unique lowercase kebab-case `slug`.
+- Set `addedAt` to the current ISO timestamp, including its timezone. The "new additions" label expires after seven days. Keep this timestamp unchanged when editing an existing library.
 - Write a factual one-sentence description.
 - Select existing category, stack, and use-case values where possible.
 - Add only useful search tags; do not repeat every field.

@@ -9,6 +9,7 @@ import { LibraryLogo } from "./LibraryLogo";
 import { hostname } from "@/lib/utils";
 import { libraryPath } from "@/lib/site";
 import { libraryPreviews } from "@/data/library-previews";
+import { NewAdditionLabel } from "./NewAdditionLabel";
 
 interface LibraryCardProps {
   library: Library;
@@ -47,6 +48,7 @@ export function LibraryCard({ library, layout, matches, saved, onToggleSaved }: 
           }
           className="lib-card-media"
         />
+        <NewAdditionLabel addedAt={library.addedAt} />
         <button type="button" onClick={handleToggleSaved} aria-label={saved ? `Remove ${library.name} from saved` : `Save ${library.name}`} aria-pressed={saved} className="library-save lib-card-save">
           <Heart fill={saved ? "currentColor" : "none"} aria-hidden />
         </button>
@@ -103,6 +105,7 @@ export function LibraryCard({ library, layout, matches, saved, onToggleSaved }: 
         )}
       </div>
       <div className="lib-row-actions">
+        <NewAdditionLabel addedAt={library.addedAt} />
         <button type="button" onClick={handleToggleSaved} aria-label={saved ? `Remove ${library.name} from saved` : `Save ${library.name}`} aria-pressed={saved} className="library-save lib-row-action">
           <Heart fill={saved ? "currentColor" : "none"} aria-hidden />
         </button>

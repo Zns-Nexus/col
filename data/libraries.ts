@@ -9,6 +9,8 @@
  * - `url` must be the library's primary website or docs.
  * - Pick from the existing Category / Stack / UseCase values when possible.
  * - Keep descriptions to one or two short sentences.
+ * - Set `addedAt` to an ISO timestamp when adding a library. Its new additions
+ *   label expires seven days after that timestamp.
  *
  * Verified components live separately in `data/components.ts`, keyed by this
  * file's `slug`. They grow on a different cadence: libraries arrive rarely,
@@ -70,6 +72,8 @@ export interface Library {
   useCases: UseCase[];
   /** Free-form tags for extra search keywords. */
   tags?: string[];
+  /** When this library joined the catalog, used for the seven-day new label. */
+  addedAt?: string;
 }
 
 export const libraries: Library[] = [
@@ -660,6 +664,138 @@ export const libraries: Library[] = [
     stacks: ["Vanilla JS", "Tailwind CSS"],
     useCases: ["Rapid Prototyping", "Creative & Experimental"],
     tags: ["css", "snippets", "motion"],
+  },
+  {
+    name: "Intent UI",
+    slug: "intent-ui",
+    addedAt: "2026-10-03T23:44:09+04:00",
+    description: "Accessible React components built with React Aria and Tailwind CSS, installed as editable source.",
+    url: "https://intentui.com",
+    category: "Component Library",
+    stacks: ["React", "Next.js", "Tailwind CSS", "TypeScript"],
+    useCases: ["Accessibility-first", "Dashboards", "Rapid Prototyping"],
+    tags: ["react aria", "copy paste", "registry", "justd"],
+  },
+  {
+    name: "ReUI",
+    slug: "reui",
+    addedAt: "2026-10-03T23:44:09+04:00",
+    description: "React components and patterns for shadcn/ui projects, with Base UI and Radix UI variants.",
+    url: "https://reui.io",
+    category: "Component Library",
+    stacks: ["React", "Next.js", "Tailwind CSS", "TypeScript"],
+    useCases: ["Dashboards", "Data Visualization", "Rapid Prototyping"],
+    tags: ["shadcn", "registry", "base ui", "radix", "data grid"],
+  },
+  {
+    name: "ElevenLabs UI",
+    slug: "elevenlabs-ui",
+    addedAt: "2026-10-03T23:44:09+04:00",
+    description: "React components for audio players, waveforms, transcription, and voice agent interfaces.",
+    url: "https://ui.elevenlabs.io",
+    category: "Component Library",
+    stacks: ["React", "Next.js", "Tailwind CSS", "TypeScript"],
+    useCases: ["Rapid Prototyping", "Micro-interactions", "Creative & Experimental"],
+    tags: ["audio", "voice agents", "waveform", "ai", "shadcn"],
+  },
+  {
+    name: "Inspira UI",
+    slug: "inspira-ui",
+    addedAt: "2026-10-03T23:44:09+04:00",
+    description: "Animated Vue and Nuxt components for text effects, backgrounds, and interactive websites.",
+    url: "https://inspira-ui.com",
+    category: "Animation & Motion",
+    stacks: ["Vue", "Tailwind CSS", "TypeScript"],
+    useCases: ["Landing Pages", "Marketing Sites", "Creative & Experimental"],
+    tags: ["nuxt", "animated", "copy paste", "motion-v", "shadcn-vue"],
+  },
+  {
+    name: "Reka UI",
+    slug: "reka-ui",
+    addedAt: "2026-10-03T23:44:09+04:00",
+    description: "Unstyled, accessible Vue primitives for custom design systems, formerly Radix Vue.",
+    url: "https://reka-ui.com",
+    category: "Component Library",
+    stacks: ["Vue", "TypeScript"],
+    useCases: ["Accessibility-first", "Dashboards"],
+    tags: ["nuxt", "headless", "primitives", "radix vue", "unstyled"],
+  },
+  {
+    name: "Melt UI",
+    slug: "melt-ui",
+    addedAt: "2026-10-03T23:44:09+04:00",
+    description: "Headless, accessible builders and component wrappers for Svelte 5, using the next-generation melt package.",
+    url: "https://next.melt-ui.com",
+    category: "Component Library",
+    stacks: ["Svelte", "SvelteKit", "TypeScript"],
+    useCases: ["Accessibility-first", "Dashboards"],
+    tags: ["headless", "builders", "svelte 5", "runes", "unstyled"],
+  },
+  {
+    name: "Zard UI",
+    slug: "zard-ui",
+    addedAt: "2026-10-03T23:44:09+04:00",
+    description: "Accessible Angular components styled with Tailwind CSS and copied into your project through a CLI.",
+    url: "https://www.zardui.com",
+    category: "Component Library",
+    stacks: ["Angular", "Tailwind CSS", "TypeScript"],
+    useCases: ["Accessibility-first", "Dashboards", "Rapid Prototyping"],
+    tags: ["shadcn", "copy paste", "angular cdk", "standalone", "analog"],
+  },
+  {
+    name: "Spartan UI",
+    slug: "spartan-ui",
+    addedAt: "2026-10-03T23:44:09+04:00",
+    description: "Accessible Angular primitives with editable Tailwind styles, split into brain behavior and helm components.",
+    url: "https://spartan.ng",
+    category: "Component Library",
+    stacks: ["Angular", "Tailwind CSS", "TypeScript"],
+    useCases: ["Accessibility-first", "Dashboards", "Rapid Prototyping"],
+    tags: ["spartan-ng", "brain", "helm", "headless", "copy paste", "analog"],
+  },
+  {
+    name: "Corvu",
+    slug: "corvu",
+    addedAt: "2026-10-03T23:44:09+04:00",
+    description: "Unstyled, accessible SolidJS primitives for overlays, calendars, drawers, and resizable layouts.",
+    url: "https://corvu.dev",
+    category: "Component Library",
+    stacks: ["SolidJS", "TypeScript"],
+    useCases: ["Accessibility-first", "Dashboards"],
+    tags: ["headless", "primitives", "unstyled", "solid", "resizable"],
+  },
+  {
+    name: "Starwind UI",
+    slug: "starwind-ui",
+    addedAt: "2026-10-03T23:44:09+04:00",
+    description: "Editable Tailwind components for Astro and React, with Vue and Svelte adapters in public beta.",
+    url: "https://starwind.dev",
+    category: "Component Library",
+    stacks: ["Astro", "React", "Next.js", "Vue", "Svelte", "SvelteKit", "Tailwind CSS", "TypeScript"],
+    useCases: ["Accessibility-first", "Landing Pages", "Rapid Prototyping"],
+    tags: ["copy paste", "cli", "portable runtime", "vue beta", "svelte beta"],
+  },
+  {
+    name: "WebcoreUI",
+    slug: "webcoreui",
+    addedAt: "2026-10-03T23:44:09+04:00",
+    description: "Configurable components, blocks, and templates for Astro, Svelte, and React, styled with Sass.",
+    url: "https://webcoreui.dev",
+    category: "Component Library",
+    stacks: ["Astro", "Svelte", "React", "TypeScript"],
+    useCases: ["Landing Pages", "Marketing Sites", "Rapid Prototyping"],
+    tags: ["sass", "scss", "themes", "blocks", "multi framework"],
+  },
+  {
+    name: "Web Awesome Core",
+    slug: "web-awesome",
+    addedAt: "2026-10-03T23:44:09+04:00",
+    description: "Framework-independent web components from Font Awesome, with built-in themes and React wrappers.",
+    url: "https://webawesome.com",
+    category: "Component Library",
+    stacks: ["Vanilla JS", "React", "Vue", "Angular", "Svelte", "TypeScript"],
+    useCases: ["Accessibility-first", "Dashboards", "Rapid Prototyping"],
+    tags: ["web components", "custom elements", "font awesome", "shoelace", "themes"],
   },
 ];
 

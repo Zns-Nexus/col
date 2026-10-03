@@ -10,6 +10,7 @@ import { hostname } from "@/lib/utils";
 import { AgentPrompt, InstallTabs } from "./LibraryDetailParts";
 import { LibraryLogo } from "./LibraryLogo";
 import { categoryIcons } from "./MaskIcon";
+import { NewAdditionLabel } from "./NewAdditionLabel";
 
 interface LibraryDetailProps {
   library: Library;
@@ -164,6 +165,7 @@ export function LibraryDetail({ library, details, related }: LibraryDetailProps)
 
         <aside className="ld-side ld-reveal" style={reveal(2)} aria-label={`About ${library.name}`}>
           <div className="ld-side-card">
+            <NewAdditionLabel addedAt={library.addedAt} />
             {preview && (
               <figure className="ld-side-media">
                 {/* eslint-disable-next-line @next/next/no-img-element */}

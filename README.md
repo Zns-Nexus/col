@@ -117,6 +117,7 @@ Library-only pull requests should be small and should not redesign unrelated par
 {
   name: "Library name",
   slug: "library-name",
+  addedAt: "2026-10-03T12:00:00Z", // Replace with the current ISO timestamp.
   description: "A factual one-sentence description of what the library provides.",
   url: "https://library.example",
   category: "Component Library",
@@ -127,6 +128,8 @@ Library-only pull requests should be small and should not redesign unrelated par
 ```
 
 The `slug` must be unique, lowercase, and kebab-case. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full checklist.
+
+Set `addedAt` when the library joins the catalog. It shows the "new additions" label for seven days; editing an existing entry should keep its original timestamp.
 
 ### Adding components
 
