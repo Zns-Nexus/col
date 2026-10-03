@@ -1,0 +1,23 @@
+.shortcut {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 4px;
+  white-space: nowrap;
+  font-size: 11px;
+  color: var(--lib-text-2);
+}
+
+:global(.app-frame .site-search) .shortcut kbd {
+  color: inherit;
+}
+
+:global(.site-search:focus-within) .shortcut {
+  opacity: 0;
+}
+
+@media (max-width: 760px), (any-pointer: coarse) {
+  .shortcut {
+    display: none;
+  }
+}

@@ -10,6 +10,7 @@ import { componentIndex } from "@/data/components";
 import { createDirectorySearch } from "@/lib/directory";
 import { libraryPath } from "@/lib/site";
 import { directoryQuery, useDirectoryQuery } from "@/lib/directory-query";
+import styles from "./SiteSearch.module.css";
 
 const compactNumber = new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 });
 const searchDirectory = createDirectorySearch(libraries, componentIndex);
@@ -94,8 +95,10 @@ export function SiteSearch({ className = "", collapsed = false }: { className?: 
           }}
           placeholder="Search libraries"
           aria-label="Search libraries or components"
+          aria-description="Press slash to focus search"
+          aria-keyshortcuts="/"
         />
-        <kbd aria-hidden="true">/</kbd>
+        <span className={styles.shortcut} title="Press / to search" aria-hidden="true">Press <kbd>/</kbd></span>
       </form>
     );
   }
@@ -141,8 +144,10 @@ export function SiteSearch({ className = "", collapsed = false }: { className?: 
         }}
         placeholder="Search"
         aria-label="Search libraries or components"
+        aria-description="Press slash to focus search"
+        aria-keyshortcuts="/"
       />
-      <kbd aria-hidden="true">/</kbd>
+      <span className={styles.shortcut} title="Press / to search" aria-hidden="true">Press <kbd>/</kbd></span>
       {open && query.trim() && (
         <div className="site-search-results" aria-label="Library search results">
           {results.length ? (
