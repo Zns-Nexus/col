@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "col": {
+      "type": "http",
+      "url": "https://collection-of-libs.vercel.app/api/mcp"
+    }
+  }
+}

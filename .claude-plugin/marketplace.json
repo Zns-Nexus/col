@@ -1,0 +1,18 @@
+{
+  "name": "col",
+  "owner": {
+    "name": "screen-gd"
+  },
+  "plugins": [
+    {
+      "name": "col",
+      "source": "./plugin",
+      "description": "Find, inspect, and implement UI components from Col's curated catalogue inside your project, with source-linked setup and explicit gaps.",
+      "version": "0.1.0",
+      "author": {
+        "name": "screen-gd",
+        "url": "https://github.com/screen-gd"
+      }
+    }
+  ]
+}

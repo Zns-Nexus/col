@@ -109,9 +109,10 @@ function relevanceTier(result: SearchResult, normalizedQuery: string): number {
  *
  * Substring matching means "stroke text" also touches every other "… Text"
  * component, so without this the card would fill with weak matches and push the
- * component the user actually asked for off the end.
+ * component the user actually asked for off the end. Exported because the MCP
+ * tool layer orders component search results by the same rule.
  */
-function componentRank(
+export function componentRank(
   component: LibraryComponent,
   tokens: readonly string[],
   normalizedQuery: string,

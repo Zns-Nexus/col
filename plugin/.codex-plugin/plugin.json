@@ -1,0 +1,28 @@
+{
+  "name": "col",
+  "version": "0.1.0",
+  "description": "Find, inspect, and implement UI components from Col's curated catalogue inside your project, with source-linked setup and explicit gaps.",
+  "author": {
+    "name": "screen-gd",
+    "url": "https://github.com/screen-gd"
+  },
+  "homepage": "https://collection-of-libs.vercel.app",
+  "repository": "https://github.com/screen-gd/Col",
+  "license": "MIT",
+  "keywords": ["ui", "components", "mcp", "catalogue"],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Col",
+    "shortDescription": "Source-linked UI component catalogue",
+    "longDescription": "Search Col's curated UI library catalogue and verified component index from your coding agent. Every answer links to its canonical documentation and marks what is verified, partial, or unverified, so implementation steps come from the library's own sources instead of guesswork.",
+    "developerName": "screen-gd",
+    "category": "Developer Tools",
+    "websiteURL": "https://collection-of-libs.vercel.app",
+    "defaultPrompt": [
+      "Find a UI library that fits this project",
+      "Find a command palette component with setup steps",
+      "Which libraries here document a datepicker?"
+    ]
+  }
+}

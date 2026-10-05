@@ -1,0 +1,10 @@
+{
+  "name": "col",
+  "displayName": "Col",
+  "version": "0.1.0",
+  "description": "Find, inspect, and implement UI components from Col's curated catalogue inside your project, with source-linked setup and explicit gaps.",
+  "homepage": "https://collection-of-libs.vercel.app",
+  "repository": "https://github.com/screen-gd/Col",
+  "license": "MIT",
+  "keywords": ["ui", "components", "mcp", "catalogue"]
+}
