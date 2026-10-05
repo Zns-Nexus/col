@@ -12,6 +12,14 @@ export default function AgentsPage() {
     <article>
       <DocsHeader section="Get started" title="Agents and LLMs" lead="Give your agent Col’s catalog, then verify the shortlist against each library’s official docs." />
 
+      <DocsSection title="Connect Col MCP">
+        <DocsText>Connect your coding agent to Col to search libraries and verified components, then inspect their setup and source links. The server is read-only and needs no credentials.</DocsText>
+        <DocsLinks items={[
+          { href: "/mcp", title: "Set up Col MCP", text: "Client commands, configuration, plugins, and troubleshooting." },
+          { href: "/mcp/agents", title: "MCP agent guide", text: "Setup prompt, tool arguments, and the component workflow." },
+        ]} />
+      </DocsSection>
+
       <DocsSection title="Read the catalog">
         <DocsText>The plain-text catalog at <a href="/llms.txt"><code>/llms.txt</code></a> lists each library’s official URL, description, category, stacks, and use cases. Fetch it when researching a project so your agent starts from the current directory.</DocsText>
         <DocsCode code={`Read ${siteUrl}/llms.txt.\nFind UI libraries for [framework] that support [use case].\nShortlist three options and explain the tradeoffs.\nVerify required components, installation, and licensing\nagainst each library’s official documentation.\nLink your sources and state anything you could not verify.`} label="Agent prompt" />

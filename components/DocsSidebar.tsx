@@ -17,6 +17,13 @@ const sections: readonly { title: string; pages: readonly DocsPage[] }[] = [
     ],
   },
   {
+    title: "MCP",
+    pages: [
+      ["/mcp", "Set up Col MCP"],
+      ["/mcp/agents", "Agent guide"],
+    ],
+  },
+  {
     title: "Contribute",
     pages: [
       ["/docs/request-a-library", "Request a library"],

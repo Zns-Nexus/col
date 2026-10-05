@@ -24,21 +24,18 @@ const exampleInstall = (() => {
 
 const newTab = { target: "_blank", rel: "noopener noreferrer" } as const;
 
-/** Tracking issue for Col's own MCP server and agent plugin. */
-const MCP_ISSUE_URL = "https://github.com/screen-gd/Col/issues/40";
-
-/** The three jobs the planned Col MCP does for a coding agent, in order. */
+/** The three jobs Col MCP supports for a coding agent, in order. */
 const mcpSteps = [
   { title: "Find a fit", text: "Compare components across libraries for your stack." },
-  { title: "Inspect it", text: "Get the documented setup, dependencies, and variants." },
+  { title: "Inspect it", text: "Check component docs, setup, and known gaps." },
   { title: "Implement it", text: "Your agent adds it to the project from the sources." },
 ] as const;
 
 /**
  * Homepage "Details" bento: six tiles on a three-column grid. Search spans two
- * columns, the planned Col MCP spans a full row, the rest take one. Each pairs
+ * columns, Col MCP spans a full row, the rest take one. Each pairs
  * a short description with a real way in: search shortcuts, directory counts,
- * featured libraries, an install command, the saved list, and the MCP issue.
+ * featured libraries, an install command, the saved list, and MCP setup.
  */
 export function WhatsInsideSection() {
   return (
@@ -109,10 +106,9 @@ export function WhatsInsideSection() {
         <article className={`${styles.cell} ${styles.cellFull}`}>
           <div className={styles.mcpCopy}>
             <h3>
-              <a href={MCP_ISSUE_URL} {...newTab} className={styles.cellTitle}>Col MCP <ArrowUpRight aria-hidden /></a>
-              <span className={styles.soon}>Coming soon</span>
+              <Link href="/mcp" className={styles.cellTitle}>Col MCP <ArrowRight aria-hidden /></Link>
             </h3>
-            <p>Let your coding agent choose UI components from Col, with source-linked setup it can trust.</p>
+            <p>Search UI libraries and verified components with your coding agent.</p>
           </div>
           <ol className={styles.flow}>
             {mcpSteps.map(({ title, text }, index) => (

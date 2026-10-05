@@ -4,6 +4,12 @@ One MCP connection to Col's hosted catalogue plus a `ui-components` skill that
 scripts the find → inspect → implement workflow. The server is read-only and
 never requests credentials.
 
+Read the [client setup guide](https://collection-of-libs.vercel.app/mcp) for
+connection options and troubleshooting, or the
+[agent guide](https://collection-of-libs.vercel.app/mcp/agents) for tool
+arguments and the component workflow. Use either this plugin or a direct
+connection to avoid configuring Col twice.
+
 The package is shared by both hosts:
 
 - `.mcp.json` — the connection manifest, read by Claude Code and Codex.

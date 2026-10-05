@@ -4,7 +4,7 @@ export const siteUrl = "https://collection-of-libs.vercel.app";
 
 export const socialImage = "/col-social-preview-v5.jpg";
 
-export const staticRoutes = ["/", "/libraries", "/integrations", "/docs", "/docs/agents", "/docs/find-a-library", "/docs/request-a-library", "/docs/report-issues", "/docs/pull-requests", "/contributors", "/sponsors"] as const;
+export const staticRoutes = ["/", "/libraries", "/integrations", "/mcp", "/mcp/agents", "/docs", "/docs/agents", "/docs/find-a-library", "/docs/request-a-library", "/docs/report-issues", "/docs/pull-requests", "/contributors", "/sponsors"] as const;
 
 /** Internal path for a library detail page. */
 export const libraryPath = (slug: string) => `/libraries/${slug}`;

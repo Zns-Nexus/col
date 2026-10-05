@@ -109,7 +109,6 @@
 .cellFull { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); align-items: center; gap: 20px 32px; }
 .mcpCopy h3 { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
 .mcpCopy p { max-width: 40ch; margin-top: 8px; color: var(--lib-text-2); font-size: 14px; line-height: 1.6; }
-.soon { display: inline-flex; align-items: center; height: 24px; padding: 0 9px; border-radius: 8px; background: var(--lib-chip); color: var(--lib-text-2); font-size: 12px; font-weight: 700; }
 .flow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
 .flow li { display: grid; align-content: start; gap: 4px; padding: 14px; border-radius: 12px; background: var(--lib-field); box-shadow: var(--lib-depth-1); }
 .flow strong { margin-top: 6px; font-size: 14px; font-weight: 700; }

@@ -11,6 +11,7 @@ const links = [
   ["Home", "/"],
   ["Libraries", "/libraries"],
   ["Integrations", "/integrations"],
+  ["MCP", "/mcp"],
   ["Docs", "/docs"],
   ["Contributors", "/contributors"],
   ["Sponsors", "/sponsors"],

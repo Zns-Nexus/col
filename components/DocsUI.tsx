@@ -6,10 +6,10 @@ import { CopyButton } from "./CopyButton";
 
 const slug = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
-export function DocsHeader({ section, title, lead, children }: { section: string; title: string; lead: ReactNode; children?: ReactNode }) {
+export function DocsHeader({ section, title, lead, children }: { section?: string; title: string; lead: ReactNode; children?: ReactNode }) {
   return (
     <header className="dx-header">
-      <p className="dx-eyebrow">{section}</p>
+      {section && <p className="dx-eyebrow">{section}</p>}
       <h1>{title}</h1>
       <p className="dx-lead">{lead}</p>
       {children && <p className="dx-text">{children}</p>}

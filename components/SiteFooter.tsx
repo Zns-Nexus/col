@@ -7,6 +7,7 @@ const REPO_URL = "https://github.com/screen-gd/Col";
 
 const links = [
   ["Libraries", "/libraries"],
+  ["MCP", "/mcp"],
   ["Docs", "/docs"],
   ["Contributors", "/contributors"],
   ["Sponsors", "/sponsors"],

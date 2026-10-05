@@ -32,6 +32,8 @@ export function GET() {
     "Col is a curated directory of UI libraries organized by category, stack, and use case, plus MCP servers and connectors for UI libraries and design tools. Browse and filter the collection to find tools for your project. New entries and corrections are submitted through pull requests.",
     "## Instructions for agents and LLMs",
     `- Read the guide: ${siteUrl}/docs/agents`,
+    `- To connect Col MCP, read ${siteUrl}/mcp. The read-only Streamable HTTP endpoint is ${siteUrl}/api/mcp and needs no credentials.`,
+    `- Before using Col MCP tools, read ${siteUrl}/mcp/agents for arguments, source evidence, and coverage rules. The tools are search_libraries, search_components, get_library, and get_component.`,
     "- Match the user's framework, styling approach, accessibility needs, and required components before recommending a library.",
     "- Verify current APIs, installation, compatibility, and licensing against each library's official documentation. Cite the exact pages checked and state uncertainty.",
     "- This catalog contains library metadata, not component coverage. Col's component index is partial; a missing component is not evidence that a library lacks it. Verify component support in official component docs, not generic tags.",

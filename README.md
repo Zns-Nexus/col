@@ -46,6 +46,14 @@ Col catalogs **libraries**. Libraries can also list the components they document
 
 Col also lists **integrations** in a separate directory at `/integrations`. An integration is an MCP server, a connector, or both: "MCP server" means you add it to your client's config, and "connector" means you enable it from an AI app's own directory. [CONTEXT.md](CONTEXT.md) defines these terms, and [docs/adr/0001](docs/adr/0001-integrations-and-connectors.md) explains the model.
 
+## Connect Col MCP
+
+Col’s read-only MCP server lets coding agents search libraries and verified
+components at `https://collection-of-libs.vercel.app/api/mcp`, with no Col
+account or API key. See the [client setup guide](https://collection-of-libs.vercel.app/mcp)
+for Claude Code, Codex, Cursor, and VS Code, and the
+[agent guide](https://collection-of-libs.vercel.app/mcp/agents) for setup and tool use.
+
 ## Run it locally
 
 Requirements: [Node.js 20.9+](https://nodejs.org) and npm.
