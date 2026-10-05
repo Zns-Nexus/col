@@ -16,6 +16,7 @@ export function maskIcon(name: string): IconComponent {
 export const Icons = {
   home: maskIcon("home"),
   libraries: maskIcon("folder"),
+  integrations: maskIcon("plug"),
   docs: maskIcon("book-open"),
   contributors: maskIcon("profile-2user"),
   sponsors: maskIcon("lovely"),

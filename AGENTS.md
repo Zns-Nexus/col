@@ -94,6 +94,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
+## Tests
+
+`npm test` builds first, because page tests read `.next/`. `node --test` loads `lib/*.ts` through Node's type stripping, so a runtime import inside `lib/` or `data/` needs the `.ts` extension (`import { x } from "../data/integrations.ts"`); type-only imports can omit it.
+
 ## Windows shell
 
 In PowerShell, discard output with `> $null`, `2> $null`, or `Out-Null`. Never redirect to `NUL` or `nul`; PowerShell can create a file with that Windows-reserved name, which breaks Git staging.

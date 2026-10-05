@@ -83,7 +83,8 @@ function placePill(pill: HTMLElement | null, target: HTMLElement | null) {
   pill.style.opacity = "1";
 }
 
-function FacetGroup<T extends string>({ label, allLabel, total, id, options, selected, counts, onSelect, onClear, expanded, onExpandedChange, selectionMode, icons }: FacetGroupProps<T>) {
+/** One collapsible filter section. Single-select groups get an "all" row and a sliding pill; multi-select groups get checkboxes. */
+export function FacetGroup<T extends string>({ label, allLabel, total, id, options, selected, counts, onSelect, onClear, expanded, onExpandedChange, selectionMode, icons }: FacetGroupProps<T>) {
   const listRef = useRef<HTMLDivElement>(null);
   const activePillRef = useRef<HTMLSpanElement>(null);
   const hoverPillRef = useRef<HTMLSpanElement>(null);
@@ -253,12 +254,19 @@ function FilterPanel({ showSaved, activeCategory, activeStacks, activeUseCases, 
         />
       </SidebarContent>
 
-      {hasFilters && (footer ?? <SidebarFooter>
-        <button type="button" onClick={onClearAll} className="facet-reset">
-          <RotateCcw aria-hidden /> <span className="cap">Reset all filters</span>
-        </button>
-      </SidebarFooter>)}
+      {hasFilters && (footer ?? <FilterReset onClick={onClearAll} />)}
     </>
+  );
+}
+
+/** Footer button that clears every filter in a panel. */
+export function FilterReset({ onClick }: { onClick: () => void }) {
+  return (
+    <SidebarFooter>
+      <button type="button" onClick={onClick} className="facet-reset">
+        <RotateCcw aria-hidden /> <span className="cap">Reset all filters</span>
+      </button>
+    </SidebarFooter>
   );
 }
 
@@ -276,8 +284,6 @@ interface FilterBarProps {
 }
 
 export function FilterBar({ showSaved, activeCategory, activeStacks, activeUseCases, query, onCategoryChange, onStackChange, onUseCaseChange, onClearAll, facetCounts }: FilterBarProps) {
-  const { openMobile, setOpenMobile } = useSidebar();
-  const filterTriggerRef = useRef<HTMLButtonElement>(null);
   const hasFilters = showSaved || query.trim() !== "" || activeCategory !== null || activeStacks.length > 0 || activeUseCases.length > 0;
 
   const panelProps = {
@@ -292,6 +298,25 @@ export function FilterBar({ showSaved, activeCategory, activeStacks, activeUseCa
     onClearAll,
     facetCounts,
   } satisfies Omit<FilterPanelProps, "idSuffix" | "footer">;
+
+  return <FilterSidebar label="Library filters" hasFilters={hasFilters} renderPanel={(idSuffix) => <FilterPanel {...panelProps} idSuffix={idSuffix} />} />;
+}
+
+interface FilterSidebarProps {
+  /** Accessible name of the filter region, for example "Library filters". */
+  label: string;
+  hasFilters: boolean;
+  /** Renders the panel body. Called once for the desktop sidebar and once for the mobile sheet, with an id suffix that keeps their element ids apart. */
+  renderPanel: (idSuffix: string) => ReactNode;
+}
+
+/**
+ * Places a directory's filter panel in the app frame's sidebar on desktop and
+ * in a sheet behind a "Filters" button on small screens.
+ */
+export function FilterSidebar({ label, hasFilters, renderPanel }: FilterSidebarProps) {
+  const { openMobile, setOpenMobile } = useSidebar();
+  const filterTriggerRef = useRef<HTMLButtonElement>(null);
 
   const handleMobileOpenChange = (nextOpen: boolean) => {
     setOpenMobile(nextOpen);
@@ -314,16 +339,16 @@ export function FilterBar({ showSaved, activeCategory, activeStacks, activeUseCa
       </Button>
 
       <SidebarSlot mobile="hidden">
-        <div className="directory-sidebar directory-filter-panel" role="region" aria-label="Library filters">
-          <FilterPanel {...panelProps} idSuffix="" />
+        <div className="directory-sidebar directory-filter-panel" role="region" aria-label={label}>
+          {renderPanel("")}
         </div>
       </SidebarSlot>
 
       <Sheet open={openMobile} onOpenChange={handleMobileOpenChange}>
         <SheetContent side="left" className="w-[16rem] gap-0 bg-sidebar p-0 lg:hidden">
-          <SheetTitle className="sr-only">Library filters</SheetTitle>
+          <SheetTitle className="sr-only">{label}</SheetTitle>
           <div className="directory-filter-panel flex h-full min-h-0 flex-col pt-14">
-            <FilterPanel {...panelProps} idSuffix="-mobile" />
+            {renderPanel("-mobile")}
           </div>
         </SheetContent>
       </Sheet>

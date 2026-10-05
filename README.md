@@ -39,9 +39,12 @@ Col organizes UI libraries by category, stack, and use case. Search from the hom
 - Filter libraries without leaving the directory.
 - Save useful libraries locally.
 - Open the official website or documentation from each listing.
+- Find MCP servers and connectors for UI libraries and design tools, and copy setup for your AI client.
 - Contribute missing libraries through a focused pull request.
 
 Col catalogs **libraries**. Libraries can also list the components they document, so you can search by component name — but that list is partial and grows by contribution, so a component missing from Col is not necessarily missing from the library. Col never infers a component from a library's generic tags.
+
+Col also lists **integrations** in a separate directory at `/integrations`. An integration is an MCP server, a connector, or both: "MCP server" means you add it to your client's config, and "connector" means you enable it from an AI app's own directory. [CONTEXT.md](CONTEXT.md) defines these terms, and [docs/adr/0001](docs/adr/0001-integrations-and-connectors.md) explains the model.
 
 ## Run it locally
 
@@ -147,6 +150,34 @@ Components live in [`data/components.ts`](data/components.ts), keyed by the owni
 
 Coverage is partial and grows by contribution, so add a handful you have checked rather than a long unverified list. Col states this plainly in the UI, so a short accurate list beats a long speculative one.
 
+### Adding an MCP server or connector
+
+Integrations live in [`data/integrations.ts`](data/integrations.ts). An entry describes the server once; Col generates the config snippet for each client and the agent prompt.
+
+```ts
+{
+  name: "Example MCP server",
+  slug: "example-mcp",
+  description: "A factual one-sentence description of what it lets an agent do.",
+  url: "https://example.dev/docs/mcp", // The provider's setup guide.
+  provider: { name: "Example", url: "https://example.dev" },
+  official: true, // Only when the provider also makes the product it serves.
+  library: "example-ui", // Optional: the Col library it serves.
+  setup: [
+    {
+      type: "MCP server",
+      key: "example",
+      server: { transport: "stdio", command: "npx", args: ["-y", "@example/mcp"] },
+      clients: ["Claude Code", "Cursor"], // Only clients the provider documents.
+    },
+    { type: "Connector", client: "Claude", url: "https://claude.com/connectors/example" },
+  ],
+}
+```
+
+- A product offered both ways is one entry with both kinds of setup path.
+- Never add a credential. For an API key, name the environment variable and link to where the user creates it. Col renders a placeholder in each client's own syntax.
+
 ## Dedicated library pages
 
 Each library will have a dedicated Col page with:
@@ -189,6 +220,10 @@ components/           Search, filters, cards, header, and shared UI
 data/libraries.ts     The curated library registry
 data/components.ts    Verified components, keyed by library slug
 data/library-details/ Per-library detail pages and metadata
+data/integrations.ts  MCP servers and connectors
+lib/                  Search, client setup rendering, and site helpers
+CONTEXT.md            Glossary of catalog terms
+docs/adr/             Architecture decision records
 public/brand/         Col brand assets
 public/hero-logos/    Library artwork used by the homepage
 .github/              Issue forms and pull request guidance

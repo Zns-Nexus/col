@@ -51,6 +51,18 @@ Many libraries publish a machine-readable component list at `/llms.txt`, which i
 
 Do not add a component to make a library match a search. If a library does not document it, it does not belong in the index.
 
+## Add an MCP server or connector
+
+Integrations live in [`data/integrations.ts`](data/integrations.ts). [CONTEXT.md](CONTEXT.md) defines the terms. The README has an example entry.
+
+- Keep to UI libraries and design tools.
+- Add one entry per product. If it can be set up from a config file and from an AI app's directory, give the entry both an `MCP server` path and a `Connector` path.
+- Copy the command, URL, and server key from the provider's own setup guide, and link that guide as `url`.
+- List only the clients the provider documents. Col generates each client's snippet in [`lib/integration-setup.ts`](lib/integration-setup.ts); adding a new client means adding it there.
+- Set `official` only when the provider also makes the product it serves. Anything else is a community integration.
+- Never add a token or key, even as an example. Name the environment variable and link to where the user creates it.
+- Set `library` to the slug of the Col library it serves, if that library is listed.
+
 ## Fix a bug or add a feature
 
 - Follow the existing TypeScript and component patterns.

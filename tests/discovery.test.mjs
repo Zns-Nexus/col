@@ -6,6 +6,7 @@ import ts from "typescript";
 const source = readFileSync(new URL("../data/libraries.ts", import.meta.url), "utf8");
 const moduleSource = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext } }).outputText;
 const { libraries } = await import(`data:text/javascript,${encodeURIComponent(moduleSource)}`);
+const { integrations } = await import("../data/integrations.ts");
 
 const built = (name) => readFileSync(new URL(`../.next/server/app/${name}.body`, import.meta.url), "utf8");
 
@@ -20,22 +21,26 @@ test("build emits complete discovery files", () => {
   assert.ok(robots.includes("Allow: /"));
   assert.ok(robots.includes("Sitemap: https://collection-of-libs.vercel.app/sitemap.xml"));
 
-  for (const route of ["/", "/libraries", "/docs", "/docs/agents", "/docs/find-a-library", "/docs/request-a-library", "/docs/report-issues", "/docs/pull-requests", "/contributors", "/sponsors"]) {
+  const staticRoutes = ["/", "/libraries", "/integrations", "/docs", "/docs/agents", "/docs/find-a-library", "/docs/request-a-library", "/docs/report-issues", "/docs/pull-requests", "/contributors", "/sponsors"];
+  for (const route of staticRoutes) {
     assert.ok(sitemap.includes(`<loc>https://collection-of-libs.vercel.app${route}</loc>`));
   }
-  for (const library of libraries) {
-    assert.ok(
-      sitemap.includes(`<loc>https://collection-of-libs.vercel.app/libraries/${library.slug}</loc>`),
-      `Sitemap is missing /libraries/${library.slug}`,
-    );
+  for (const route of [...libraries.map(({ slug }) => `/libraries/${slug}`), ...integrations.map(({ slug }) => `/integrations/${slug}`)]) {
+    assert.ok(sitemap.includes(`<loc>https://collection-of-libs.vercel.app${route}</loc>`), `Sitemap is missing ${route}`);
   }
-  assert.equal((sitemap.match(/<loc>/g) ?? []).length, 10 + libraries.length);
+  assert.equal((sitemap.match(/<loc>/g) ?? []).length, staticRoutes.length + libraries.length + integrations.length);
   assert.equal(sitemap.includes("<lastmod>"), false, "Do not present build time as content modification time");
 
   assert.ok(llms.includes("/docs/agents"));
   assert.ok(llms.includes("component index is partial"));
-  const entries = llms.split("# Libraries\n")[1].split("\n## ").slice(1);
+  const [librarySection, integrationSection] = llms.split("# Libraries\n")[1].split("\n# Integrations\n");
+  const entries = librarySection.split("\n## ").slice(1);
   assert.equal(entries.length, libraries.length);
+  const integrationEntries = integrationSection.split("## ").slice(1);
+  assert.deepEqual(integrationEntries.map((entry) => entry.split("\n")[0]), integrations.map(({ name }) => name));
+  for (const integration of integrations) {
+    assert.ok(integrationSection.includes(`/integrations/${integration.slug}`), `llms.txt is missing ${integration.name}`);
+  }
   for (const library of libraries) {
     const entry = entries.find((item) => item.startsWith(`${library.name}\n`));
     assert.ok(entry, `Missing ${library.name}`);
@@ -48,7 +53,7 @@ test("build emits complete discovery files", () => {
 });
 
 test("public pages emit their own canonical and social identity", () => {
-  const routes = ["/", "/docs", "/docs/agents", "/docs/find-a-library", "/docs/request-a-library", "/docs/report-issues", "/docs/pull-requests", "/contributors", "/sponsors", ...libraries.map(({ slug }) => `/libraries/${slug}`)];
+  const routes = ["/", "/docs", "/docs/agents", "/docs/find-a-library", "/docs/request-a-library", "/docs/report-issues", "/docs/pull-requests", "/contributors", "/sponsors", ...libraries.map(({ slug }) => `/libraries/${slug}`), ...integrations.map(({ slug }) => `/integrations/${slug}`)];
   for (const route of routes) {
     const html = readFileSync(new URL(`../.next/server/app/${route === "/" ? "index" : route.slice(1)}.html`, import.meta.url), "utf8");
     const url = `https://collection-of-libs.vercel.app${route === "/" ? "" : route}`;

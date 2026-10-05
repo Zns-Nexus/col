@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
 import { CopyButton } from "./CopyButton";
 
@@ -21,8 +21,10 @@ function waveChars(text: string, direction: "in" | "out" | "rest") {
  * in an inset "screen" on top, the method tabs and copy action below. The
  * active pill slides between tabs; switching sends a blur wave from the start
  * of the command to the end, replacing the old command character by character.
+ * A step with a `language` is a file snippet rather than a shell command, and
+ * its optional `caption` explains where it goes.
  */
-export function InstallTabs({ steps, label = "Install method" }: { steps: { label: string; command: string; language?: "json" }[]; label?: string }) {
+export function InstallTabs({ steps, label = "Install method" }: { steps: { label: string; command: string; language?: "json" | "toml"; caption?: ReactNode }[]; label?: string }) {
   const id = useId();
   const [active, setActive] = useState(0);
   const [swap, setSwap] = useState<{ from: number; id: number } | null>(null);
@@ -84,7 +86,7 @@ export function InstallTabs({ steps, label = "Install method" }: { steps: { labe
         className="ld-screen ld-screen-command"
       >
         <pre>
-          {steps[active].language !== "json" && <span className="ld-prompt-sign" aria-hidden>$</span>}
+          {!steps[active].language && <span className="ld-prompt-sign" aria-hidden>$</span>}
           <span ref={cmdRef} className="ld-cmd">
             <span className="sr-only">{command}</span>
             {swap && <span key={`out-${swap.id}`} className="ld-cmd-layer ld-cmd-leaving" aria-hidden>{waveChars(steps[swap.from].command, "out")}</span>}
@@ -94,13 +96,14 @@ export function InstallTabs({ steps, label = "Install method" }: { steps: { labe
           </span>
         </pre>
       </div>
+      {steps[active].caption && <p className="ld-card-caption">{steps[active].caption}</p>}
       <div className="ld-card-foot">
         {tabbed ? (
           <div ref={listRef} role="tablist" aria-label={label} className="ld-tabs">
             <span className="ld-tabs-pill" style={pill} aria-hidden />
             {steps.map((step, index) => (
               <button
-                key={step.command}
+                key={`${step.label}-${index}`}
                 type="button"
                 role="tab"
                 id={`${id}-tab-${index}`}

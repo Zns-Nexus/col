@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { LibraryDetail } from "@/components/LibraryDetail";
+import { integrationsForLibrary } from "@/data/integrations";
 import { libraries } from "@/data/libraries";
 import { libraryDetails } from "@/data/library-details";
 import { relatedLibraries } from "@/lib/related-libraries";
@@ -32,5 +33,5 @@ export default async function LibraryPage({ params }: LibraryPageProps) {
   const details = libraryDetails[slug];
   if (!library || !details) notFound();
 
-  return <LibraryDetail library={library} details={details} related={relatedLibraries(library, libraries)} />;
+  return <LibraryDetail library={library} details={details} related={relatedLibraries(library, libraries)} integrations={integrationsForLibrary(slug)} />;
 }

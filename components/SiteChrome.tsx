@@ -7,13 +7,22 @@ import { usePathname } from "next/navigation";
 import { Search, Star } from "lucide-react";
 import { libraries } from "@/data/libraries";
 import { componentIndex } from "@/data/components";
+import { integrations, integrationTypes } from "@/data/integrations";
 import { createDirectorySearch } from "@/lib/directory";
-import { libraryPath } from "@/lib/site";
+import { createIntegrationSearch } from "@/lib/integration-directory";
+import { integrationPath, libraryPath } from "@/lib/site";
 import { directoryQuery, useDirectoryQuery } from "@/lib/directory-query";
 import styles from "./SiteSearch.module.css";
 
 const compactNumber = new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 });
 const searchDirectory = createDirectorySearch(libraries, componentIndex);
+const searchIntegrations = createIntegrationSearch(integrations);
+
+/** Directories whose sidebar field filters the results in place instead of opening a dropdown. */
+const IN_PLACE_SEARCH: Partial<Record<string, { placeholder: string; label: string }>> = {
+  "/libraries": { placeholder: "Search libraries", label: "Search libraries or components" },
+  "/integrations": { placeholder: "Search integrations", label: "Search MCP servers and connectors" },
+};
 
 let starsRequest: Promise<number | null> | null = null;
 
@@ -61,8 +70,10 @@ export function GitHubStars({ stars, className = "" }: { stars: number | null; c
 }
 
 /**
- * Library search with a quick-results dropdown. `collapsed` renders only an icon
- * that opens the directory with its search focused (used by the docs rail).
+ * Site search with a quick-results dropdown covering libraries and
+ * integrations. On a directory it filters that directory in place instead.
+ * `collapsed` renders only an icon that opens the library directory with its
+ * search focused (used by the docs rail).
  */
 export function SiteSearch({ className = "", collapsed = false }: { className?: string; collapsed?: boolean }) {
   const pathname = usePathname();
@@ -76,9 +87,9 @@ export function SiteSearch({ className = "", collapsed = false }: { className?: 
   }, [pathname]);
 
   const directoryValue = useDirectoryQuery();
+  const inPlace = collapsed ? undefined : IN_PLACE_SEARCH[pathname];
 
-  // On the directory the field filters the results in place instead of opening a dropdown.
-  if (pathname === "/libraries" && !collapsed) {
+  if (inPlace) {
     return (
       <form role="search" className={`site-search ${className}`} onSubmit={(event) => event.preventDefault()}>
         <Search aria-hidden="true" />
@@ -93,8 +104,8 @@ export function SiteSearch({ className = "", collapsed = false }: { className?: 
               else event.currentTarget.blur();
             }
           }}
-          placeholder="Search libraries"
-          aria-label="Search libraries or components"
+          placeholder={inPlace.placeholder}
+          aria-label={inPlace.label}
           aria-description="Press slash to focus search"
           aria-keyshortcuts="/"
         />
@@ -111,9 +122,15 @@ export function SiteSearch({ className = "", collapsed = false }: { className?: 
     );
   }
 
-  const results = query.trim()
+  const trimmed = query.trim();
+  const results = trimmed
     ? searchDirectory({ query, category: null, stacks: [], useCases: [], sort: "curated" }).slice(0, 5)
     : [];
+  const integrationResults = trimmed
+    ? searchIntegrations({ query, type: null, client: null, publisher: null }).slice(0, 2)
+    : [];
+  // "View all" opens the directory that has matches, preferring libraries.
+  const allResultsPath = results.length === 0 && integrationResults.length > 0 ? "/integrations" : "/libraries";
 
   return (
     <form
@@ -121,8 +138,7 @@ export function SiteSearch({ className = "", collapsed = false }: { className?: 
       className={`site-search ${className}`}
       onSubmit={(event) => {
         event.preventDefault();
-        const trimmed = query.trim();
-        if (trimmed) window.location.assign(`/libraries?q=${encodeURIComponent(trimmed)}`);
+        if (trimmed) window.location.assign(`${allResultsPath}?q=${encodeURIComponent(trimmed)}`);
       }}
       onBlur={(event) => {
         if (!(event.relatedTarget instanceof Node) || !event.currentTarget.contains(event.relatedTarget)) setOpen(false);
@@ -143,14 +159,14 @@ export function SiteSearch({ className = "", collapsed = false }: { className?: 
           }
         }}
         placeholder="Search"
-        aria-label="Search libraries or components"
+        aria-label="Search libraries, components, and integrations"
         aria-description="Press slash to focus search"
         aria-keyshortcuts="/"
       />
       <span className={styles.shortcut} title="Press / to search" aria-hidden="true">Press <kbd>/</kbd></span>
-      {open && query.trim() && (
-        <div className="site-search-results" aria-label="Library search results">
-          {results.length ? (
+      {open && trimmed && (
+        <div className="site-search-results" aria-label="Search results">
+          {results.length || integrationResults.length ? (
             <ul>
               {results.map(({ library, components }) => (
                 <li key={library.slug}>
@@ -160,8 +176,16 @@ export function SiteSearch({ className = "", collapsed = false }: { className?: 
                   </Link>
                 </li>
               ))}
+              {integrationResults.map((integration) => (
+                <li key={integration.slug}>
+                  <Link href={integrationPath(integration.slug)} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>
+                    <span>{integration.name}</span>
+                    <small>{integrationTypes(integration).join(" · ")}</small>
+                  </Link>
+                </li>
+              ))}
             </ul>
-          ) : <p>No matching libraries</p>}
+          ) : <p>No matches</p>}
           <button type="submit">View all results</button>
         </div>
       )}

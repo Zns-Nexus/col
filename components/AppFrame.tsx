@@ -10,14 +10,17 @@ import { ThemeToggle } from "./ThemeToggle";
 
 type SidebarMode = "narrow" | "wide";
 
+/** Directories with a filter panel in the sidebar. */
+const DIRECTORY_PATHS = new Set(["/libraries", "/integrations"]);
+
 function sidebarModeFor(pathname: string): SidebarMode {
-  return pathname === "/libraries" ? "wide" : "narrow";
+  return DIRECTORY_PATHS.has(pathname) ? "wide" : "narrow";
 }
 
 /**
  * The one layout every route shares: a sidebar (brand, search, navigation,
  * page-specific content, repo links) and the content card. The sidebar is
- * narrow by default and widens on the directory to fit its filters. Small
+ * narrow by default and widens on the directories to fit their filters. Small
  * screens get a compact top bar instead.
  */
 export function AppFrame({ children }: { children: ReactNode }) {
@@ -40,7 +43,7 @@ export function AppFrame({ children }: { children: ReactNode }) {
       const slash = event.key === "/" && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey;
       const command = (event.ctrlKey || event.metaKey) && !event.altKey && !event.shiftKey && event.key.toLowerCase() === "k";
       if (!slash && !command) return;
-      // Focus whichever search field is on screen: the directory search on /libraries, the site search elsewhere.
+      // Focus whichever search field is on screen: the directory search on a directory, the site search elsewhere.
       const field = [...document.querySelectorAll<HTMLInputElement>("[data-directory-search], [data-site-search]")].find((input) => input.offsetParent !== null);
       if (!field) return;
       event.preventDefault();

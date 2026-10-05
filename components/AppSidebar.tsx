@@ -7,6 +7,7 @@ import { Icons, type IconComponent } from "./MaskIcon";
 const items: readonly (readonly [string, string, IconComponent])[] = [
   ["Home", "/", Icons.home],
   ["Libraries", "/libraries", Icons.libraries],
+  ["Integrations", "/integrations", Icons.integrations],
   ["Docs", "/docs", Icons.docs],
   ["Contributors", "/contributors", Icons.contributors],
   ["Sponsors", "/sponsors", Icons.sponsors],
