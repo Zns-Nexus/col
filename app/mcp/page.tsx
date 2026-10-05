@@ -56,7 +56,9 @@ export default function McpPage() {
 
       <DocsSection title="Install the plugin">
         <DocsText>The optional Col plugin bundles the MCP connection with a UI component workflow skill. Choose the plugin or a direct connection to avoid adding Col twice.</DocsText>
+        <DocsText>For Claude Code, run:</DocsText>
         <DocsCode code={"claude plugin marketplace add screen-gd/Col\nclaude plugin install col@col"} label="Claude Code plugin" />
+        <DocsText>For Codex, run:</DocsText>
         <DocsCode code={"codex plugin marketplace add screen-gd/Col\ncodex plugin add col@col"} label="Codex plugin" />
         <DocsText>See the <a href="https://github.com/screen-gd/Col/blob/main/plugin/README.md" target="_blank" rel="noopener noreferrer">plugin guide</a> for package details.</DocsText>
       </DocsSection>
