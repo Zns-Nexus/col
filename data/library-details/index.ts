@@ -9,6 +9,7 @@ import motion from "./motion.ts";
 import gsap from "./gsap.ts";
 import radix_ui from "./radix-ui.ts";
 import base_ui from "./base-ui.ts";
+import react_aria from "./react-aria.ts";
 import heroui from "./heroui.ts";
 import mantine from "./mantine.ts";
 import chakra_ui from "./chakra-ui.ts";
@@ -88,6 +89,7 @@ export const libraryDetails: Record<string, LibraryDetails> = {
   "gsap": gsap,
   "radix-ui": radix_ui,
   "base-ui": base_ui,
+  "react-aria": react_aria,
   "heroui": heroui,
   "mantine": mantine,
   "chakra-ui": chakra_ui,

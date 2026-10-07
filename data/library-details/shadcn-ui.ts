@@ -14,7 +14,7 @@ export default {
   gettingStarted: [
     "Start from a React + TypeScript project with Tailwind CSS installed and a `@/*` path alias in tsconfig.json pointing at your source root.",
     "Run `npx shadcn@latest init` and answer the prompts for style, base color and options; it writes components.json, installs dependencies, adds the cn utility and sets up CSS variables.",
-    "Add components one by one with `npx shadcn@latest add button`, or run `npx shadcn@latest add` with no argument to browse the full list.",
+    "Use the component documentation matching your project's Base UI, Radix UI, or React Aria implementation. Add components one by one with `npx shadcn@latest add button`, or run `npx shadcn@latest add` with no argument to browse the full list.",
     "Import a component with the configured alias, for example `import { Button } from \"@/components/ui/button\"`.",
     "The component source lands in your repo (for example `src/components/ui`), so edit it directly to match your design system.",
   ],

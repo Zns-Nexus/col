@@ -114,12 +114,12 @@ export const libraries: Library[] = [
     name: "shadcn/ui",
     slug: "shadcn-ui",
     description:
-      "Accessible components you copy into your project and own, built on Radix UI and Tailwind CSS.",
+      "Editable React components styled with Tailwind CSS, with Base UI, Radix UI, and React Aria implementations.",
     url: "https://ui.shadcn.com",
     category: "Component Library",
     stacks: ["React", "Next.js", "Astro", "Tailwind CSS", "TypeScript"],
     useCases: ["Dashboards", "Accessibility-first", "Rapid Prototyping"],
-    tags: ["radix", "copy paste", "accessible"],
+    tags: ["base ui", "radix", "react aria", "copy paste", "accessible"],
   },
   {
     name: "Magic UI",
@@ -186,6 +186,18 @@ export const libraries: Library[] = [
     stacks: ["React", "TypeScript"],
     useCases: ["Accessibility-first", "Dashboards"],
     tags: ["headless", "primitives", "unstyled"],
+  },
+  {
+    name: "React Aria Components",
+    slug: "react-aria",
+    addedAt: "2026-10-07T06:02:56+04:00",
+    description:
+      "Unstyled React components with accessible interactions, internationalization, and composable APIs from Adobe.",
+    url: "https://react-aria.adobe.com",
+    category: "Component Library",
+    stacks: ["React", "TypeScript"],
+    useCases: ["Accessibility-first", "Dashboards"],
+    tags: ["headless", "unstyled", "adobe", "react spectrum", "internationalization"],
   },
   {
     name: "HeroUI",
