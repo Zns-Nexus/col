@@ -75,10 +75,6 @@ function buildIndex(registry: readonly Library[], components: ComponentIndex): I
       ...library.stacks,
       ...library.useCases,
       ...(library.tags ?? []),
-      ...(components[library.slug] ?? []).flatMap((component) => [
-        component.name,
-        ...(component.aliases ?? []),
-      ]),
     ]
       .join(" ")
       .toLowerCase(),
@@ -107,10 +103,8 @@ function relevanceTier(result: SearchResult, normalizedQuery: string): number {
 /**
  * Ranks one matched component against the query, best first.
  *
- * Substring matching means "stroke text" also touches every other "… Text"
- * component, so without this the card would fill with weak matches and push the
- * component the user actually asked for off the end. Exported because the MCP
- * tool layer orders component search results by the same rule.
+ * Exact names lead before prefixes, aliases and loose matches. Exported because
+ * the MCP tool layer orders component search results by the same rule.
  */
 export function componentRank(
   component: LibraryComponent,
@@ -151,35 +145,41 @@ export function createDirectorySearch(
     const tokens = normalizedQuery.split(/\s+/).filter(Boolean);
 
     const results = index
-      .filter(({ library, haystack }) => {
+      .filter(({ library }) => {
         return (
-          tokens.every((token) => haystack.includes(token)) &&
           (category === null || library.category === category) &&
           stacks.every((stack) => library.stacks.includes(stack)) &&
           (useCases.length === 0 || useCases.some((useCase) => library.useCases.includes(useCase)))
         );
       })
-      .map((entry) => ({
-        library: entry.library,
+      .flatMap((entry) => {
+        const componentTokens = tokens.filter((token) => !entry.haystack.includes(token));
         // With no tokens every component would vacuously match, so browsing the
         // directory must not present a seeded library's components as hits.
-        // Otherwise any single token can identify a component: the filter above
-        // already guaranteed every token matches somewhere on this library, so
-        // "any" is what keeps a mixed query like "radix accordion" pointing at
-        // the Accordion component instead of dropping the attribution.
-        components:
+        // Library metadata can supply context such as "radix" in "radix accordion",
+        // but the remaining tokens must match the same component.
+        const components =
           tokens.length === 0
             ? []
             : entry.components
-                .filter(({ haystack }) => tokens.some((token) => haystack.includes(token)))
-                .map(({ component }) => component)
+                .filter(({ haystack }) =>
+                  tokens.some((token) => haystack.includes(token)) &&
+                  componentTokens.every((token) => haystack.includes(token)),
+                )
+                .map(({ component, haystack }) => {
+                  const matchingTokens = tokens.filter((token) => haystack.includes(token));
+                  return {
+                    component,
+                    rank: componentRank(component, matchingTokens, matchingTokens.join(" ")),
+                  };
+                })
                 // Stable sort, so components of equal strength keep the order
                 // the registry lists them in.
-                .sort((a, b) =>
-                  componentRank(a, tokens, normalizedQuery) -
-                  componentRank(b, tokens, normalizedQuery),
-                ),
-      }));
+                .sort((a, b) => a.rank - b.rank)
+                .map(({ component }) => component);
+        if (componentTokens.length > 0 && components.length === 0) return [];
+        return [{ library: entry.library, components }];
+      });
 
     // Array.prototype.sort is stable, so returning 0 keeps curated order.
     return results.sort((a, b) => {
