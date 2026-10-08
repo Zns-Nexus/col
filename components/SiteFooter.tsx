@@ -15,7 +15,7 @@ const links = [
   ["Contribute", `${REPO_URL}/issues/new/choose`],
 ] as const;
 
-/** Slim one-row site footer: brand, links, and the legal line. Wraps on narrow screens. Also used on the 404 page. */
+/** Site footer with brand, links, product badge, and legal line. Also used on the 404 page. */
 export function SiteFooter() {
   return (
     <footer className={styles.footer}>
@@ -32,6 +32,10 @@ export function SiteFooter() {
           );
         })}
       </nav>
+      <a href="https://www.dotstore.io/launches/2026-w41/col" target="_blank" rel="noopener noreferrer" className={styles.productBadge}>
+        <Image src="https://www.dotstore.io/launches/2026-w41/col/badge/award-dark.svg" alt="Col on dotstore" width={250} height={56} unoptimized className={styles.badgeDark} />
+        <Image src="https://www.dotstore.io/launches/2026-w41/col/badge/award-light.svg" alt="Col on dotstore" width={250} height={56} unoptimized className={styles.badgeLight} />
+      </a>
       <p className={styles.footerLegal}>
         © {new Date().getFullYear()} Screen · <a href={`${REPO_URL}/blob/main/LICENSE`} target="_blank" rel="noopener noreferrer">MIT license</a>
       </p>
