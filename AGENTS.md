@@ -82,6 +82,12 @@ review that challenges the work.
 
 - Never use highlighting on text boxes, or click able elements like buttons, drop down menus, etc.
 
+## Git and hosting
+
+- git.cafe (`https://git.cafe/screen/col`) is the source of truth for code, stars, issues, the roadmap, and pull requests. Open issues and pull requests there, not on GitHub; `gh` does not work against it.
+- GitHub (`https://github.com/screen-gd/Col`) is a mirror that Vercel deploys from until Vercel and Cloudflare support git.cafe. Push every branch to both. Locally, `origin` pushes to git.cafe then GitHub, as set up in CONTRIBUTING.md.
+- Site code reads git.cafe URLs from `lib/repo.ts` and its API through `lib/git-cafe.ts`. Do not hard-code repository URLs.
+
 
 
 <!-- BEGIN:nextjs-agent-rules -->

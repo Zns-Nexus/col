@@ -20,7 +20,7 @@ Col combines a curated library registry with practical stack and use-case filter
 
 ## Operating Context
 
-Visitors search from the homepage, refine results in the library directory, save useful entries locally, and use GitHub issues or pull requests to improve the catalog.
+Visitors search from the homepage, refine results in the library directory, save useful entries locally, and use git.cafe issues or pull requests to improve the catalog.
 
 ## Capabilities and Constraints
 
@@ -37,7 +37,7 @@ The product is named Col and uses the line “Sol could not do it himself, so we
 
 ## Evidence on Hand
 
-The curated registry lives in `data/libraries.ts`; verified components live in `data/components.ts`; integrations live in `data/integrations.ts`, with terms defined in `CONTEXT.md`. Contribution rules live in `README.md`, `CONTRIBUTING.md`, and `.github/` issue templates.
+The curated registry lives in `data/libraries.ts`; verified components live in `data/components.ts`; integrations live in `data/integrations.ts`, with terms defined in `CONTEXT.md`. Contribution rules live in `README.md`, and `CONTRIBUTING.md`. Issues, the roadmap, and pull requests live on git.cafe; GitHub is a deploy mirror.
 
 ## Product Principles
 

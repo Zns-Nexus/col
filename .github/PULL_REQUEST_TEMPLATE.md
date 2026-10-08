@@ -1,3 +1,5 @@
+<!-- Col reviews pull requests on git.cafe: https://git.cafe/screen/col/pulls. This GitHub repository is a deploy mirror. -->
+
 ## What changed
 
 <!-- Explain the change and why it is needed. -->

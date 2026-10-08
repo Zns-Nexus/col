@@ -4,7 +4,7 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { AppSidebar } from "./AppSidebar";
 import { Header } from "./Header";
-import { BrandLink, GitHubStars, SiteSearch, useGitHubStars } from "./SiteChrome";
+import { BrandLink, RepoStars, SiteSearch, useRepoStars } from "./SiteChrome";
 import { SIDEBAR_SLOT_ID } from "./SidebarSlot";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -26,7 +26,7 @@ function sidebarModeFor(pathname: string): SidebarMode {
 export function AppFrame({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const mode = sidebarModeFor(pathname);
-  const stars = useGitHubStars();
+  const stars = useRepoStars();
   const panelRef = useRef<HTMLElement>(null);
 
   // The content card is the scroll container, so reset it on navigation the way
@@ -62,7 +62,7 @@ export function AppFrame({ children }: { children: ReactNode }) {
         <div className="app-frame-nav"><AppSidebar /></div>
         <div id={SIDEBAR_SLOT_ID} className="app-frame-slot" />
         <div className="app-frame-footer">
-          <GitHubStars stars={stars} />
+          <RepoStars stars={stars} />
           <ThemeToggle />
         </div>
       </aside>
