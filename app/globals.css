@@ -312,7 +312,7 @@ html.light .library-save[aria-pressed="true"] { color: #0800ff; }
 .contributors-page { background: #10181a; }
 html.light .contributors-page { background: #f7f7f5; }
 .footer-link { min-height: 44px; align-items: center; }
-.site-header-menu, .site-header-search, .site-header-github { min-height: 36px; }
+.site-header-menu, .site-header-search, .site-header-repo { min-height: 36px; }
 .coss-trigger { min-height: 44px; }
 .docs-sidebar-link { min-height: 44px; }
 
@@ -414,7 +414,7 @@ html.light .library-page-shell .directory-results-pane {
 }
 
 
-.site-header-left, .site-header-actions, .site-header-brand, .site-header-links, .site-header-link, .site-header-search, .site-header-github, .site-header-menu {
+.site-header-left, .site-header-actions, .site-header-brand, .site-header-links, .site-header-link, .site-header-search, .site-header-repo, .site-header-menu {
   display: flex;
   align-items: center;
 }
@@ -457,7 +457,7 @@ html.light .library-page-shell .directory-results-pane {
 .site-header-link:hover, .site-header-link:focus-visible, .site-header-link[aria-current="page"] { color: #fff; }
 .site-header-link:active { transform: scale(.96); }
 .site-header-actions { flex: 0 0 auto; gap: 8px; margin-left: auto; }
-.site-header-search, .site-header-github, .site-header-menu {
+.site-header-search, .site-header-repo, .site-header-menu {
   height: 36px;
   gap: 8px;
   padding: 0 9px;
@@ -469,7 +469,7 @@ html.light .library-page-shell .directory-results-pane {
   text-decoration: none;
   transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease;
 }
-.site-header-search:hover, .site-header-github:hover, .site-header-menu:hover {
+.site-header-search:hover, .site-header-repo:hover, .site-header-menu:hover {
   border-color: rgba(255,255,255,.16);
   background: rgba(255,255,255,.08);
   color: #fff;
@@ -525,7 +525,7 @@ html.light .library-page-shell .directory-results-pane {
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 10px;
 }
-.site-header-github { gap: 6px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.site-header-repo { gap: 6px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .site-header-menu { display: none; justify-content: center; width: 36px; padding: 0; }
 .site-header-mobile-menu { display: none; }
 
@@ -536,8 +536,8 @@ html.light .site-header-divider { color: rgba(17,17,17,.55); }
 html.light .site-header-link { color: rgba(17,17,17,.76); }
 html.light .site-header-link-highlight { border-color: rgba(17,17,17,.1); background: rgba(255,255,255,.9); box-shadow: 0 2px 10px rgba(17,17,17,.08); }
 html.light .site-header-link:hover, html.light .site-header-link:focus-visible, html.light .site-header-link[aria-current="page"] { color: #111; }
-html.light .site-header-search, html.light .site-header-github, html.light .site-header-menu { border-color: rgba(17,17,17,.1); background: rgba(17,17,17,.035); color: rgba(17,17,17,.8); }
-html.light .site-header-search:hover, html.light .site-header-github:hover, html.light .site-header-menu:hover { background: rgba(17,17,17,.07); color: #111; }
+html.light .site-header-search, html.light .site-header-repo, html.light .site-header-menu { border-color: rgba(17,17,17,.1); background: rgba(17,17,17,.035); color: rgba(17,17,17,.8); }
+html.light .site-header-search:hover, html.light .site-header-repo:hover, html.light .site-header-menu:hover { background: rgba(17,17,17,.07); color: #111; }
 html.light .site-header-search { border-color: rgba(255,255,255,.1); background: #070708; color: rgba(255,255,255,.86); }
 html.light .site-header-search:hover { border-color: rgba(255,255,255,.2); background: #151518; color: #fff; }
 html.light .site-header-search kbd { border-color: rgba(255,255,255,.18); color: rgba(255,255,255,.78); }
@@ -550,7 +550,7 @@ html.light .site-header-search-results small { color: rgba(17,17,17,.6); }
 html.light .site-header-search-results button { border-color: rgba(17,17,17,.12); }
 
 @media (max-width: 760px) {
-  .site-header-divider, .site-header-links, .site-header-github { display: none; }
+  .site-header-divider, .site-header-links, .site-header-repo { display: none; }
   .site-header-search { width: min(43vw, 180px); }
   .site-header-actions { gap: 8px; }
   .site-header-menu { display: flex; }
@@ -1327,7 +1327,7 @@ html.light .site-header-directory .site-header-inner { background: var(--lib-bg)
 .site-header-directory .site-header-brand { color: var(--lib-text); }
 .site-header-directory .site-header-search { display: none; }
 .site-header-directory .site-header-actions { gap: 6px; }
-.site-header-directory .site-header-github,
+.site-header-directory .site-header-repo,
 .site-header-directory .site-header-menu,
 .site-header-directory [data-slot="button"][aria-label*="theme" i],
 .site-header-directory .site-header-actions > button:not(.site-header-menu) {
@@ -1337,11 +1337,11 @@ html.light .site-header-directory .site-header-inner { background: var(--lib-bg)
   transition: background-color 160ms ease, color 160ms ease;
 }
 .site-header-directory .site-header-actions > button:not(.site-header-menu) { width: 32px; min-width: 32px; padding: 0; display: grid; place-items: center; }
-.site-header-directory .site-header-github:hover,
+.site-header-directory .site-header-repo:hover,
 .site-header-directory .site-header-actions > button:hover { background: var(--lib-field-hover); color: var(--lib-text); }
-.site-header-directory .site-header-github { gap: 7px; padding: 0 10px; font-size: 12.5px; font-weight: 600; }
-.site-header-github-divider { width: 1px; height: 14px; background: currentColor; opacity: .18; }
-.site-header-github-star { width: 13px; height: 13px; fill: #e8b33c; color: #e8b33c; }
+.site-header-directory .site-header-repo { gap: 7px; padding: 0 10px; font-size: 12.5px; font-weight: 600; }
+.site-header-repo-divider { width: 1px; height: 14px; background: currentColor; opacity: .18; }
+.site-header-repo-star { width: 13px; height: 13px; fill: #e8b33c; color: #e8b33c; }
 
 /* ---- Sidebar ---- */
 html .library-page-shell .directory-sidebar { background: transparent; }
@@ -1784,17 +1784,17 @@ html .app-frame.library-page-shell[data-rail] { grid-template-columns: calc(var(
 html.light .app-frame .site-header-inner { background: var(--lib-bg); color: var(--lib-text); border: 0; box-shadow: none; }
 .app-frame .site-header-brand { color: var(--lib-text); }
 .app-frame .site-header-actions { gap: 6px; }
-.app-frame .site-header-github,
+.app-frame .site-header-repo,
 .app-frame .site-header-menu,
 .app-frame .site-header-actions > button:not(.site-header-menu),
-html.light .app-frame .site-header-github,
+html.light .app-frame .site-header-repo,
 html.light .app-frame .site-header-menu {
   height: 32px; min-height: 32px; border: 0; border-radius: 10px;
   background: var(--lib-field); color: var(--lib-text-2); box-shadow: var(--lib-depth-1);
 }
 .app-frame .site-header-actions > button:not(.site-header-menu) { display: grid; place-items: center; width: 32px; min-width: 32px; padding: 0; }
-.app-frame .site-header-github { gap: 7px; padding: 0 10px; font-size: 12.5px; font-weight: 600; }
-.app-frame .site-header-github:hover, .app-frame .site-header-actions > button:hover { background: var(--lib-field-hover); color: var(--lib-text); }
+.app-frame .site-header-repo { gap: 7px; padding: 0 10px; font-size: 12.5px; font-weight: 600; }
+.app-frame .site-header-repo:hover, .app-frame .site-header-actions > button:hover { background: var(--lib-field-hover); color: var(--lib-text); }
 .app-frame .site-header-search,
 html.light .app-frame .site-header-search {
   width: 240px; height: 32px; min-height: 32px; padding: 0 6px 0 10px; border: 0; border-radius: 10px;
@@ -2064,17 +2064,17 @@ html .app-frame[data-rail] .app-frame-slot > * { width: calc(var(--sb-docs) - 24
 
 /* Repo links */
 .app-frame-footer { grid-area: footer; display: flex; align-items: center; gap: 6px; min-width: 0; padding: 10px 12px 12px; }
-.site-github {
+.site-repo {
   display: inline-flex; align-items: center; gap: 8px; min-width: 0; height: 32px; padding: 0 10px; border-radius: 10px;
   background: var(--lib-field); color: var(--lib-text-2); box-shadow: var(--lib-depth-1);
   font-size: 12.5px; font-weight: 600; text-decoration: none; white-space: nowrap; overflow: hidden;
   transition: background-color 160ms ease, color 160ms ease;
 }
-.site-github:hover { background: var(--lib-field-hover); color: var(--lib-text); }
-.site-github svg:first-child { flex: 0 0 auto; }
-.site-github-count { display: inline-flex; align-items: center; gap: 4px; }
-.site-github-star { width: 12px; height: 12px; fill: #e8b33c; color: #e8b33c; }
-.app-frame-footer .site-github { flex: 1 1 auto; }
+.site-repo:hover { background: var(--lib-field-hover); color: var(--lib-text); }
+.site-repo svg:first-child { flex: 0 0 auto; }
+.site-repo-count { display: inline-flex; align-items: center; gap: 4px; }
+.site-repo-star { width: 12px; height: 12px; fill: #e8b33c; color: #e8b33c; }
+.app-frame-footer .site-repo { flex: 1 1 auto; }
 .app-frame-footer .theme-toggle,
 html.light .app-frame-footer .theme-toggle {
   display: grid; place-items: center; flex: 0 0 auto; width: 32px; height: 32px; min-width: 32px; padding: 0;
@@ -2082,8 +2082,8 @@ html.light .app-frame-footer .theme-toggle {
 }
 .app-frame-footer .theme-toggle:hover { background: var(--lib-field-hover); color: var(--lib-text); }
 .app-frame[data-rail] .app-frame-footer { flex-direction: column-reverse; align-items: stretch; }
-.app-frame[data-rail] .site-github { justify-content: center; padding: 0; }
-.app-frame[data-rail] .site-github-count { display: none; }
+.app-frame[data-rail] .site-repo { justify-content: center; padding: 0; }
+.app-frame[data-rail] .site-repo-count { display: none; }
 
 /* Content card: full height, small gap above. */
 html .app-frame .app-frame-panel { grid-column: 2; grid-row: 1; margin-top: 8px; }
@@ -2115,7 +2115,7 @@ html .app-frame .lib-card .lib-card-media { aspect-ratio: 1200 / 630; }
 html .app-frame .app-frame-slot { contain: size; }
 html .app-frame[data-sidebar] .app-frame-sidebar { grid-template-rows: var(--sb-brand-h) auto auto minmax(0, 1fr) auto; }
 /* Phone top bar: keep it to brand, search, theme and menu. */
-@media (max-width: 760px) { .app-frame .site-header .site-github { display: none; } }
+@media (max-width: 760px) { .app-frame .site-header .site-repo { display: none; } }
 
 
 /* =====================================================================

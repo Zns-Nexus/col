@@ -1,5 +1,6 @@
 import { DocsCode, DocsHeader, DocsLinks, DocsList, DocsNote, DocsSection, DocsText } from "@/components/DocsUI";
 import { pageMetadata, siteUrl } from "@/lib/site";
+import { repo, repoFile } from "@/lib/repo";
 
 export const metadata = pageMetadata(
   "/mcp",
@@ -57,10 +58,10 @@ export default function McpPage() {
       <DocsSection title="Install the plugin">
         <DocsText>The optional Col plugin bundles the MCP connection with a UI component workflow skill. Choose the plugin or a direct connection to avoid adding Col twice.</DocsText>
         <DocsText>For Claude Code, run:</DocsText>
-        <DocsCode code={"claude plugin marketplace add screen-gd/Col\nclaude plugin install col@col"} label="Claude Code plugin" />
+        <DocsCode code={`claude plugin marketplace add ${repo.cloneUrl}\nclaude plugin install col@col`} label="Claude Code plugin" />
         <DocsText>For Codex, run:</DocsText>
-        <DocsCode code={"codex plugin marketplace add screen-gd/Col\ncodex plugin add col@col"} label="Codex plugin" />
-        <DocsText>See the <a href="https://github.com/screen-gd/Col/blob/main/plugin/README.md" target="_blank" rel="noopener noreferrer">plugin guide</a> for package details.</DocsText>
+        <DocsCode code={`codex plugin marketplace add ${repo.cloneUrl}\ncodex plugin add col@col`} label="Codex plugin" />
+        <DocsText>See the <a href={repoFile("plugin/README.md")} target="_blank" rel="noopener noreferrer">plugin guide</a> for package details.</DocsText>
       </DocsSection>
 
       <DocsSection title="Try the connection">

@@ -4,10 +4,10 @@
   "description": "Find, inspect, and implement UI components from Col's curated catalogue inside your project, with source-linked setup and explicit gaps.",
   "author": {
     "name": "screen-gd",
-    "url": "https://github.com/screen-gd"
+    "url": "https://git.cafe/screen"
   },
   "homepage": "https://collection-of-libs.vercel.app",
-  "repository": "https://github.com/screen-gd/Col",
+  "repository": "https://git.cafe/screen/col",
   "license": "MIT",
   "keywords": ["ui", "components", "mcp", "catalogue"],
   "skills": "./skills/",

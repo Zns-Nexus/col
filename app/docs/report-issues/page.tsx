@@ -1,4 +1,5 @@
 import { pageMetadata } from "@/lib/site";
+import { repo } from "@/lib/repo";
 import { DocsButton, DocsHeader, DocsSection, DocsText } from "@/components/DocsUI";
 
 export const metadata = pageMetadata(
@@ -20,12 +21,12 @@ export default function ReportIssuesPage() {
 
       <DocsSection title="Report a bug">
         <DocsText>Include the page or action that failed, steps to reproduce it, what you expected, and what happened instead. Browser details, screenshots, or console errors help when the problem is visual or intermittent.</DocsText>
-        <DocsButton href="https://github.com/screen-gd/Col/issues/new?template=bug-report.yml">Report a bug</DocsButton>
+        <DocsButton href={repo.newIssue}>Report a bug</DocsButton>
       </DocsSection>
 
       <DocsSection title="Request a feature">
         <DocsText>Lead with the problem you are trying to solve and the result you expect. A short example of how you would use it is more helpful than a long list of possible settings.</DocsText>
-        <DocsButton href="https://github.com/screen-gd/Col/issues/new?template=feature-request.yml">Request a feature</DocsButton>
+        <DocsButton href={repo.newIssue}>Request a feature</DocsButton>
       </DocsSection>
     </article>
   );

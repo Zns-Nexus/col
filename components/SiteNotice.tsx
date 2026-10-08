@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { repo } from "@/lib/repo";
 
 const noticeKey = "col:mcp-library-rework-notice-dismissed";
 
@@ -36,8 +37,8 @@ export function SiteNotice() {
         </div>
         <div className="flex shrink-0 flex-wrap items-center gap-x-5 gap-y-2">
           <Button asChild className="site-notice-cta min-h-11 rounded-none bg-[#0800ff] px-4 text-sm font-semibold text-white hover:bg-[#241eff]">
-            <a href="https://github.com/screen-gd/Col/issues/new/choose" target="_blank" rel="noopener noreferrer">
-              Open GitHub issue
+            <a href={repo.newIssue} target="_blank" rel="noopener noreferrer">
+              Open an issue
             </a>
           </Button>
           <Button type="button" variant="link" onClick={close} className="site-notice-close min-h-11 px-0 text-sm text-inherit underline underline-offset-4">

@@ -1,10 +1,11 @@
 import { pageMetadata } from "@/lib/site";
+import { repo } from "@/lib/repo";
 import { DocsButton, DocsHeader, DocsList, DocsSection, DocsText } from "@/components/DocsUI";
 
 export const metadata = pageMetadata(
   "/docs/request-a-library",
   "Request a Library | Col",
-  "Request a missing UI library on GitHub with its official URL, supported stacks, category, and use cases.",
+  "Request a missing UI library on git.cafe with its official URL, supported stacks, category, and use cases.",
 );
 
 export default function RequestLibraryPage() {
@@ -24,7 +25,7 @@ export default function RequestLibraryPage() {
             "A short explanation of who it helps.",
           ]}
         />
-        <DocsButton href="https://github.com/screen-gd/Col/issues/new?template=library-request.yml">Open a library request</DocsButton>
+        <DocsButton href={repo.newIssue}>Open a library request</DocsButton>
       </DocsSection>
     </article>
   );

@@ -1,9 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { repo, repoFile } from "@/lib/repo";
 import styles from "./HomePage.module.css";
-
-const REPO_URL = "https://github.com/screen-gd/Col";
 
 const links = [
   ["Libraries", "/libraries"],
@@ -11,8 +10,8 @@ const links = [
   ["Docs", "/docs"],
   ["Contributors", "/contributors"],
   ["Sponsors", "/sponsors"],
-  ["GitHub", REPO_URL],
-  ["Contribute", `${REPO_URL}/issues/new/choose`],
+  ["git.cafe", repo.url],
+  ["Contribute", repo.newIssue],
 ] as const;
 
 /** Site footer with brand, links, product badge, and legal line. Also used on the 404 page. */
@@ -37,7 +36,7 @@ export function SiteFooter() {
         <Image src="https://www.dotstore.io/launches/2026-w41/col/badge/award-light.svg" alt="Col on dotstore" width={250} height={56} unoptimized className={styles.badgeLight} />
       </a>
       <p className={styles.footerLegal}>
-        © {new Date().getFullYear()} Screen · <a href={`${REPO_URL}/blob/main/LICENSE`} target="_blank" rel="noopener noreferrer">MIT license</a>
+        © {new Date().getFullYear()} Screen · <a href={repoFile("LICENSE")} target="_blank" rel="noopener noreferrer">MIT license</a>
       </p>
     </footer>
   );
