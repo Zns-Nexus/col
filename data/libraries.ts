@@ -809,6 +809,28 @@ export const libraries: Library[] = [
     useCases: ["Accessibility-first", "Dashboards", "Rapid Prototyping"],
     tags: ["web components", "custom elements", "font awesome", "shoelace", "themes"],
   },
+  {
+    name: "cmdk",
+    slug: "cmdk",
+    addedAt: "2026-10-09T10:00:00+05:30",
+    description: "A command menu React component that can also be used as an accessible combobox: items filter and sort automatically behind a fully composable API.",
+    url: "https://github.com/pacocoursey/cmdk",
+    category: "Component Library",
+    stacks: ["React", "TypeScript"],
+    useCases: ["Dashboards", "Rapid Prototyping"],
+    tags: ["command menu", "command palette", "combobox", "headless", "cmdk"],
+  },
+  {
+    name: "kbar",
+    slug: "kbar",
+    addedAt: "2026-10-09T10:00:00+05:30",
+    description: "A plug-n-play React component for a fast, portable, and extensible command + k interface, with keyboard navigation, shortcuts, nested actions, and screen-reader support.",
+    url: "https://github.com/timc1/kbar",
+    category: "Component Library",
+    stacks: ["React", "TypeScript"],
+    useCases: ["Dashboards", "Rapid Prototyping"],
+    tags: ["command palette", "command menu", "kbar", "headless"],
+  },
 ];
 
 /** Looks up a library by slug, throwing so a stale hard-coded slug fails the build instead of rendering a broken link. */

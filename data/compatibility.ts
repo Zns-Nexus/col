@@ -161,4 +161,38 @@ export const compatibility: LibraryCompatibility[] = [
       },
     ],
   },
+  {
+    slug: "cmdk",
+    facts: [
+      {
+        subject: "react",
+        constraint: "^18 || ^19",
+        status: "supported",
+        evidence: "https://registry.npmjs.org/cmdk",
+      },
+      {
+        subject: "react-dom",
+        constraint: "^18 || ^19",
+        status: "supported",
+        evidence: "https://registry.npmjs.org/cmdk",
+      },
+    ],
+  },
+  {
+    slug: "kbar",
+    facts: [
+      {
+        subject: "react",
+        constraint: "^17 || ^18 || ^19",
+        status: "supported",
+        evidence: "https://registry.npmjs.org/kbar",
+      },
+      {
+        subject: "react-dom",
+        constraint: "^17 || ^18 || ^19",
+        status: "supported",
+        evidence: "https://registry.npmjs.org/kbar",
+      },
+    ],
+  },
 ];
