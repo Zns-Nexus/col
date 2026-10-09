@@ -44,6 +44,8 @@ export interface SearchResult {
    * own fields matched, so a non-empty list is always the reason to show it.
    */
   components: LibraryComponent[];
+  /** What matched, as "<field>:<text>" — never a bare boolean. */
+  matchedOn: string[];
 }
 
 interface IndexedComponent {
@@ -57,8 +59,45 @@ interface IndexedLibrary {
   components: IndexedComponent[];
 }
 
-function componentHaystack(component: LibraryComponent): string {
-  return [component.name, ...(component.aliases ?? [])].join(" ").toLowerCase();
+/**
+ * Matching vocabulary: lowercase, fold separators into spaces, collapse runs.
+ * "command-Palette" and "cmd+k" then speak the same language as "command
+ * palette", while symbols like ⌘ survive untouched.
+ */
+export function normalizeWords(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[-_+]+/g, " ")
+    .replace(/[^a-z0-9.+#⌘ ]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** Query tokens that can discriminate: folded, and long enough to mean something. */
+export function wordTokens(query: string): string[] {
+  return normalizeWords(query).split(" ").filter((token) => token.length > 1);
+}
+
+/**
+ * A token matches at a word start, never mid-word: "cmd" touches "cmdk", while
+ * a stray letter matches nothing at all.
+ */
+export function tokenMatches(haystack: string, token: string): boolean {
+  const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp("(^|[^a-z0-9])" + escaped).test(haystack);
+}
+
+/** Folded terms plus their de-spaced forms, so glued spellings still match. */
+function buildHaystack(terms: readonly string[]): string {
+  const folded = terms.map(normalizeWords).filter(Boolean);
+  const despaced = folded
+    .filter((term) => term.length <= 40 && term.includes(" "))
+    .map((term) => term.replace(/ /g, ""));
+  return [...folded, ...despaced].join(" ");
+}
+
+export function componentHaystack(component: LibraryComponent): string {
+  return buildHaystack([component.name, ...(component.aliases ?? [])]);
 }
 
 /**
@@ -68,16 +107,14 @@ function componentHaystack(component: LibraryComponent): string {
 function buildIndex(registry: readonly Library[], components: ComponentIndex): IndexedLibrary[] {
   return registry.map((library) => ({
     library,
-    haystack: [
+    haystack: buildHaystack([
       library.name,
       library.description,
       library.category,
       ...library.stacks,
       ...library.useCases,
       ...(library.tags ?? []),
-    ]
-      .join(" ")
-      .toLowerCase(),
+    ]),
     components: (components[library.slug] ?? []).map((component) => ({
       component,
       haystack: componentHaystack(component),
@@ -112,13 +149,23 @@ export function componentRank(
   normalizedQuery: string,
 ): number {
   const name = component.name.toLowerCase();
-  if (name === normalizedQuery) return 0;
-  if (name.startsWith(normalizedQuery)) return 1;
-  if (tokens.every((token) => name.includes(token))) return 2;
   const aliases = (component.aliases ?? []).map((alias) => alias.toLowerCase());
-  if (aliases.includes(normalizedQuery)) return 3;
-  if (tokens.some((token) => name.includes(token))) return 4;
-  return 5;
+  const nameExact = normalizedQuery !== "" && name === normalizedQuery;
+  const aliasExact = aliases.includes(normalizedQuery);
+  const namePhrase = tokens.length > 0 && tokens.every((token) => name.includes(token)) || normalizedQuery !== "" && name.startsWith(normalizedQuery);
+  const aliasPhrase = aliases.some((alias) => tokens.length > 0 && tokens.every((token) => alias.includes(token)) || normalizedQuery !== "" && alias.startsWith(normalizedQuery));
+  const nameHit = nameExact || namePhrase;
+  const aliasHit = aliasExact || aliasPhrase;
+  const loose = nameHit || aliasHit || tokens.some((token) => name.includes(token) || aliases.some((alias) => alias.includes(token)));
+  if (!loose) return 8;
+  // Spec order: exact group -> functional over visual effect -> name over
+  // alias -> phrase over single token.
+  return (
+    (nameExact || aliasExact ? 0 : 1) * 8 +
+    (component.kind === "visual-effect" ? 4 : 0) +
+    (aliasHit && !nameHit ? 2 : 0) +
+    (nameHit || aliasHit ? 0 : 1)
+  );
 }
 
 /**
@@ -141,8 +188,8 @@ export function createDirectorySearch(
     useCases,
     sort,
   }: DirectoryQuery): SearchResult[] {
-    const normalizedQuery = query.toLowerCase().trim().replace(/\s+/g, " ");
-    const tokens = normalizedQuery.split(/\s+/).filter(Boolean);
+    const normalizedQuery = normalizeWords(query);
+    const tokens = wordTokens(query);
 
     const results = index
       .filter(({ library }) => {
@@ -153,7 +200,7 @@ export function createDirectorySearch(
         );
       })
       .flatMap((entry) => {
-        const componentTokens = tokens.filter((token) => !entry.haystack.includes(token));
+        const componentTokens = tokens.filter((token) => !tokenMatches(entry.haystack, token));
         // With no tokens every component would vacuously match, so browsing the
         // directory must not present a seeded library's components as hits.
         // Library metadata can supply context such as "radix" in "radix accordion",
@@ -163,11 +210,11 @@ export function createDirectorySearch(
             ? []
             : entry.components
                 .filter(({ haystack }) =>
-                  tokens.some((token) => haystack.includes(token)) &&
-                  componentTokens.every((token) => haystack.includes(token)),
+                  tokens.some((token) => tokenMatches(haystack, token)) &&
+                  componentTokens.every((token) => tokenMatches(haystack, token)),
                 )
                 .map(({ component, haystack }) => {
-                  const matchingTokens = tokens.filter((token) => haystack.includes(token));
+                  const matchingTokens = tokens.filter((token) => tokenMatches(haystack, token));
                   return {
                     component,
                     rank: componentRank(component, matchingTokens, matchingTokens.join(" ")),
@@ -178,7 +225,19 @@ export function createDirectorySearch(
                 .sort((a, b) => a.rank - b.rank)
                 .map(({ component }) => component);
         if (componentTokens.length > 0 && components.length === 0) return [];
-        return [{ library: entry.library, components }];
+        const matchedOn = [
+          ...components.map((component) => `component:${component.name}`),
+          ...tokens
+            .filter((token) => tokenMatches(entry.haystack, token))
+            .map((token) => {
+              if (tokenMatches(normalizeWords(entry.library.name), token)) return `name:${token}`;
+              if ((entry.library.tags ?? []).some((tag) => tokenMatches(normalizeWords(tag), token))) return `tag:${token}`;
+              if (entry.library.stacks.some((stack) => tokenMatches(normalizeWords(stack), token))) return `stack:${token}`;
+              if (entry.library.useCases.some((useCase) => tokenMatches(normalizeWords(useCase), token))) return `useCase:${token}`;
+              return `description:${token}`;
+            }),
+        ];
+        return [{ library: entry.library, components, matchedOn }];
       });
 
     // Array.prototype.sort is stable, so returning 0 keeps curated order.
