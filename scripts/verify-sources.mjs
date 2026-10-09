@@ -17,11 +17,20 @@ for (const [slug, components] of Object.entries(componentIndex)) {
 
 const BATCH = 16;
 const drift = [];
+const throttled = [];
 for (let i = 0; i < targets.length; i += BATCH) {
   await Promise.all(
     targets.slice(i, i + BATCH).map(async (target) => {
-      const response = await fetch(target.url, { method: "HEAD", redirect: "follow", signal: AbortSignal.timeout(15_000) }).catch(() => null);
+      // Some doc hosts reject unknown agents with 404 and throttle bursts with
+      // 429; neither is evidence of a dead link.
+      const response = await fetch(target.url, {
+        method: "GET",
+        redirect: "follow",
+        signal: AbortSignal.timeout(15_000),
+        headers: { "user-agent": "Mozilla/5.0" },
+      }).catch(() => null);
       if (!response) return drift.push(`${target.id}: unreachable`);
+      if (response.status === 429) return throttled.push(target.id);
       if (response.status >= 400) return drift.push(`${target.id}: HTTP ${response.status} at ${target.url}`);
       const finalUrl = response.url;
       if (finalUrl !== target.url && !target.url.includes("#")) {
@@ -33,5 +42,6 @@ for (let i = 0; i < targets.length; i += BATCH) {
 
 console.log(`checked ${targets.length} source URLs`);
 for (const line of drift) console.log(`DRIFT ${line}`);
-console.log(`${drift.length} drifting`);
+for (const id of throttled) console.log(`THROTTLED (inconclusive) ${id}`);
+console.log(`${drift.length} drifting, ${throttled.length} throttled`);
 process.exit(drift.length > 0 ? 1 : 0);
