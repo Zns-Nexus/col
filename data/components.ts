@@ -83,12 +83,12 @@ export const componentIndex: ComponentIndex = {
     { name: "Tree", kind: "primitive", summary: "Shadcn Tree for React and Tailwind CSS. Base UI implementation. 7 free shadcn tree components built on Headless Tree. File explorer, org chart...", verifiedAt: "2026-10-10", url: "https://reui.io/docs/components/base/tree" },
   ],
   "elevenlabs-ui": [
-    { name: "Orb", kind: "full-pattern", verifiedAt: "2026-10-09", url: "https://ui.elevenlabs.io/docs/components/orb" },
-    { name: "Audio Player", kind: "full-pattern", verifiedAt: "2026-10-09", url: "https://ui.elevenlabs.io/docs/components/audio-player" },
-    { name: "Waveform", kind: "full-pattern", verifiedAt: "2026-10-09", url: "https://ui.elevenlabs.io/docs/components/waveform" },
-    { name: "Live Waveform", kind: "full-pattern", verifiedAt: "2026-10-09", url: "https://ui.elevenlabs.io/docs/components/live-waveform" },
-    { name: "Conversation", kind: "full-pattern", verifiedAt: "2026-10-09", url: "https://ui.elevenlabs.io/docs/components/conversation" },
-    { name: "Voice Button", kind: "full-pattern", verifiedAt: "2026-10-09", url: "https://ui.elevenlabs.io/docs/components/voice-button" },
+    { name: "Orb", kind: "full-pattern", verifiedAt: "2026-10-10", url: "https://ui.elevenlabs.io/docs/components/orb" },
+    { name: "Audio Player", kind: "full-pattern", verifiedAt: "2026-10-10", url: "https://ui.elevenlabs.io/docs/components/audio-player" },
+    { name: "Waveform", kind: "full-pattern", verifiedAt: "2026-10-10", url: "https://ui.elevenlabs.io/docs/components/waveform" },
+    { name: "Live Waveform", kind: "full-pattern", verifiedAt: "2026-10-10", url: "https://ui.elevenlabs.io/docs/components/live-waveform" },
+    { name: "Conversation", kind: "full-pattern", verifiedAt: "2026-10-10", url: "https://ui.elevenlabs.io/docs/components/conversation" },
+    { name: "Voice Button", kind: "full-pattern", verifiedAt: "2026-10-10", url: "https://ui.elevenlabs.io/docs/components/voice-button" },
   ],
   "inspira-ui": [
     { name: "Breathing Text", kind: "visual-effect", summary: "Animate variable font axes continuously with a staggered breathing rhythm.", verifiedAt: "2026-10-10", url: "https://inspira-ui.com/docs/en/components/text-animations/breathing-text" },
