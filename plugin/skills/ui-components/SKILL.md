@@ -37,12 +37,12 @@ three candidates and show the user the source links before committing.
 `get_component` also returns a **preview** when Col recorded a story for the
 component: a URL rendering it in a use-case scene, honest markers (the
 rendered source and applied theme), and a screenshot the client shows inline.
-Pass the project's theme tokens — semantic colours (`primary`, `border`, …)
-from its global CSS — as `tokens` to see the component in the project's own
-look, and never send real user data in tool arguments. Show the user the
-preview link before implementing. A missing preview is an explicit gap —
-`preview-unavailable` where the stack has no story runtime — and never
-evidence about the library.
+Pass the project's theme as `tokens` (semantic colours plus `radius` and
+`font`), pick a `scene` for the use-case setting, and label the render with
+`sample` short synthetic strings. Never send real user data in tool
+arguments. Show the user the preview link before implementing. A missing
+preview is an explicit gap — `preview-unavailable` where the stack has no
+story runtime — and never evidence about the library.
 
 ## 4. Implement in context
 

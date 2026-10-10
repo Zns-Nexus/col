@@ -10,7 +10,7 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "previews": "node scripts/render-previews.mjs",
-    "test": "npm run build && node --test"
+    "test": "npm run build && npm run previews && node --test"
   },
   "dependencies": {
     "@modelcontextprotocol/server": "^2.3.0",

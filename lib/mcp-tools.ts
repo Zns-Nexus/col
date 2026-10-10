@@ -6,7 +6,14 @@ import type { LibraryDetails } from "../data/library-details/types";
 import type { DocSnapshot, LibraryCorpusEntry } from "../data/library-corpus/types";
 import type { CompatibilityFact, LibraryCompatibility } from "../data/compatibility";
 import { componentRank, createDirectorySearch, type SearchResult } from "./directory.ts";
-import { findPreviewEntry, findPreviewStory, previewPath, type PreviewStoriesEntry } from "./preview-stories.ts";
+import {
+  findPreviewEntry,
+  findPreviewStory,
+  previewPath,
+  PREVIEW_SCENES,
+  type PreviewStoriesEntry,
+} from "./preview-stories.ts";
+import { serializeSample } from "./preview-sample.ts";
 import { serializeThemeTokens } from "./preview-theme.ts";
 import { readPreviewScreenshot } from "./preview-assets.ts";
 import { PREVIEW_WIDGET_URI } from "./preview-widget.ts";
@@ -228,8 +235,16 @@ const getComponentArgs = z.object({
     .record(z.string(), z.string())
     .optional()
     .describe(
-      "Optional project theme tokens to render the preview in the project's look: semantic colour names ('primary', 'border', 'background', …) mapped to CSS colour values. Unknown names and unsafe values are ignored.",
+      "Optional project theme to render the preview in the project's look: semantic colour names ('primary', 'border', 'background', …) mapped to CSS colour values, plus 'radius' (a length like '12px') and 'font' (a font stack). Unknown names and unsafe values are ignored.",
     ),
+  scene: z
+    .enum(PREVIEW_SCENES)
+    .optional()
+    .describe("Optional use-case scene to render the preview in; defaults to the scene recorded with the story."),
+  sample: z
+    .record(z.string(), z.string())
+    .optional()
+    .describe("Optional short display strings the story replaces in its render (labels, values, questions). Synthetic data only; never send real user data."),
 });
 
 /**
@@ -453,8 +468,12 @@ export function createCatalogueTools(data: CatalogueData): CatalogueTools {
     let images: ToolOutput["images"];
     if (storyMatch) {
       const { entry, story } = storyMatch;
-      const query = serializeThemeTokens(args.tokens ?? {});
-      const themed = query !== "";
+      const scene = args.scene ?? story.scene;
+      const query = [serializeThemeTokens(args.tokens ?? {}), serializeSample(args.sample ?? {})]
+        .filter((part) => part !== "")
+        .join("&");
+      const themed = args.tokens !== undefined && serializeThemeTokens(args.tokens) !== "";
+      const sampled = args.sample !== undefined && serializeSample(args.sample) !== "";
       const screenshot = readPreviewScreenshot(entry.slug, story.component);
       const previewGaps = [
         "The preview renders one recorded story in a use-case scene, not the library's full variant set; the project render will differ once the component is adapted to its conventions.",
@@ -465,9 +484,12 @@ export function createCatalogueTools(data: CatalogueData): CatalogueTools {
           "The supplied theme tokens apply to the linked preview page; an attached screenshot still shows the library-default theme.",
         );
       }
+      if (sampled) {
+        previewGaps.push("The supplied sample data replaces the story's recorded content; the shape of the render is unchanged.");
+      }
       preview = {
-        url: absolute(previewPath(entry.slug, story) + (query ? `?${query}` : "")),
-        scene: story.scene,
+        url: absolute(previewPath(entry.slug, story, scene) + (query ? `?${query}` : "")),
+        scene,
         renderedFrom: "story",
         theme: themed ? "project tokens" : "library default",
         verification: "partial",

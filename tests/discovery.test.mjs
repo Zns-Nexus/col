@@ -8,9 +8,11 @@ const moduleSource = ts.transpileModule(source, { compilerOptions: { module: ts.
 const { libraries } = await import(`data:text/javascript,${encodeURIComponent(moduleSource)}`);
 const { integrations } = await import("../data/integrations.ts");
 const { previewStories } = await import("../data/preview-stories/index.ts");
-const { previewPath, shippableStories } = await import("../lib/preview-stories.ts");
+const { previewPath, shippableStories, PREVIEW_SCENES } = await import("../lib/preview-stories.ts");
 const previewRoutes = previewStories.flatMap((entry) =>
-  shippableStories(previewStories, entry.slug).map((story) => previewPath(entry.slug, story)),
+  shippableStories(previewStories, entry.slug).flatMap((story) =>
+    PREVIEW_SCENES.map((scene) => previewPath(entry.slug, story, scene)),
+  ),
 );
 
 const built = (name) => readFileSync(new URL(`../.next/server/app/${name}.body`, import.meta.url), "utf8");
@@ -33,7 +35,7 @@ test("build emits complete discovery files", () => {
   for (const route of [...libraries.map(({ slug }) => `/libraries/${slug}`), ...integrations.map(({ slug }) => `/integrations/${slug}`), ...previewRoutes]) {
     assert.ok(sitemap.includes(`<loc>https://collection-of-libs.vercel.app${route}</loc>`), `Sitemap is missing ${route}`);
   }
-  assert.ok(previewRoutes.includes("/preview/shadcn-ui/button"), "the shipped stories must be discoverable");
+  assert.ok(previewRoutes.includes("/preview/shadcn-ui/button/landing-pages"), "the shipped stories must be discoverable");
   assert.equal((sitemap.match(/<loc>/g) ?? []).length, staticRoutes.length + libraries.length + integrations.length + previewRoutes.length);
   assert.equal(sitemap.includes("<lastmod>"), false, "Do not present build time as content modification time");
 
@@ -41,7 +43,7 @@ test("build emits complete discovery files", () => {
   assert.ok(llms.includes("https://collection-of-libs.vercel.app/mcp/agents"));
   assert.ok(llms.includes("https://collection-of-libs.vercel.app/api/mcp"));
   assert.ok(llms.includes("component index is partial"));
-  assert.ok(llms.includes("/preview/shadcn-ui/button"), "llms.txt must link the shipped previews");
+  assert.ok(llms.includes("/preview/shadcn-ui/button/"), "llms.txt must link the shipped previews");
   const [librarySection, integrationSection] = llms.split("# Libraries\n")[1].split("\n# Integrations\n");
   const entries = librarySection.split("\n## ").slice(1);
   assert.equal(entries.length, libraries.length);

@@ -1,4 +1,4 @@
-import { USE_CASES, type Library } from "../data/libraries.ts";
+import { type Library, type UseCase } from "../data/libraries.ts";
 import type { ComponentIndex } from "../data/components.ts";
 import type { PreviewStoriesEntry, PreviewStory } from "../data/preview-stories/types.ts";
 
@@ -17,14 +17,23 @@ export function storyId(slug: string, story: PreviewStory): string {
   return `${slug}/${story.component}`;
 }
 
-/** URL-safe form of a component's official name, used in preview paths. */
+/** URL-safe form of a name (component or scene), used in preview paths. */
 export function componentSlug(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
-/** Internal path of the one page every preview channel renders. */
-export function previewPath(slug: string, story: PreviewStory): string {
-  return `/preview/${slug}/${componentSlug(story.component)}`;
+/** Use-case scenes that have a rendered template; a story's scene must be one of these. */
+export const PREVIEW_SCENES = ["Landing Pages", "Dashboards", "Marketing Sites"] as const satisfies readonly UseCase[];
+export type PreviewScene = (typeof PREVIEW_SCENES)[number];
+
+/** The scene a preview path segment names, or undefined for an unknown one. */
+export function findScene(segment: string): PreviewScene | undefined {
+  return PREVIEW_SCENES.find((scene) => componentSlug(scene) === segment);
+}
+
+/** Internal path of the one page every preview channel renders, for one scene. */
+export function previewPath(slug: string, story: PreviewStory, scene: UseCase = story.scene): string {
+  return `/preview/${slug}/${componentSlug(story.component)}/${componentSlug(scene)}`;
 }
 
 /** Public path of a story's rendered screenshot, under the site's public root. */
@@ -64,8 +73,8 @@ export function validatePreviewStories(
       if (!documented.some(({ name }) => name === story.component)) {
         errors.push(`${id}: the verified component index does not document this component for ${entry.slug}`);
       }
-      if (!(USE_CASES as readonly string[]).includes(story.scene)) {
-        errors.push(`${id}: scene "${story.scene}" is not a catalogue use case`);
+      if (!(PREVIEW_SCENES as readonly string[]).includes(story.scene)) {
+        errors.push(`${id}: scene "${story.scene}" has no rendered template`);
       }
       if (story.dependencies.some((dependency) => typeof dependency !== "string" || dependency.trim() === "")) {
         errors.push(`${id}: every dependency must be a non-empty package name`);

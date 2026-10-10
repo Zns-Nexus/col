@@ -57,6 +57,7 @@ body {
 html.light .hero-cta-primary { border-color: var(--col-brand); background: var(--col-brand); color: #fff; }
 
 :root {
+  --radius: 0.5rem;
   --col-brand: #0800ff;
   --col-blue: #69a9ff;
   --background: #000;
@@ -815,6 +816,11 @@ html.light :focus-visible:not(input) {
   }
 }
 @theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);

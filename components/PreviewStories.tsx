@@ -6,44 +6,45 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 /**
  * Preview story renders — the documented component itself, with realistic
- * props, keyed by story id (`<library-slug>/<component name>`). The preview
- * page looks stories up here; a story id with no render fails the build rather
- * than shipping blank.
+ * props, keyed by story id (`<library-slug>/<component name>`). Each render
+ * takes the caller's sample strings and falls back to the recorded defaults
+ * for any it does not supply. The preview page looks stories up here; a story
+ * id with no render fails the build rather than shipping blank.
  */
-export type StoryRender = () => React.ReactElement;
+export type StoryRender = (props: { sample: Readonly<Record<string, string>> }) => React.ReactElement;
 
-function ButtonStory() {
+function ButtonStory({ sample }: { sample: Readonly<Record<string, string>> }) {
   return (
     <div className="flex flex-wrap items-center justify-center gap-3">
-      <Button size="lg">Start free trial</Button>
+      <Button size="lg">{sample.primaryLabel ?? "Start free trial"}</Button>
       <Button size="lg" variant="outline">
-        View the docs
+        {sample.secondaryLabel ?? "View the docs"}
       </Button>
     </div>
   );
 }
 
-function CardStory() {
+function CardStory({ sample }: { sample: Readonly<Record<string, string>> }) {
   return (
     <div className="grid w-full max-w-2xl gap-4 sm:grid-cols-2">
       <Card>
         <CardHeader>
-          <CardTitle>Monthly revenue</CardTitle>
+          <CardTitle>{sample.title1 ?? "Monthly revenue"}</CardTitle>
           <CardDescription>Last 30 days</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-semibold">$48,210</p>
-          <p className="text-sm text-muted-foreground">+12.4% from the previous period</p>
+          <p className="text-3xl font-semibold">{sample.value1 ?? "$48,210"}</p>
+          <p className="text-sm text-muted-foreground">{sample.change1 ?? "+12.4% from the previous period"}</p>
         </CardContent>
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Active subscriptions</CardTitle>
+          <CardTitle>{sample.title2 ?? "Active subscriptions"}</CardTitle>
           <CardDescription>Last 30 days</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-semibold">1,284</p>
-          <p className="text-sm text-muted-foreground">+3.1% from the previous period</p>
+          <p className="text-3xl font-semibold">{sample.value2 ?? "1,284"}</p>
+          <p className="text-sm text-muted-foreground">{sample.change2 ?? "+3.1% from the previous period"}</p>
         </CardContent>
       </Card>
     </div>
@@ -62,31 +63,33 @@ function AccordionTrigger({ children, ...props }: React.ComponentProps<typeof Ac
   );
 }
 
-function AccordionStory() {
+function AccordionStory({ sample }: { sample: Readonly<Record<string, string>> }) {
   return (
     <Accordion.Root type="single" collapsible defaultValue="pricing" className="group w-full max-w-xl">
       <Accordion.Item value="pricing" className="border-b border-border">
         <Accordion.Header>
-          <AccordionTrigger>How does pricing work?</AccordionTrigger>
+          <AccordionTrigger>{sample.question1 ?? "How does pricing work?"}</AccordionTrigger>
         </Accordion.Header>
         <Accordion.Content className="pb-4 text-sm text-muted-foreground">
-          Every plan includes the full component set. Paid tiers add team seats and priority support.
+          {sample.answer1 ??
+            "Every plan includes the full component set. Paid tiers add team seats and priority support."}
         </Accordion.Content>
       </Accordion.Item>
       <Accordion.Item value="license" className="border-b border-border">
         <Accordion.Header>
-          <AccordionTrigger>Can I use the components commercially?</AccordionTrigger>
+          <AccordionTrigger>{sample.question2 ?? "Can I use the components commercially?"}</AccordionTrigger>
         </Accordion.Header>
         <Accordion.Content className="pb-4 text-sm text-muted-foreground">
-          Yes. The code you install is yours to use in commercial products, per the library&apos;s license.
+          {sample.answer2 ??
+            "Yes. The code you install is yours to use in commercial products, per the library's license."}
         </Accordion.Content>
       </Accordion.Item>
       <Accordion.Item value="frameworks" className="border-b border-border">
         <Accordion.Header>
-          <AccordionTrigger>Does it work with my framework?</AccordionTrigger>
+          <AccordionTrigger>{sample.question3 ?? "Does it work with my framework?"}</AccordionTrigger>
         </Accordion.Header>
         <Accordion.Content className="pb-4 text-sm text-muted-foreground">
-          Each component page lists the frameworks and versions the library documents support for.
+          {sample.answer3 ?? "Each component page lists the frameworks and versions the library documents support for."}
         </Accordion.Content>
       </Accordion.Item>
     </Accordion.Root>
