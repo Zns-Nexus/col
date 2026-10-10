@@ -68,6 +68,21 @@ import corvu from "./corvu.ts";
 import starwind_ui from "./starwind-ui.ts";
 import webcoreui from "./webcoreui.ts";
 import web_awesome from "./web-awesome.ts";
+import morphin from "./morphin.ts";
+import viora_ui from "./viora-ui.ts";
+import tween_ui from "./tween-ui.ts";
+import scrollx_ui from "./scrollx-ui.ts";
+import toggle_supply from "./toggle-supply.ts";
+import designpass from "./designpass.ts";
+import prompt_motion from "./prompt-motion.ts";
+import evil_buttons from "./evil-buttons.ts";
+import drawably from "./drawably.ts";
+import appllama from "./appllama.ts";
+import amicons from "./amicons.ts";
+import lucide_animated from "./lucide-animated.ts";
+import lordicon from "./lordicon.ts";
+import useanimations from "./useanimations.ts";
+import all_svg_icons from "./all-svg-icons.ts";
 
 export type { LibraryDetails };
 
@@ -148,4 +163,19 @@ export const libraryDetails: Record<string, LibraryDetails> = {
   "starwind-ui": starwind_ui,
   "webcoreui": webcoreui,
   "web-awesome": web_awesome,
+  "morphin": morphin,
+  "viora-ui": viora_ui,
+  "tween-ui": tween_ui,
+  "scrollx-ui": scrollx_ui,
+  "toggle-supply": toggle_supply,
+  "designpass": designpass,
+  "prompt-motion": prompt_motion,
+  "evil-buttons": evil_buttons,
+  "drawably": drawably,
+  "appllama": appllama,
+  "amicons": amicons,
+  "lucide-animated": lucide_animated,
+  "lordicon": lordicon,
+  "useanimations": useanimations,
+  "all-svg-icons": all_svg_icons,
 };
