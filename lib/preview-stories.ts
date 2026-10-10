@@ -23,7 +23,12 @@ export function componentSlug(name: string): string {
 }
 
 /** Use-case scenes that have a rendered template; a story's scene must be one of these. */
-export const PREVIEW_SCENES = ["Landing Pages", "Dashboards", "Marketing Sites"] as const satisfies readonly UseCase[];
+export const PREVIEW_SCENES = [
+  "Landing Pages",
+  "Dashboards",
+  "Marketing Sites",
+  "Rapid Prototyping",
+] as const satisfies readonly UseCase[];
 export type PreviewScene = (typeof PREVIEW_SCENES)[number];
 
 /** The scene a preview path segment names, or undefined for an unknown one. */

@@ -39,8 +39,17 @@ function MarketingSitesScene({ children }: { children: ReactNode }) {
   );
 }
 
+function RapidPrototypingScene({ children }: { children: ReactNode }) {
+  return (
+    <section className="mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center px-6">
+      {children}
+    </section>
+  );
+}
+
 export const sceneTemplates: Partial<Record<UseCase, SceneTemplate>> = {
   "Landing Pages": LandingPagesScene,
   Dashboards: DashboardsScene,
   "Marketing Sites": MarketingSitesScene,
+  "Rapid Prototyping": RapidPrototypingScene,
 };
