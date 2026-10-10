@@ -1,0 +1,15 @@
+// WebcoreUI ships its styling as Sass sources, so the preview routes compile
+// the documented setup once here. The dark theme maps to the preview canvas
+// (`[data-preview-themed]`, set by PreviewCanvas) to match the black canvas;
+// resets stay off so the package never restyles the page chrome.
+//
+// The package entry is reached by file path rather than the `webcoreui/styles`
+// specifier on purpose: the bundler's package-aware Sass importer hands the
+// entry a synthetic URL, which breaks the relative imports inside the package's
+// own scss. A plain relative path keeps every inner @forward resolving.
+@use "../node_modules/webcoreui/scss/index.scss" as *;
+
+@include setup((
+    includeResets: false,
+    themes: (dark: "[data-preview-themed]"),
+));

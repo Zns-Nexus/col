@@ -72,7 +72,14 @@ try {
 
       const out = path.join(root, "public", previewScreenshotPath(entry.slug, story.component));
       mkdirSync(path.dirname(out), { recursive: true });
-      await page.screenshot({ path: out, fullPage: true });
+      try {
+        await page.screenshot({ path: out, fullPage: true });
+      } catch {
+        // One broken capture must never stall the whole catalogue: fall back to
+        // the viewport shot and say so, so the gap is visible in the log.
+        console.warn(`full-page capture failed for ${id}; falling back to viewport`);
+        await page.screenshot({ path: out });
+      }
       console.log(`rendered ${id} -> ${path.relative(root, out)}`);
     }
   }

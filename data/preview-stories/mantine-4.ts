@@ -1,0 +1,66 @@
+import type { PreviewStoriesEntry } from "./types";
+
+/**
+ * Preview stories for Mantine (chunk 4 of 4: charts, dates, code-highlight,
+ * schedule and the @mantine/x packages). Rules are enforced by
+ * `scripts/check-story.mjs`: a granted permission record, component names as
+ * the verified component index spells them, scenes with rendered templates,
+ * and every npm package the render imports listed in `dependencies`.
+ */
+export const previewStoriesEntry: PreviewStoriesEntry = {
+  slug: "mantine",
+  permission: {
+    status: "granted",
+    source: "https://github.com/mantinedev/mantine/blob/master/LICENSE",
+    checkedAt: "2026-10-10T00:00:00Z",
+  },
+  stories: [
+    { component: "MiniCalendar", scene: "Rapid Prototyping", dependencies: ["@mantine/core", "@mantine/dates"] },
+    { component: "AreaChart", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "BarChart", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "LineChart", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "Sparkline", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "DonutChart", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "PieChart", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "RadarChart", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "ScatterChart", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "BubbleChart", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "FunnelChart", scene: "Marketing Sites", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "CompositeChart", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "CandlestickChart", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "RadialBarChart", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "Heatmap", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "BarsList", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "BulletChart", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "GaugeChart", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "WaffleChart", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "Treemap", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "SunburstChart", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "MatrixChart", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "SankeyChart", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/charts"] },
+    { component: "CodeHighlight", scene: "Landing Pages", dependencies: ["@mantine/core", "@mantine/code-highlight"] },
+    { component: "JsonViewer", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/code-highlight"] },
+    { component: "DayView", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/schedule"] },
+    { component: "MonthView", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/schedule"] },
+    { component: "WeekView", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/schedule"] },
+    { component: "YearView", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/schedule"] },
+    { component: "MobileMonthView", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/schedule"] },
+    { component: "Schedule", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/schedule"] },
+    { component: "ResourcesDayView", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/schedule"] },
+    { component: "ResourcesWeekView", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/schedule"] },
+    { component: "ResourcesMonthView", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/schedule"] },
+    { component: "ResourcesSchedule", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/schedule"] },
+    { component: "AgendaView", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/schedule"] },
+    { component: "Notifications", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/notifications"] },
+    { component: "Spotlight", scene: "Rapid Prototyping", dependencies: ["@mantine/core", "@mantine/spotlight", "lucide-react"] },
+    { component: "Carousel", scene: "Marketing Sites", dependencies: ["@mantine/core", "@mantine/carousel"] },
+    { component: "Dropzone", scene: "Rapid Prototyping", dependencies: ["@mantine/core", "@mantine/dropzone", "lucide-react"] },
+    { component: "NavigationProgress", scene: "Dashboards", dependencies: ["@mantine/core", "@mantine/nprogress"] },
+    { component: "Lightbox", scene: "Marketing Sites", dependencies: ["@mantine/core", "@mantine/lightbox"] },
+    {
+      component: "RichTextEditor",
+      scene: "Rapid Prototyping",
+      dependencies: ["@mantine/core", "@mantine/tiptap", "@tiptap/react", "@tiptap/starter-kit"],
+    },
+  ],
+};

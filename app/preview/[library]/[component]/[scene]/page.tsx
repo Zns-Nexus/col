@@ -1,5 +1,24 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+
+// Library stylesheets load with the preview routes so story modules stay
+// CSS-free. Mantine and its extension packages ship mandatory styles.css
+// files; core must come first so extensions layer on top of it.
+import "@mantine/core/styles.css";
+import "@mantine/dates/styles.css";
+import "@mantine/charts/styles.css";
+import "@mantine/code-highlight/styles.css";
+import "@mantine/schedule/styles.css";
+import "@mantine/notifications/styles.css";
+import "@mantine/spotlight/styles.css";
+import "@mantine/carousel/styles.css";
+import "@mantine/dropzone/styles.css";
+import "@mantine/nprogress/styles.css";
+import "@mantine/lightbox/styles.css";
+import "@mantine/tiptap/styles.css";
+import "@awesome.me/webawesome/dist/styles/webawesome.css";
+import "@/styles/preview-libraries.scss";
+
 import { previewStories } from "@/data/preview-stories";
 import {
   componentSlug,
