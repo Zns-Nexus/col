@@ -32,7 +32,19 @@ three candidates and show the user the source links before committing.
   facts. Compatibility facts are `supported`, `unsupported`, or `unknown` —
   never guess past `unknown`, and check `evidence.gaps` for what is unverified.
 
-## 3. Implement in context
+## 3. Show how it looks
+
+`get_component` also returns a **preview** when Col recorded a story for the
+component: a URL rendering it in a use-case scene, honest markers (the
+rendered source and applied theme), and a screenshot the client shows inline.
+Pass the project's theme tokens — semantic colours (`primary`, `border`, …)
+from its global CSS — as `tokens` to see the component in the project's own
+look, and never send real user data in tool arguments. Show the user the
+preview link before implementing. A missing preview is an explicit gap —
+`preview-unavailable` where the stack has no story runtime — and never
+evidence about the library.
+
+## 4. Implement in context
 
 1. Inspect the project first: framework, styling approach, TypeScript, and
    existing component conventions.

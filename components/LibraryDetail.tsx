@@ -5,7 +5,9 @@ import { integrationTypes, type Integration } from "@/data/integrations";
 import type { Library } from "@/data/libraries";
 import type { LibraryDetails } from "@/data/library-details";
 import { libraryPreviews } from "@/data/library-previews";
+import { previewStories } from "@/data/preview-stories";
 import { publisherOf } from "@/lib/integration-directory";
+import { previewPath, previewScreenshotPath, shippableStories } from "@/lib/preview-stories";
 import type { RelatedLibraries } from "@/lib/related-libraries";
 import { integrationPath, libraryPath } from "@/lib/site";
 import { hostname } from "@/lib/utils";
@@ -49,6 +51,11 @@ export function LibraryDetail({ library, details, related, integrations }: Libra
   const preview = libraryPreviews[library.slug] ?? (details.preview ? { src: details.preview.src, width: 1200, height: 630 } : undefined);
   const previewAlt = details.preview?.alt ?? `${library.name} website preview`;
   const CategoryIcon = categoryIcons[library.category];
+  const stories = shippableStories(previewStories, library.slug).map((story) => ({
+    story,
+    href: previewPath(library.slug, story),
+    image: `/${previewScreenshotPath(library.slug, story.component)}`,
+  }));
   const relatedGroups = [
     { title: "Alternatives", items: related.alternatives },
     { title: "Pairs well with", items: related.pairsWith },
@@ -130,6 +137,25 @@ export function LibraryDetail({ library, details, related, integrations }: Libra
                   </li>
                 ))}
               </ol>
+            </section>
+          )}
+
+          {stories.length > 0 && (
+            <section className="ld-section ld-reveal" style={reveal(5)} aria-labelledby="ld-previews">
+              <h2 id="ld-previews">Component previews</h2>
+              <p className="ld-section-note">
+                Each component rendered by Col in a use-case scene. Your project&apos;s theme will differ; open a preview to see it in your own tokens.
+              </p>
+              <ul className="ld-previews">
+                {stories.map(({ story, href, image }) => (
+                  <li key={href}>
+                    <a href={href} className="ld-preview-link">
+                      <img src={image} alt={`${library.name} ${story.component} rendered in a ${story.scene} scene`} loading="lazy" />
+                      <span className="ld-preview-caption">{story.component} · {story.scene}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </section>
           )}
 

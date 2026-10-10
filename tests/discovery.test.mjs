@@ -7,6 +7,11 @@ const source = readFileSync(new URL("../data/libraries.ts", import.meta.url), "u
 const moduleSource = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext } }).outputText;
 const { libraries } = await import(`data:text/javascript,${encodeURIComponent(moduleSource)}`);
 const { integrations } = await import("../data/integrations.ts");
+const { previewStories } = await import("../data/preview-stories/index.ts");
+const { previewPath, shippableStories } = await import("../lib/preview-stories.ts");
+const previewRoutes = previewStories.flatMap((entry) =>
+  shippableStories(previewStories, entry.slug).map((story) => previewPath(entry.slug, story)),
+);
 
 const built = (name) => readFileSync(new URL(`../.next/server/app/${name}.body`, import.meta.url), "utf8");
 
@@ -25,16 +30,18 @@ test("build emits complete discovery files", () => {
   for (const route of staticRoutes) {
     assert.ok(sitemap.includes(`<loc>https://collection-of-libs.vercel.app${route}</loc>`));
   }
-  for (const route of [...libraries.map(({ slug }) => `/libraries/${slug}`), ...integrations.map(({ slug }) => `/integrations/${slug}`)]) {
+  for (const route of [...libraries.map(({ slug }) => `/libraries/${slug}`), ...integrations.map(({ slug }) => `/integrations/${slug}`), ...previewRoutes]) {
     assert.ok(sitemap.includes(`<loc>https://collection-of-libs.vercel.app${route}</loc>`), `Sitemap is missing ${route}`);
   }
-  assert.equal((sitemap.match(/<loc>/g) ?? []).length, staticRoutes.length + libraries.length + integrations.length);
+  assert.ok(previewRoutes.includes("/preview/shadcn-ui/button"), "the shipped stories must be discoverable");
+  assert.equal((sitemap.match(/<loc>/g) ?? []).length, staticRoutes.length + libraries.length + integrations.length + previewRoutes.length);
   assert.equal(sitemap.includes("<lastmod>"), false, "Do not present build time as content modification time");
 
   assert.ok(llms.includes("/docs/agents"));
   assert.ok(llms.includes("https://collection-of-libs.vercel.app/mcp/agents"));
   assert.ok(llms.includes("https://collection-of-libs.vercel.app/api/mcp"));
   assert.ok(llms.includes("component index is partial"));
+  assert.ok(llms.includes("/preview/shadcn-ui/button"), "llms.txt must link the shipped previews");
   const [librarySection, integrationSection] = llms.split("# Libraries\n")[1].split("\n# Integrations\n");
   const entries = librarySection.split("\n## ").slice(1);
   assert.equal(entries.length, libraries.length);
@@ -55,7 +62,7 @@ test("build emits complete discovery files", () => {
 });
 
 test("public pages emit their own canonical and social identity", () => {
-  const routes = ["/", "/mcp", "/mcp/agents", "/docs", "/docs/agents", "/docs/find-a-library", "/docs/request-a-library", "/docs/report-issues", "/docs/pull-requests", "/contributors", "/sponsors", ...libraries.map(({ slug }) => `/libraries/${slug}`), ...integrations.map(({ slug }) => `/integrations/${slug}`)];
+  const routes = ["/", "/mcp", "/mcp/agents", "/docs", "/docs/agents", "/docs/find-a-library", "/docs/request-a-library", "/docs/report-issues", "/docs/pull-requests", "/contributors", "/sponsors", ...libraries.map(({ slug }) => `/libraries/${slug}`), ...integrations.map(({ slug }) => `/integrations/${slug}`), ...previewRoutes];
   for (const route of routes) {
     const html = readFileSync(new URL(`../.next/server/app/${route === "/" ? "index" : route.slice(1)}.html`, import.meta.url), "utf8");
     const url = `https://collection-of-libs.vercel.app${route === "/" ? "" : route}`;

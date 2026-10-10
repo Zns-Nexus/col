@@ -2,6 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  outputFileTracingIncludes: {
+    // The MCP route returns preview screenshots as image content blocks, so the
+    // rendered PNGs must ship inside the function bundle (public/ is CDN-only).
+    "/api/mcp": ["./public/previews/**/*"],
+  },
   async headers() {
     return [{
       source: "/col-social-preview:version(.*).jpg",

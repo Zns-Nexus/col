@@ -6,6 +6,10 @@ import type { LibraryDetails } from "../data/library-details/types";
 import type { DocSnapshot, LibraryCorpusEntry } from "../data/library-corpus/types";
 import type { CompatibilityFact, LibraryCompatibility } from "../data/compatibility";
 import { componentRank, createDirectorySearch, type SearchResult } from "./directory.ts";
+import { findPreviewEntry, findPreviewStory, previewPath, type PreviewStoriesEntry } from "./preview-stories.ts";
+import { serializeThemeTokens } from "./preview-theme.ts";
+import { readPreviewScreenshot } from "./preview-assets.ts";
+import { PREVIEW_WIDGET_URI } from "./preview-widget.ts";
 import { admissibleSnapshots } from "./corpus.ts";
 import { compatibilityReport, type CompatibilityReport } from "./compatibility.ts";
 import { libraryPath, siteUrl } from "./site.ts";
@@ -103,6 +107,21 @@ export interface LibraryDetailsResult {
   evidence: Evidence;
 }
 
+/** How one component looks in a use-case scene, rendered by Col's preview page. */
+export interface PreviewDetails {
+  /** The shared preview page, themed when the caller supplied tokens. */
+  url: string;
+  scene: UseCase;
+  /** Col rendered a recorded story; this is not a screenshot of the user's project. */
+  renderedFrom: "story";
+  theme: "library default" | "project tokens";
+  verification: Verification;
+  /** What the preview does not show. Never empty. */
+  gaps: string[];
+  /** The shipped screenshot's metadata; the tool result's image block carries the bytes. */
+  screenshot: { mimeType: "image/png"; alt: string } | null;
+}
+
 export interface ComponentDetailsResult {
   id: string;
   name: string;
@@ -113,12 +132,14 @@ export interface ComponentDetailsResult {
   install: { label: string; command: string }[];
   registrySetup: { description: string; config?: string } | null;
   compatibility: CompatibilityReport;
+  /** How the component looks in a use-case scene, when Col recorded a story for it. */
+  preview: PreviewDetails | null;
   evidence: Evidence;
 }
 
 /** A JSON-RPC tool result: either a payload or a typed error. */
 export type ToolResult = {
-  content: { type: "text"; text: string }[];
+  content: ({ type: "text"; text: string } | { type: "image"; data: string; mimeType: string })[];
   structuredContent?: Record<string, unknown>;
   isError?: boolean;
 };
@@ -130,6 +151,8 @@ export interface ToolDefinition {
   /** The zod schema `invoke` validates with; published to clients as JSON Schema. */
   args: z.ZodType<unknown>;
   annotations: { readOnlyHint: true; destructiveHint: false; idempotentHint: true; openWorldHint: false };
+  /** Tool-level metadata, e.g. the MCP Apps UI linkage (`ui.resourceUri`). */
+  meta?: Record<string, unknown>;
 }
 
 /** The four tool calls, as one request-to-result interface. */
@@ -144,6 +167,7 @@ export interface CatalogueData {
   details: Record<string, LibraryDetails>;
   corpus: readonly LibraryCorpusEntry[];
   compatibility: readonly LibraryCompatibility[];
+  previewStories: readonly PreviewStoriesEntry[];
 }
 
 const MAX_LIMIT = 25;
@@ -200,6 +224,12 @@ const getLibraryArgs = z.object({
 
 const getComponentArgs = z.object({
   id: z.string().min(1).describe("Component id from search_components, e.g. 'shadcn-ui/Command'."),
+  tokens: z
+    .record(z.string(), z.string())
+    .optional()
+    .describe(
+      "Optional project theme tokens to render the preview in the project's look: semantic colour names ('primary', 'border', 'background', …) mapped to CSS colour values. Unknown names and unsafe values are ignored.",
+    ),
 });
 
 /**
@@ -397,7 +427,7 @@ export function createCatalogueTools(data: CatalogueData): CatalogueTools {
     };
   }
 
-  function getComponent(raw: unknown): ComponentDetailsResult {
+  function getComponent(raw: unknown): ToolOutput {
     const args = parseArgs("get_component", getComponentArgs, raw);
     const parsedId = parseComponentId(args.id);
     if (!parsedId) {
@@ -412,27 +442,81 @@ export function createCatalogueTools(data: CatalogueData): CatalogueTools {
     const details = data.details[library.slug];
     const facts = compatibilityFor(data, library.slug);
 
-    return {
+    const gaps = [
+      "The component page is verified on the library's own documentation; installation and API details come from the library's setup docs and may cover more than this component.",
+      compatibilityGap(facts),
+      COVERAGE_GAP,
+    ];
+
+    const storyMatch = findPreviewStory(data.previewStories, args.id);
+    let preview: PreviewDetails | null = null;
+    let images: ToolOutput["images"];
+    if (storyMatch) {
+      const { entry, story } = storyMatch;
+      const query = serializeThemeTokens(args.tokens ?? {});
+      const themed = query !== "";
+      const screenshot = readPreviewScreenshot(entry.slug, story.component);
+      const previewGaps = [
+        "The preview renders one recorded story in a use-case scene, not the library's full variant set; the project render will differ once the component is adapted to its conventions.",
+        "A preview shows fit, not proof: only the compatibility facts above are verified evidence.",
+      ];
+      if (themed) {
+        previewGaps.push(
+          "The supplied theme tokens apply to the linked preview page; an attached screenshot still shows the library-default theme.",
+        );
+      }
+      preview = {
+        url: absolute(previewPath(entry.slug, story) + (query ? `?${query}` : "")),
+        scene: story.scene,
+        renderedFrom: "story",
+        theme: themed ? "project tokens" : "library default",
+        verification: "partial",
+        gaps: previewGaps,
+        screenshot: screenshot
+          ? { mimeType: "image/png", alt: `${library.name} ${story.component} rendered in a ${story.scene} scene` }
+          : null,
+      };
+      images = screenshot ? [screenshot] : undefined;
+    } else {
+      const entry = findPreviewEntry(data.previewStories, parsedId.slug);
+      if (entry && entry.permission.status !== "granted") {
+        gaps.push(
+          "Preview stories for this library are withheld because no granted reuse permission is recorded; the documentation link above is the source of truth.",
+        );
+      } else {
+        gaps.push(
+          library.stacks.includes("React")
+            ? "No preview story is recorded for this component; a missing preview is not evidence the component cannot be previewed."
+            : "Preview is unavailable: Col's story runtime renders React components only, so this component is preview-unavailable for now. Its documentation link above is the source of truth.",
+        );
+      }
+    }
+
+    const payload: ComponentDetailsResult = {
       ...componentHit(library, component),
       library: { slug: library.slug, name: library.name, url: library.url, docsUrl: details?.docsUrl ?? null },
       install: details?.install ?? [],
       registrySetup: details?.registrySetup ?? null,
       compatibility: compatibilityReport(facts, subjects),
+      preview,
       evidence: {
         verification: "partial",
-        gaps: [
-          "The component page is verified on the library's own documentation; installation and API details come from the library's setup docs and may cover more than this component.",
-          compatibilityGap(facts),
-          COVERAGE_GAP,
-        ],
+        gaps,
       },
     };
+    return { payload, images };
   }
 
-  const handlers: Record<string, (args: unknown) => unknown> = {
-    search_libraries: searchLibraries,
-    search_components: searchComponents,
-    get_library: getLibrary,
+  /** Handlers answer a payload plus, where a shipped screenshot exists, image blocks for the tool result. */
+  interface ToolOutput {
+    payload: object;
+    images?: { data: string; mimeType: string }[];
+  }
+
+  const handlers: Record<string, (args: unknown) => ToolOutput> = {
+    search_libraries: (args) => ({ payload: searchLibraries(args) }),
+    search_components: (args) => ({ payload: searchComponents(args) }),
+    get_library: (args) => ({ payload: getLibrary(args) }),
     get_component: getComponent,
   };
 
@@ -442,11 +526,13 @@ export function createCatalogueTools(data: CatalogueData): CatalogueTools {
       return errorResult(`unknown tool "${name}"; available tools: ${Object.keys(handlers).join(", ")}`);
     }
     try {
-      const payload = handler(args) as Record<string, unknown>;
-      return {
-        content: [{ type: "text", text: JSON.stringify(payload) }],
-        structuredContent: payload,
-      };
+      const output = handler(args);
+      const payload = output.payload as Record<string, unknown>;
+      const content: ToolResult["content"] = [{ type: "text", text: JSON.stringify(payload) }];
+      for (const image of output.images ?? []) {
+        content.push({ type: "image", data: image.data, mimeType: image.mimeType });
+      }
+      return { content, structuredContent: payload };
     } catch (error) {
       return errorResult(error instanceof ArgumentError ? error.message : `${name} failed: ${String(error)}`);
     }
@@ -487,8 +573,9 @@ const TOOL_DEFINITIONS: ToolDefinition[] = [
   {
     name: "get_component",
     title: "Inspect one component in Col",
-    description: `One component's canonical documentation link plus its library's install commands, registry setup, and verified compatibility facts (explicit "unknown" where nothing is verified). Ids come from search_components as '<library-slug>/<component name>'. ${COVERAGE_NOTE} ${NO_CREDENTIALS_NOTE}`,
+    description: `One component's canonical documentation link plus its library's install commands, registry setup, and verified compatibility facts (explicit "unknown" where nothing is verified). When Col has recorded a story for the component, also returns how it looks in a use-case scene: a preview URL (themed with \`tokens\` when supplied), honest preview markers, and a rendered screenshot. A missing preview is an explicit gap, never evidence about the library. Ids come from search_components as '<library-slug>/<component name>'. ${COVERAGE_NOTE} ${NO_CREDENTIALS_NOTE}`,
     args: getComponentArgs,
     annotations: annotation,
+    meta: { ui: { resourceUri: PREVIEW_WIDGET_URI } },
   },
 ];
