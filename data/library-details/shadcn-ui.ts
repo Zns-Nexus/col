@@ -3,6 +3,7 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://ui.shadcn.com/docs",
   repoUrl: "https://github.com/shadcn-ui/ui",
+  componentInstallTemplate: "npx shadcn@latest add {slug}",
   install: [
     { label: "Initialize an existing project", command: "npx shadcn@latest init" },
     { label: "Add a component", command: "npx shadcn@latest add button" },

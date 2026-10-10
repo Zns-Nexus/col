@@ -41,6 +41,8 @@ import park_ui from "./park-ui.ts";
 import headless_ui from "./headless-ui.ts";
 import tailwind_css from "./tailwind-css.ts";
 import kibo_ui from "./kibo-ui.ts";
+import cmdk from "./cmdk.ts";
+import kbar from "./kbar.ts";
 import shadcnblocks from "./shadcnblocks.ts";
 import ruixen_ui from "./ruixen-ui.ts";
 import fancy_components from "./fancy-components.ts";
@@ -136,6 +138,8 @@ export const libraryDetails: Record<string, LibraryDetails> = {
   "headless-ui": headless_ui,
   "tailwind-css": tailwind_css,
   "kibo-ui": kibo_ui,
+  "cmdk": cmdk,
+  "kbar": kbar,
   "shadcnblocks": shadcnblocks,
   "ruixen-ui": ruixen_ui,
   "fancy-components": fancy_components,

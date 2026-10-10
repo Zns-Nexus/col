@@ -2,12 +2,13 @@ import * as z from "zod/v4";
 import type { Category, Library, Stack, UseCase } from "../data/libraries";
 import { CATEGORIES, STACKS, USE_CASES } from "../data/libraries.ts";
 import type { ComponentIndex, LibraryComponent } from "../data/components";
+import { componentConcepts, type ComponentKind } from "../data/components.ts";
 import type { LibraryDetails } from "../data/library-details/types";
 import type { DocSnapshot, LibraryCorpusEntry } from "../data/library-corpus/types";
 import type { CompatibilityFact, LibraryCompatibility } from "../data/compatibility";
-import { componentRank, createDirectorySearch, type SearchResult } from "./directory.ts";
+import { componentHaystack, componentRank, createDirectorySearch, normalizeWords, tokenMatches, wordTokens, type SearchResult } from "./directory.ts";
 import { admissibleSnapshots } from "./corpus.ts";
-import { compatibilityReport, type CompatibilityReport } from "./compatibility.ts";
+import { compatibilityReport, trackedSubjects, type CompatibilityReport } from "./compatibility.ts";
 import { libraryPath, siteUrl } from "./site.ts";
 
 /**
@@ -31,10 +32,21 @@ import { libraryPath, siteUrl } from "./site.ts";
 /** How well Col has verified what a result claims. */
 export type Verification = "verified" | "partial" | "unverified";
 
+/**
+ * Verification stated per field, so "verified" never means different things in
+ * different tools and a gap stays attributable to the field that has it.
+ */
+export interface FieldVerification {
+  page: "verified" | "unverified";
+  install: "component" | "library-level" | "none";
+  compatibility: "recorded" | "unknown";
+  snapshot: "ingested" | "none";
+}
+
 /** The shared envelope every tool result carries. */
 export interface Evidence {
-  verification: Verification;
-  /** What Col has not verified. Never empty for "partial" or "unverified". */
+  verification: FieldVerification;
+  /** What Col has not verified for this result; shared caveats live once on the response envelope. */
   gaps: string[];
 }
 
@@ -46,6 +58,7 @@ export interface LibraryHit {
   url: string;
   /** The library's own page in Col, for stable referencing. */
   colListingUrl: string;
+  matchedOn: string[];
   category: Category;
   stacks: Stack[];
   useCases: UseCase[];
@@ -54,7 +67,23 @@ export interface LibraryHit {
   evidence: Evidence;
 }
 
+/** The empty-result explanations the tools use; a closed set, never free prose. */
+export type EmptyHint =
+  | "no recorded library matches"
+  | "no recorded component matches"
+  | "library indexed, component not recorded"
+  | "library not in index";
+
+/** A component pointer: enough to browse or re-fetch, never the whole record. */
+export interface ComponentRef {
+  id: string;
+  name: string;
+  kind?: ComponentKind;
+}
+
 export interface SearchLibrariesResult {
+  /** Present only on an empty result: which kind of empty it is. */
+  indexStatus?: EmptyHint;
   results: LibraryHit[];
   /** Total matches before pagination. */
   total: number;
@@ -68,11 +97,21 @@ export interface ComponentHit {
   aliases: string[];
   /** Canonical documentation page for this exact component. */
   url: string;
-  library: { slug: string; name: string; url: string };
+  kind?: ComponentKind;
+  summary?: string;
+  builtOn?: string;
+  verifiedAt?: string;
+  variants?: Record<string, string>;
+  matchedOn?: string[];
+  library: { slug: string; name: string; url: string; stacks: Stack[] };
   evidence: Evidence;
 }
 
 export interface SearchComponentsResult {
+  /** Present only on an empty result: which kind of empty it is. */
+  indexStatus?: EmptyHint;
+  /** Near misses worth trying when the strict query matched nothing. */
+  suggestions?: ComponentRef[];
   results: ComponentHit[];
   total: number;
   evidence: Evidence;
@@ -91,6 +130,9 @@ export interface LibraryDetailsResult {
   repoUrl: string | null;
   install: { label: string; command: string }[];
   registrySetup: { description: string; config?: string } | null;
+  /** Every component Col records for this library, browsable without guessing queries. */
+  components: ComponentRef[];
+  componentCount: number;
   gettingStarted: string[];
   pricing: LibraryDetails["pricing"] | null;
   /** Recorded facts and named unknowns; never a guess. */
@@ -103,18 +145,18 @@ export interface LibraryDetailsResult {
   evidence: Evidence;
 }
 
-export interface ComponentDetailsResult {
-  id: string;
-  name: string;
-  aliases: string[];
-  url: string;
-  library: { slug: string; name: string; url: string; docsUrl: string | null };
+export type ComponentDetailsResult = Omit<ComponentHit, "library"> & {
+  library: { slug: string; name: string; url: string; docsUrl: string | null; stacks: Stack[] };
   /** Installation evidence is only claimed when the library's details record it. */
   install: { label: string; command: string }[];
+  /** npm packages this component installs, as its registry records them. */
+  dependencies: string[];
+  /** Registry components this one pulls in, by registry name. */
+  registryDependencies: string[];
   registrySetup: { description: string; config?: string } | null;
   compatibility: CompatibilityReport;
   evidence: Evidence;
-}
+};
 
 /** A JSON-RPC tool result: either a payload or a typed error. */
 export type ToolResult = {
@@ -175,6 +217,11 @@ function parseComponentId(id: string): { slug: string; name: string } | null {
   return { slug: id.slice(0, separator), name: id.slice(separator + 1) };
 }
 
+/** The slug a registry-style CLI expects for a component name, e.g. "Alert Dialog" -> "alert-dialog". */
+function registrySlug(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
+
 const PAGE_ARGS = {
   limit: z.number().int().min(1).max(MAX_LIMIT).optional(),
   offset: z.number().int().min(0).optional(),
@@ -191,6 +238,7 @@ const searchLibrariesArgs = z.object({
 const searchComponentsArgs = z.object({
   query: z.string().min(1).describe("Component name or alias, e.g. 'command palette' or 'datepicker'."),
   library: z.string().min(1).optional().describe("Restrict to one library slug."),
+  stacks: z.array(z.enum(STACKS)).optional().describe("Every listed stack must apply (AND). At most one framework."),
   ...PAGE_ARGS,
 });
 
@@ -216,7 +264,7 @@ const STOP_WORDS = new Set([
 ]);
 
 function keywordTokens(query: string): string[] {
-  return query.toLowerCase().split(/[^a-z0-9.+#-]+/).filter((token) => token !== "" && !STOP_WORDS.has(token));
+  return wordTokens(query).filter((token) => !STOP_WORDS.has(token));
 }
 
 /**
@@ -246,22 +294,27 @@ function parseArgs<T>(name: string, schema: z.ZodType<T>, args: unknown): T {
   throw new ArgumentError(`${name} arguments invalid — ${detail}`);
 }
 
-function componentHit(library: Library, component: LibraryComponent): ComponentHit {
+function componentHit(library: Library, component: LibraryComponent, verification: FieldVerification): ComponentHit {
   return {
     id: componentId(library.slug, component.name),
     name: component.name,
     aliases: component.aliases ?? [],
     url: component.url,
-    library: { slug: library.slug, name: library.name, url: library.url },
+    kind: component.kind,
+    summary: component.summary,
+    builtOn: component.builtOn,
+    verifiedAt: component.verifiedAt,
+    variants: component.variants,
+    library: { slug: library.slug, name: library.name, url: library.url, stacks: library.stacks },
     evidence: {
-      verification: "verified",
-      gaps: ["Component coverage for this library is partial; other components may be undocumented."],
+      verification,
+      gaps: [],
     },
   };
 }
 
-function libraryHit(result: SearchResult): LibraryHit {
-  const { library, components } = result;
+function libraryHit(result: SearchResult, verification: FieldVerification): LibraryHit {
+  const { library, components, matchedOn } = result;
   return {
     slug: library.slug,
     name: library.name,
@@ -272,12 +325,10 @@ function libraryHit(result: SearchResult): LibraryHit {
     stacks: library.stacks,
     useCases: library.useCases,
     matchedComponents: components,
+    matchedOn,
     evidence: {
-      verification: "partial",
-      gaps: [
-        COVERAGE_GAP,
-        "Stack and use-case metadata is curated, not exhaustive: check the library's official docs for full compatibility.",
-      ],
+      verification,
+      gaps: [],
     },
   };
 }
@@ -295,18 +346,93 @@ function verificationFor(entry: LibraryCorpusEntry | undefined): Verification {
   return admissibleSnapshots(entry).length > 0 ? "partial" : "unverified";
 }
 
-export function createCatalogueTools(data: CatalogueData): CatalogueTools {
-  const searchDirectory = createDirectorySearch(data.libraries, data.componentIndex);
-  // Every subject Col has ever recorded a fact for: the vocabulary a library's
-  // report names its unknowns against, so gaps are named rather than implied.
-  const subjects = [...new Set(data.compatibility.flatMap((entry) => entry.facts.map((fact) => fact.subject)))];
+function evidenceState(
+  facts: readonly CompatibilityFact[],
+  entry: LibraryCorpusEntry | undefined,
+): Pick<FieldVerification, "compatibility" | "snapshot"> {
+  return {
+    compatibility: facts.length > 0 ? "recorded" : "unknown",
+    snapshot: entry && admissibleSnapshots(entry).length > 0 ? "ingested" : "none",
+  };
+}
 
+function componentVerification(
+  component: LibraryComponent,
+  details: LibraryDetails | undefined,
+  facts: readonly CompatibilityFact[],
+  entry: LibraryCorpusEntry | undefined,
+): FieldVerification {
+  return {
+    page: "verified",
+    install: component.install || details?.componentInstallTemplate ? "component" : details?.install?.length ? "library-level" : "none",
+    ...evidenceState(facts, entry),
+  };
+}
+
+function libraryVerification(
+  details: LibraryDetails | undefined,
+  facts: readonly CompatibilityFact[],
+  entry: LibraryCorpusEntry | undefined,
+): FieldVerification {
+  return {
+    page: "verified",
+    install: details?.install?.length ? "library-level" : "none",
+    ...evidenceState(facts, entry),
+  };
+}
+
+/**
+ * The weakest per-field state across a response, so a shared envelope never
+ * overstates what any single hit supports.
+ */
+function weakestVerification(states: readonly FieldVerification[]): FieldVerification {
+  const worst = <T extends string>(values: readonly T[], order: readonly T[]) =>
+    [...order].reverse().find((value) => values.includes(value)) ?? order[order.length - 1];
+  return {
+    page: worst(states.map((state) => state.page), ["verified", "unverified"]),
+    install: worst(states.map((state) => state.install), ["component", "library-level", "none"]),
+    compatibility: worst(states.map((state) => state.compatibility), ["recorded", "unknown"]),
+    snapshot: worst(states.map((state) => state.snapshot), ["ingested", "none"]),
+  };
+}
+
+/** Concept aliases are searchable on every component that links to the concept. */
+function withConceptAliases(index: ComponentIndex, concepts: Record<string, string[]>): ComponentIndex {
+  return Object.fromEntries(
+    Object.entries(index).map(([slug, components]) => [
+      slug,
+      components.map((component) => {
+        const extra = component.concept ? concepts[component.concept] ?? [] : [];
+        return extra.length > 0
+          ? { ...component, aliases: [...new Set([...(component.aliases ?? []), ...extra])] }
+          : component;
+      }),
+    ]),
+  );
+}
+
+export function createCatalogueTools(data: CatalogueData): CatalogueTools {
+  const index = withConceptAliases(data.componentIndex, componentConcepts);
+  const searchDirectory = createDirectorySearch(data.libraries, index);
   function searchLibraries(raw: unknown): SearchLibrariesResult {
     const args = parseArgs("search_libraries", searchLibrariesArgs, raw);
     const limit = args.limit ?? MAX_LIMIT;
     const offset = args.offset ?? 0;
 
     const keywords = keywordTokens(args.query ?? "");
+    // A query that was all noise ("e") must not become a blank query that
+    // browses the whole catalogue.
+    if ((args.query ?? "").trim() !== "" && keywords.length === 0) {
+      return {
+        results: [],
+        total: 0,
+        indexStatus: "no recorded library matches",
+        evidence: {
+          verification: weakestVerification([]),
+          gaps: [COVERAGE_GAP, "Compatibility constraints are recorded only where verified; ask for one library's details to see its explicit unknowns."],
+        },
+      };
+    }
     const matches = searchDirectory({
       query: liveTokens(keywords, (token) => searchDirectory({ query: token, category: null, stacks: [], useCases: [], sort: "curated" }).length > 0).join(" "),
       category: args.category ?? null,
@@ -315,10 +441,17 @@ export function createCatalogueTools(data: CatalogueData): CatalogueTools {
       sort: "curated",
     });
     return {
-      results: matches.slice(offset, offset + limit).map(libraryHit),
+      results: matches.slice(offset, offset + limit).map((match) =>
+        libraryHit(match, libraryVerification(data.details[match.library.slug], compatibilityFor(data, match.library.slug), corpusFor(data, match.library.slug))),
+      ),
       total: matches.length,
+      ...(matches.length === 0 ? { indexStatus: "no recorded library matches" as EmptyHint } : {}),
       evidence: {
-        verification: "partial",
+        verification: weakestVerification(
+          matches.map((match) =>
+            libraryVerification(data.details[match.library.slug], compatibilityFor(data, match.library.slug), corpusFor(data, match.library.slug)),
+          ),
+        ),
         gaps: [
           "Component coverage is partial: a missing component is not evidence that a library lacks it.",
           "Compatibility constraints are recorded only where verified; ask for one library's details to see its explicit unknowns.",
@@ -336,24 +469,68 @@ export function createCatalogueTools(data: CatalogueData): CatalogueTools {
     const matches: ComponentHit[] = [];
     for (const entry of data.libraries) {
       if (args.library !== undefined && entry.slug !== args.library) continue;
-      for (const component of data.componentIndex[entry.slug] ?? []) {
-        const haystack = `${component.name} ${(component.aliases ?? []).join(" ")}`.toLowerCase();
-        if (keywords.some((token) => haystack.includes(token))) matches.push(componentHit(entry, component));
+      if (args.stacks !== undefined && !args.stacks.every((stack) => entry.stacks.includes(stack))) continue;
+      const details = data.details[entry.slug];
+      const facts = compatibilityFor(data, entry.slug);
+      const corpusEntry = corpusFor(data, entry.slug);
+      for (const component of index[entry.slug] ?? []) {
+        const haystack = componentHaystack(component);
+        if (keywords.length > 0 && keywords.every((token) => tokenMatches(haystack, token))) {
+          const matchedOn = [
+            ...keywords.flatMap((token) =>
+              tokenMatches(normalizeWords(component.name), token)
+                ? [`name:${token}`]
+                : (component.aliases ?? [])
+                    .filter((alias) => tokenMatches(normalizeWords(alias), token))
+                    .map((alias) => `alias:${alias}`),
+            ),
+            ...(args.stacks ?? []).map((stack) => `stack:${stack}`),
+          ];
+          matches.push({
+            ...componentHit(entry, component, componentVerification(component, details, facts, corpusEntry)),
+            matchedOn,
+          });
+        }
       }
     }
     // Same exact-name-first rule the directory uses, so an exact official name
     // or recorded alias outranks a substring touch on any other component.
     const normalizedQuery = keywords.join(" ");
     matches.sort((a, b) => componentRank(a, keywords, normalizedQuery) - componentRank(b, keywords, normalizedQuery));
+    const envelopeGaps = [
+      "Every listed component is verified on the library's own documentation, but coverage is partial: a missing component is not evidence of absence.",
+    ];
+    const envelopeVerification = weakestVerification(matches.map((hit) => hit.evidence.verification));
+    if (matches.length > 0) {
+      return {
+        results: matches.slice(offset, offset + limit),
+        total: matches.length,
+        evidence: { verification: envelopeVerification, gaps: envelopeGaps },
+      };
+    }
+    // An empty result must say which kind of empty it is, and offer near misses.
+    const indexStatus = args.library === undefined
+      ? "no recorded component matches"
+      : data.libraries.some((entry) => entry.slug === args.library)
+        ? "library indexed, component not recorded"
+        : "library not in index";
+    const suggestions: ComponentRef[] = [];
+    if (args.library === undefined) {
+      for (const entry of data.libraries) {
+        for (const component of index[entry.slug] ?? []) {
+          const haystack = componentHaystack(component);
+          if (keywords.some((token) => tokenMatches(haystack, token))) {
+            suggestions.push({ id: componentId(entry.slug, component.name), name: component.name, kind: component.kind });
+          }
+        }
+      }
+    }
     return {
-      results: matches.slice(offset, offset + limit),
-      total: matches.length,
-      evidence: {
-        verification: "partial",
-        gaps: [
-          "Every listed component is verified on the library's own documentation, but coverage is partial: a missing component is not evidence of absence.",
-        ],
-      },
+      results: [],
+      total: 0,
+      indexStatus,
+      suggestions: suggestions.slice(0, 3),
+      evidence: { verification: weakestVerification([]), gaps: envelopeGaps },
     };
   }
 
@@ -380,12 +557,18 @@ export function createCatalogueTools(data: CatalogueData): CatalogueTools {
       repoUrl: details?.repoUrl ?? null,
       install: details?.install ?? [],
       registrySetup: details?.registrySetup ?? null,
+      components: (index[library.slug] ?? []).map((component) => ({
+        id: componentId(library.slug, component.name),
+        name: component.name,
+        kind: component.kind,
+      })),
+      componentCount: (index[library.slug] ?? []).length,
       gettingStarted: details?.gettingStarted ?? [],
       pricing: details?.pricing ?? null,
-      compatibility: compatibilityReport(facts, subjects),
+      compatibility: compatibilityReport(facts, trackedSubjects(library.stacks, facts)),
       documentation: { verification: verificationFor(entry), snapshots: entry ? admissibleSnapshots(entry) : [] },
       evidence: {
-        verification: details ? "partial" : "unverified",
+        verification: libraryVerification(details, facts, entry),
         gaps: [
           COVERAGE_GAP,
           compatibilityGap(facts),
@@ -405,23 +588,31 @@ export function createCatalogueTools(data: CatalogueData): CatalogueTools {
     }
 
     const library = data.libraries.find((entry) => entry.slug === parsedId.slug);
-    const component = library && (data.componentIndex[parsedId.slug] ?? []).find((entry) => entry.name === parsedId.name);
+    const component = library && (index[parsedId.slug] ?? []).find((entry) => entry.name === parsedId.name);
     if (!library || !component) {
       throw new ArgumentError(`unknown component id "${args.id}"; use search_components to find valid ids`);
     }
     const details = data.details[library.slug];
     const facts = compatibilityFor(data, library.slug);
+    const componentCommand =
+      component.install ?? details?.componentInstallTemplate?.replace("{slug}", registrySlug(component.name));
 
     return {
-      ...componentHit(library, component),
-      library: { slug: library.slug, name: library.name, url: library.url, docsUrl: details?.docsUrl ?? null },
-      install: details?.install ?? [],
+      ...componentHit(library, component, componentVerification(component, details, facts, corpusFor(data, library.slug))),
+      library: { slug: library.slug, name: library.name, url: library.url, docsUrl: details?.docsUrl ?? null, stacks: library.stacks },
+      install: componentCommand
+        ? [{ label: `Add ${component.name}`, command: componentCommand }]
+        : details?.install ?? [],
+      dependencies: component.dependencies ?? [],
+      registryDependencies: component.registryDependencies ?? [],
       registrySetup: details?.registrySetup ?? null,
-      compatibility: compatibilityReport(facts, subjects),
+      compatibility: compatibilityReport(facts, trackedSubjects(library.stacks, facts)),
       evidence: {
-        verification: "partial",
+        verification: componentVerification(component, details, facts, corpusFor(data, library.slug)),
         gaps: [
-          "The component page is verified on the library's own documentation; installation and API details come from the library's setup docs and may cover more than this component.",
+          componentCommand
+            ? "API and usage details come from the library's setup docs and may cover more than this component."
+            : "The component page is verified on the library's own documentation; installation and API details come from the library's setup docs and may cover more than this component.",
           compatibilityGap(facts),
           COVERAGE_GAP,
         ],
@@ -473,21 +664,21 @@ const TOOL_DEFINITIONS: ToolDefinition[] = [
   {
     name: "search_components",
     title: "Search Col's verified component index",
-    description: `Find components by their official name or a real alias, optionally scoped to one library. Every hit links to the component's own documentation page on the library's domain. ${COVERAGE_NOTE} ${NO_CREDENTIALS_NOTE}`,
+    description: `Find components by their official name or a real alias, optionally scoped to one library and one or more stacks. Every hit links to the component's own documentation page on the library's domain, states what matched, and names its kind. ${COVERAGE_NOTE} ${NO_CREDENTIALS_NOTE}`,
     args: searchComponentsArgs,
     annotations: annotation,
   },
   {
     name: "get_library",
     title: "Inspect one library in Col",
-    description: `Everything Col records about one library: description, stacks, install commands, registry setup, pricing, verified compatibility facts (explicit "unknown" where nothing is verified), and any ingested documentation snapshots. ${COVERAGE_NOTE} ${NO_CREDENTIALS_NOTE}`,
+    description: `Everything Col records about one library: description, stacks, install commands, registry setup, pricing, the components Col records for it (with componentCount), verified compatibility facts (explicit "unknown" where nothing is verified), and any ingested documentation snapshots. ${COVERAGE_NOTE} ${NO_CREDENTIALS_NOTE}`,
     args: getLibraryArgs,
     annotations: annotation,
   },
   {
     name: "get_component",
     title: "Inspect one component in Col",
-    description: `One component's canonical documentation link plus its library's install commands, registry setup, and verified compatibility facts (explicit "unknown" where nothing is verified). Ids come from search_components as '<library-slug>/<component name>'. ${COVERAGE_NOTE} ${NO_CREDENTIALS_NOTE}`,
+    description: `One component's canonical documentation link plus its exact install command and dependencies where the library records them (otherwise the library's install commands), registry setup, and verified compatibility facts (explicit "unknown" where nothing is verified). Ids come from search_components as '<library-slug>/<component name>'. ${COVERAGE_NOTE} ${NO_CREDENTIALS_NOTE}`,
     args: getComponentArgs,
     annotations: annotation,
   },
