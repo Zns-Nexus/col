@@ -16,7 +16,7 @@ export default {
   ],
   gettingStarted: [
     "Browse the icons on https://lucide-animated.com and note the kebab-case name of the one you want, such as `activity`, `arrow-right` or `bell`. Names follow Lucide's own, so an icon you already use from https://lucide.dev usually has an animated version.",
-    "Install a single icon with the shadcn CLI: `npx shadcn@latest add \"https://lucide-animated.com/r/activity.json\"`. It writes one file to `components/icons/<icon-name>.tsx` and adds `motion` to your dependencies if it is missing. Requires React 18 or newer.",
+    "Install a single icon with the shadcn CLI: `npx shadcn@latest add \"https://lucide-animated.com/r/activity.json\"`. It writes one file to `components/icons/<icon-name>.tsx` and adds `motion` to your dependencies if it is missing.",
     "Import the installed file and render it, for example `import { Activity } from \"@/components/icons/activity\";` then `<Activity className=\"size-6\" />`. The icon animates on hover and forwards standard props. Open the installed file to confirm its exact export name, since the per-icon page https://lucide-animated.com/icons/bell shows `BellIcon`.",
     "To start an animation from your own trigger (a button, a list row), the installed component exposes `startAnimation` and `stopAnimation` through a ref; once a ref is attached it stops reacting to its own hover, so call them from your handlers.",
     "Use https://lucide-animated.com/llms.txt as the index of every icon, or the MCP endpoint at `/mcp` (tools `search_icons`, `list_icons`, `get_icon`) from an agent. Source and issues are at https://github.com/pqoqubbw/icons.",
@@ -26,7 +26,7 @@ export default {
 Icons are copied into the project as source files through the shadcn registry. There is no lucide-animated package to install.
 
 Prerequisites:
-- A React 18 or newer project (Next.js works) that has been initialized with shadcn: components.json exists and the @/components and @/lib/utils aliases resolve. The installed icons import cn from @/lib/utils.
+- A React project (Next.js works) that has been initialized with shadcn: components.json exists and the @/components and @/lib/utils aliases resolve. The installed icons import cn from @/lib/utils.
 - Tailwind CSS is recommended for sizing and coloring but is not required.
 - Inspect the package manager, components.json and the existing icon usage (often lucide-react) before changing anything.
 

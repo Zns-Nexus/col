@@ -195,4 +195,26 @@ export const compatibility: LibraryCompatibility[] = [
       },
     ],
   },
+  {
+    slug: "tween-ui",
+    facts: [
+      {
+        subject: "react",
+        constraint: ">= 19",
+        status: "supported",
+        evidence: "https://tween-ui.vercel.app/installation/setup-guide",
+      },
+    ],
+  },
+  {
+    slug: "drawably",
+    facts: [
+      {
+        subject: "react",
+        constraint: ">= 18 < 20",
+        status: "supported",
+        evidence: "https://github.com/danielwh2/drawably/blob/main/package.json",
+      },
+    ],
+  },
 ];
