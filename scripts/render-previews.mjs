@@ -66,7 +66,7 @@ try {
     for (const story of shippableStories(previewStories, entry.slug)) {
       const id = `${entry.slug}/${story.component}`;
       const url = `${origin}${previewPath(entry.slug, story)}`;
-      await page.goto(url, { waitUntil: "networkidle" });
+      await page.goto(url, { waitUntil: "domcontentloaded" });
       await page.waitForSelector("[data-preview-themed]");
       await page.evaluate(() => document.fonts.ready);
 
@@ -96,7 +96,7 @@ try {
 async function verifyThemedRender(page, origin) {
   const story = shippableStories(previewStories, "shadcn-ui").find((candidate) => candidate.component === "Button");
   const query = `?primary=%23ff0000&radius=16px&sample=${encodeURIComponent('{"primaryLabel":"Invite team"}')}`;
-  await page.goto(`${origin}${previewPath("shadcn-ui", story, "Landing Pages")}${query}`, { waitUntil: "networkidle" });
+  await page.goto(`${origin}${previewPath("shadcn-ui", story, "Landing Pages")}${query}`, { waitUntil: "domcontentloaded" });
   await page.waitForSelector("[data-preview-themed]");
   const themed = await page.evaluate(() => {
     const canvas = document.querySelector("[data-preview-themed]");
