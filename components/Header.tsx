@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { BrandLink, GitHubStars, SiteSearch, useGitHubStars } from "./SiteChrome";
+import { BrandLink, RepoStars, SiteSearch, useRepoStars } from "./SiteChrome";
 import { ThemeToggle } from "./ThemeToggle";
 
 const links = [
@@ -21,7 +21,7 @@ const links = [
 export function Header() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-  const stars = useGitHubStars();
+  const stars = useRepoStars();
 
   useEffect(() => {
     setMenuOpen(false);
@@ -39,7 +39,7 @@ export function Header() {
         <div className="site-header-actions">
           <SiteSearch className="site-header-search" />
           <ThemeToggle />
-          <GitHubStars stars={stars} className="site-header-github" />
+          <RepoStars stars={stars} className="site-header-repo" />
           <Button
             type="button"
             variant="ghost"

@@ -11,6 +11,7 @@ export default {
   }
 }`,
   },
+  componentInstallTemplate: "npx shadcn@latest add @magicui/{slug}",
   install: [
     { label: "Initialize shadcn in the project", command: "npx shadcn@latest init" },
     { label: "Add a Magic UI component", command: "npx shadcn@latest add @magicui/globe" },

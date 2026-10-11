@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Star } from "lucide-react";
 import { libraryBySlug } from "@/data/libraries";
+import { repo } from "@/lib/repo";
 import { RollText } from "./RollText";
 import styles from "./HomePage.module.css";
 
@@ -94,9 +95,9 @@ export function HeroCopy() {
           <RollText>Browse libraries</RollText>
           <span className={styles.arrowSwap} aria-hidden><ArrowRight /><ArrowRight /></span>
         </Link>
-        <a href="https://github.com/screen-gd/Col" target="_blank" rel="noopener noreferrer" className={styles.starLink}>
+        <a href={repo.url} target="_blank" rel="noopener noreferrer" className={styles.starLink}>
           <Star aria-hidden />
-          <RollText>Star on GitHub</RollText>
+          <RollText>Star on git.cafe</RollText>
         </a>
       </div>
     </section>

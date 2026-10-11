@@ -1,8 +1,9 @@
 import type { CSSProperties } from "react";
 import { ArrowUpRight } from "lucide-react";
+import { repo } from "@/lib/repo";
 import { Icons } from "./MaskIcon";
 
-const inquiryUrl = "https://github.com/screen-gd/Col/issues/new?template=sponsorship.yml";
+const inquiryUrl = repo.newIssue;
 const reveal = (index: number) => ({ "--i": index }) as CSSProperties;
 
 /** Things maintainers spend their time on, which sponsorship pays for. */
@@ -47,7 +48,7 @@ export function SponsorsSection() {
       </section>
 
       <p className="pg-foot ld-reveal" style={reveal(3)}>
-        Inquiries are public GitHub issues, so leave billing and private contact details out.
+        Inquiries are public git.cafe issues, so leave billing and private contact details out.
       </p>
     </div>
   );

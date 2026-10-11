@@ -7,16 +7,16 @@
 
   A community-maintained directory for finding the right UI library without losing an afternoon to open tabs.
 
-  [![GitHub stars](https://img.shields.io/github/stars/screen-gd/Col?style=flat&color=ff6257)](https://github.com/screen-gd/Col/stargazers)
-  [![Open issues](https://img.shields.io/github/issues/screen-gd/Col?style=flat&color=69a9ff)](https://github.com/screen-gd/Col/issues)
-  [![Pull requests](https://img.shields.io/github/issues-pr/screen-gd/Col?style=flat&color=3ddc97)](https://github.com/screen-gd/Col/pulls)
+  [![git.cafe stars](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgit.cafe%2Fapi%2Frepos%2Fscreen%2Fcol%2Fstar&query=%24.count&label=stars&style=flat&color=ff6257)](https://git.cafe/screen/col/stargazers)
+  [![Open issues](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgit.cafe%2Fapi%2Frepos%2Fscreen%2Fcol%2Fissues%3Fstatuses%3Dopen%26limit%3D1&query=%24.total&label=open%20issues&style=flat&color=69a9ff)](https://git.cafe/screen/col/issues)
+  [![Pull requests](https://img.shields.io/badge/pull%20requests-git.cafe-3ddc97?style=flat)](https://git.cafe/screen/col/pulls)
   [![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/screen-gd/Col?utm_source=oss&utm_medium=github&utm_campaign=screen-gd%2FCol&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)](https://coderabbit.ai)
   [![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=flat&logo=nextdotjs)](https://nextjs.org)
   [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 
-  [Request a library](https://github.com/screen-gd/Col/issues/new?template=library-request.yml) ·
-  [Request a feature](https://github.com/screen-gd/Col/issues/new?template=feature-request.yml) ·
-  [Report a bug](https://github.com/screen-gd/Col/issues/new?template=bug-report.yml) ·
+  [Request a library](#request-a-library) ·
+  [Request a feature](#request-a-feature) ·
+  [Report a bug](#report-a-bug) ·
   [Contribute](CONTRIBUTING.md)
 </div>
 
@@ -54,12 +54,16 @@ account or API key. See the [client setup guide](https://collection-of-libs.verc
 for Claude Code, Codex, Cursor, and VS Code, and the
 [agent guide](https://collection-of-libs.vercel.app/mcp/agents) for setup and tool use.
 
+## Where Col lives
+
+Col's code, stars, issues, roadmap, and pull requests live on [git.cafe](https://git.cafe/screen/col). GitHub is a mirror that Vercel deploys from until Vercel and Cloudflare can deploy from git.cafe directly, so open issues and pull requests on git.cafe, not GitHub.
+
 ## Run it locally
 
 Requirements: [Node.js 20.9+](https://nodejs.org) and npm.
 
 ```bash
-git clone https://github.com/screen-gd/Col.git
+git clone https://git.cafe/screen/col.git Col
 cd Col
 npm install
 npm run dev
@@ -77,11 +81,11 @@ npm run build
 
 ## Request something
 
-Use the matching issue form. One focused request per issue makes discussion and review easier.
+Open an issue on [git.cafe](https://git.cafe/screen/col/issues/new) and include the details listed below. One focused request per issue makes discussion and review easier.
 
 ### Request a library
 
-[Open a library request](https://github.com/screen-gd/Col/issues/new?template=library-request.yml) when a useful UI library is missing.
+[Open a library request](https://git.cafe/screen/col/issues/new) when a useful UI library is missing.
 
 Include:
 
@@ -91,17 +95,17 @@ Include:
 - the closest Col category and use cases;
 - confirmation that it is maintained and publicly accessible.
 
-Search [existing libraries](data/libraries.ts), [issues](https://github.com/screen-gd/Col/issues), and [pull requests](https://github.com/screen-gd/Col/pulls) first.
+Search [existing libraries](data/libraries.ts), [issues](https://git.cafe/screen/col/issues), and [pull requests](https://git.cafe/screen/col/pulls) first.
 
 ### Request a feature
 
-[Open a feature request](https://github.com/screen-gd/Col/issues/new?template=feature-request.yml) for improvements to discovery, comparison, contribution, accessibility, or the library detail experience.
+[Open a feature request](https://git.cafe/screen/col/issues/new) for improvements to discovery, comparison, contribution, accessibility, or the library detail experience.
 
 Explain the problem before proposing the interface. Include the expected outcome and any useful references.
 
 ### Report a bug
 
-[Open a bug report](https://github.com/screen-gd/Col/issues/new?template=bug-report.yml) with:
+[Open a bug report](https://git.cafe/screen/col/issues/new) with:
 
 - the page or action that failed;
 - exact reproduction steps;
@@ -115,14 +119,14 @@ Do not include secrets, tokens, private URLs, or personal information.
 
 Library-only pull requests should be small and should not redesign unrelated parts of the site.
 
-1. Fork the repository and create a focused branch.
+1. Fork the repository on git.cafe and create a focused branch.
 2. Add one entry to [`data/libraries.ts`](data/libraries.ts).
 3. Reuse the existing category, stack, and use-case values when possible.
 4. Keep the description factual and short.
 5. Confirm the URL points to the official project.
 6. If you add components, verify each one against the library's own docs in [`data/components.ts`](data/components.ts).
 7. Run `npm run build`.
-8. Open a pull request using the provided template.
+8. Open a pull request on git.cafe that follows the checklist in [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md).
 
 ```ts
 {
@@ -234,7 +238,7 @@ CONTEXT.md            Glossary of catalog terms
 docs/adr/             Architecture decision records
 public/brand/         Col brand assets
 public/hero-logos/    Library artwork used by the homepage
-.github/              Issue forms and pull request guidance
+.github/              Pull request checklist and GitHub mirror settings
 ```
 
 ## UI components

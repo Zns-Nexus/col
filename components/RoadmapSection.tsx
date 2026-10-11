@@ -1,9 +1,8 @@
 import type { CSSProperties } from "react";
 import { ArrowUpRight, Check } from "lucide-react";
-import { getRoadmap, type Milestone } from "@/lib/github-roadmap";
+import { getRoadmap, type Milestone } from "@/lib/roadmap";
+import { repo } from "@/lib/repo";
 import styles from "./HomePage.module.css";
-
-const ISSUES_URL = "https://github.com/screen-gd/Col/issues";
 
 const shippedDate = new Intl.DateTimeFormat("en", { month: "short", day: "numeric", timeZone: "UTC" });
 
@@ -15,10 +14,10 @@ const when = (milestone: Milestone) =>
     : statusText[milestone.status];
 
 /**
- * Homepage roadmap: a timeline of major GitHub issues, refreshed every five
+ * Homepage roadmap: a timeline of major git.cafe issues, refreshed every five
  * minutes. Shipped milestones sit on a solid line, then a "Now" marker, then
  * upcoming work on a dashed line. Issues labelled "roadmap" are used when any
- * exist; otherwise feature requests are (see lib/github-roadmap.ts).
+ * exist; otherwise feature requests are (see lib/roadmap.ts).
  */
 export async function RoadmapSection() {
   const roadmap = await getRoadmap();
@@ -31,9 +30,9 @@ export async function RoadmapSection() {
       <div className={styles.sectionHeading}>
         <div>
           <h2 id="roadmap-title">Roadmap</h2>
-          <p>Major milestones, straight from GitHub issues.</p>
+          <p>Major milestones, straight from git.cafe issues.</p>
         </div>
-        <a href={ISSUES_URL} target="_blank" rel="noopener noreferrer" className="ld-button">
+        <a href={repo.issues} target="_blank" rel="noopener noreferrer" className="ld-button">
           <span className="cap">View all issues</span>
           <ArrowUpRight aria-hidden />
         </a>
@@ -54,7 +53,7 @@ export async function RoadmapSection() {
         </ol>
       ) : (
         <p className={styles.timelineEmpty}>
-          {roadmap ? "No milestones yet." : "The roadmap could not be loaded right now."} Follow along in the GitHub issues.
+          {roadmap ? "No milestones yet." : "The roadmap could not be loaded right now."} Follow along in the git.cafe issues.
         </p>
       )}
     </section>

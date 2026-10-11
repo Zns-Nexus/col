@@ -3,6 +3,7 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://www.shadcn-svelte.com/docs",
   repoUrl: "https://github.com/huntabyte/shadcn-svelte",
+  componentInstallTemplate: "npx shadcn-svelte@latest add {slug}",
   install: [
     {
       label: "Add Tailwind CSS to a Svelte project",

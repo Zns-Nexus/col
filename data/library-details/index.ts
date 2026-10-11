@@ -41,6 +41,8 @@ import park_ui from "./park-ui.ts";
 import headless_ui from "./headless-ui.ts";
 import tailwind_css from "./tailwind-css.ts";
 import kibo_ui from "./kibo-ui.ts";
+import cmdk from "./cmdk.ts";
+import kbar from "./kbar.ts";
 import shadcnblocks from "./shadcnblocks.ts";
 import ruixen_ui from "./ruixen-ui.ts";
 import fancy_components from "./fancy-components.ts";
@@ -68,6 +70,21 @@ import corvu from "./corvu.ts";
 import starwind_ui from "./starwind-ui.ts";
 import webcoreui from "./webcoreui.ts";
 import web_awesome from "./web-awesome.ts";
+import morphin from "./morphin.ts";
+import viora_ui from "./viora-ui.ts";
+import tween_ui from "./tween-ui.ts";
+import scrollx_ui from "./scrollx-ui.ts";
+import toggle_supply from "./toggle-supply.ts";
+import designpass from "./designpass.ts";
+import prompt_motion from "./prompt-motion.ts";
+import evil_buttons from "./evil-buttons.ts";
+import drawably from "./drawably.ts";
+import appllama from "./appllama.ts";
+import amicons from "./amicons.ts";
+import lucide_animated from "./lucide-animated.ts";
+import lordicon from "./lordicon.ts";
+import useanimations from "./useanimations.ts";
+import all_svg_icons from "./all-svg-icons.ts";
 
 export type { LibraryDetails };
 
@@ -121,6 +138,8 @@ export const libraryDetails: Record<string, LibraryDetails> = {
   "headless-ui": headless_ui,
   "tailwind-css": tailwind_css,
   "kibo-ui": kibo_ui,
+  "cmdk": cmdk,
+  "kbar": kbar,
   "shadcnblocks": shadcnblocks,
   "ruixen-ui": ruixen_ui,
   "fancy-components": fancy_components,
@@ -148,4 +167,19 @@ export const libraryDetails: Record<string, LibraryDetails> = {
   "starwind-ui": starwind_ui,
   "webcoreui": webcoreui,
   "web-awesome": web_awesome,
+  "morphin": morphin,
+  "viora-ui": viora_ui,
+  "tween-ui": tween_ui,
+  "scrollx-ui": scrollx_ui,
+  "toggle-supply": toggle_supply,
+  "designpass": designpass,
+  "prompt-motion": prompt_motion,
+  "evil-buttons": evil_buttons,
+  "drawably": drawably,
+  "appllama": appllama,
+  "amicons": amicons,
+  "lucide-animated": lucide_animated,
+  "lordicon": lordicon,
+  "useanimations": useanimations,
+  "all-svg-icons": all_svg_icons,
 };

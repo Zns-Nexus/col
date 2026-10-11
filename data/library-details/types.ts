@@ -13,6 +13,8 @@ export interface LibraryDetails {
   repoUrl?: string;
   /** Current official install commands. Omit for resources that are not installed. */
   install?: { label: string; command: string }[];
+  /** Documented registry pattern that installs one component; "{slug}" stands for the component's registry slug. */
+  componentInstallTemplate?: string;
   /** Registry prerequisites shown before the component install commands. */
   registrySetup?: { description: string; config?: string };
   /** Short, concrete steps to get started. */

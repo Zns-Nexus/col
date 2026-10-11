@@ -23,7 +23,7 @@ export default {
   },
   agentPrompt: `Add Mantine to this existing React project.
 
-Prerequisites: a React 18+ app (Vite, Next.js, or React Router recommended; Create React App is not supported), with PostCSS available through your bundler. Check the framework guide at https://mantine.dev/guides/vite/ or https://mantine.dev/guides/next/ if your setup differs.
+Prerequisites: a React 19.2+ app (Vite, Next.js, or React Router recommended; Create React App is not supported), with PostCSS available through your bundler. Check the framework guide at https://mantine.dev/guides/vite/ or https://mantine.dev/guides/next/ if your setup differs.
 
 Steps:
 1. Install the runtime packages: "npm install @mantine/core @mantine/hooks". Install PostCSS tooling: "npm install --save-dev postcss postcss-preset-mantine postcss-simple-vars".

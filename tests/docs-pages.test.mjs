@@ -29,7 +29,10 @@ test("MCP setup snippets connect to the plugin endpoint and the sidebar selects 
   const blocks = [...html.matchAll(/<pre><code>([\s\S]*?)<\/code><\/pre>/g)].map(([, code]) =>
     code.replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&"),
   );
-  const configs = blocks.filter((code) => code.startsWith("{")).map((code) => JSON.parse(code));
+  const configs = blocks
+    .filter((code) => code.startsWith("{"))
+    .map((code) => JSON.parse(code))
+    .filter((parsed) => parsed.mcpServers);
   assert.ok(blocks.every((code) => !code.includes("\\n")), "Copyable commands must contain real line breaks");
   assert.equal(configs.length, 2);
   for (const config of configs) assert.equal(config.mcpServers.col.url, url);

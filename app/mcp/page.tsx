@@ -1,5 +1,6 @@
 import { DocsCode, DocsHeader, DocsLinks, DocsList, DocsNote, DocsSection, DocsText } from "@/components/DocsUI";
 import { pageMetadata, siteUrl } from "@/lib/site";
+import { repo, repoFile } from "@/lib/repo";
 
 export const metadata = pageMetadata(
   "/mcp",
@@ -25,6 +26,37 @@ export default function McpPage() {
           { href: "#vs-code", title: "VS Code", text: "Connect Col from the Command Palette." },
           { href: "/mcp/agents#set-up-the-connection", title: "Let your agent set it up", text: "Copy the setup prompt." },
         ]} />
+      </DocsSection>
+
+      <DocsSection title="How Col answers">
+        <DocsText>Col is read-only: it never touches your project, and never asks for an account, API key, or any credential. Its four tools search one curated catalogue — <code>search_libraries</code>, <code>search_components</code>, <code>get_library</code>, and <code>get_component</code>.</DocsText>
+        <DocsText>Every result is built to be checked, by the agent and by you:</DocsText>
+        <DocsList items={[
+          <>A canonical source link on every record — always the library's own documentation.</>,
+          <>Verification stated per part — <code>page</code>, <code>install</code>, <code>compatibility</code>, <code>snapshot</code> — so "verified" never means different things in different tools.</>,
+          <>Gaps stay explicit. A missing component means "not yet verified", never "this library lacks it", and unverified compatibility stays <code>unknown</code>.</>,
+          <><code>matchedOn</code> says why a result matched: name, alias, tag, or description.</>,
+          <>Empty results explain themselves (<code>indexStatus</code>) and suggest close matches instead of returning silence.</>,
+          <>Documentation snapshots carry their fetch date and source revision, so anything quoted can be re-checked later.</>,
+        ]} />
+        <DocsText>This is a real result, exactly as an agent receives it:</DocsText>
+        <DocsCode code={`{
+  "id": "mantine/Spotlight",
+  "kind": "full-pattern",
+  "verifiedAt": "2026-10-10",
+  "url": "https://mantine.dev/x/spotlight/",
+  "matchedOn": ["name:spotlight"],
+  "evidence": {
+    "verification": {
+      "page": "verified",
+      "install": "library-level",
+      "compatibility": "recorded",
+      "snapshot": "ingested"
+    },
+    "gaps": []
+  }
+}`} label="Result anatomy" />
+        <DocsText>The agent sees exactly this, and you can verify any claim by following its link. Same evidence on both sides — that is what makes a recommendation checkable instead of a black box.</DocsText>
       </DocsSection>
 
       <DocsSection title="Claude Code">
@@ -57,10 +89,10 @@ export default function McpPage() {
       <DocsSection title="Install the plugin">
         <DocsText>The optional Col plugin bundles the MCP connection with a UI component workflow skill. Choose the plugin or a direct connection to avoid adding Col twice.</DocsText>
         <DocsText>For Claude Code, run:</DocsText>
-        <DocsCode code={"claude plugin marketplace add screen-gd/Col\nclaude plugin install col@col"} label="Claude Code plugin" />
+        <DocsCode code={`claude plugin marketplace add ${repo.cloneUrl}\nclaude plugin install col@col`} label="Claude Code plugin" />
         <DocsText>For Codex, run:</DocsText>
-        <DocsCode code={"codex plugin marketplace add screen-gd/Col\ncodex plugin add col@col"} label="Codex plugin" />
-        <DocsText>See the <a href="https://github.com/screen-gd/Col/blob/main/plugin/README.md" target="_blank" rel="noopener noreferrer">plugin guide</a> for package details.</DocsText>
+        <DocsCode code={`codex plugin marketplace add ${repo.cloneUrl}\ncodex plugin add col@col`} label="Codex plugin" />
+        <DocsText>See the <a href={repoFile("plugin/README.md")} target="_blank" rel="noopener noreferrer">plugin guide</a> for package details.</DocsText>
       </DocsSection>
 
       <DocsSection title="Try the connection">

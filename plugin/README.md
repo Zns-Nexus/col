@@ -19,11 +19,11 @@ The package is shared by both hosts:
 ## Claude Code
 
 ```sh
-claude plugin marketplace add screen-gd/Col
+claude plugin marketplace add https://git.cafe/screen/col.git
 claude plugin install col@col
 ```
 
-Or load it straight from a checkout (no GitHub involved):
+Or load it straight from a checkout:
 
 ```sh
 claude --plugin-dir /path/to/Col/plugin
@@ -38,7 +38,7 @@ claude mcp add --transport http col https://collection-of-libs.vercel.app/api/mc
 ## Codex
 
 ```sh
-codex plugin marketplace add screen-gd/Col
+codex plugin marketplace add https://git.cafe/screen/col.git
 codex plugin add col@col
 ```
 

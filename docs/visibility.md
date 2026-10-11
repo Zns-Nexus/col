@@ -87,7 +87,7 @@ Maker comment:
 
 > I made Col for choosing UI libraries while working on a project. Search by framework, category, use case, or a recorded component name, then follow official documentation. Library pages include setup guidance and a prompt you can adapt for a coding agent.
 >
-> The component index is verified but partial. A missing result does not mean a library lacks that component. Saved libraries stay in your browser. Source and contribution guide: https://github.com/screen-gd/Col.
+> The component index is verified but partial. A missing result does not mean a library lacks that component. Saved libraries stay in your browser. Source and contribution guide: https://git.cafe/screen/col.
 >
 > I'd like feedback on which filters and component searches help you choose a library, and where the directory sends you to an unhelpful source.
 
@@ -105,7 +105,7 @@ Description:
 
 Maker comment:
 
-> I built Col to keep library research in one place while preserving links to original projects. Try a component query, open its official docs, and tell me where discovery breaks down. Contributions and source corrections are welcome on GitHub.
+> I built Col to keep library research in one place while preserving links to original projects. Try a component query, open its official docs, and tell me where discovery breaks down. Contributions and source corrections are welcome on git.cafe.
 
 Use the existing approved mark and preview. Optional 20-second demo: query → matching library → official component docs, with a partial-coverage caption. No invented endorsements. [Sharing rules](https://help.producthunt.com/en/articles/2690626-how-do-i-share-my-post) prohibit mass vote requests, incentives and coordinated voting.
 
@@ -124,7 +124,7 @@ Subject: Col: UI library discovery with direct component-documentation links
 > Your September 30 tools section included Transitions.dev and soundcn. Col may be useful to readers deciding which library fits a project before they install it.
 >
 > Directory: https://collection-of-libs.vercel.app/libraries
-> Source and contribution guide: https://github.com/screen-gd/Col
+> Source and contribution guide: https://git.cafe/screen/col
 >
 > I'm happy to walk through a component query or explain how source verification works.
 >
@@ -143,7 +143,7 @@ Subject: Col: shortlist React UI libraries and check their component docs
 > Your recent tools section covered pdfcn and Frimousse. Col offers readers a way to shortlist libraries for their own projects. Component coverage is explicitly partial rather than an exhaustive compatibility matrix.
 >
 > React directory: https://collection-of-libs.vercel.app/libraries?q=React
-> Source: https://github.com/screen-gd/Col
+> Source: https://git.cafe/screen/col
 >
 > Happy to share a walkthrough or answer questions about the catalog.
 >

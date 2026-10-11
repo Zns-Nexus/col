@@ -1,4 +1,5 @@
 import { pageMetadata } from "@/lib/site";
+import { repoFile } from "@/lib/repo";
 import { DocsButton, DocsCode, DocsHeader, DocsSection, DocsText } from "@/components/DocsUI";
 
 export const metadata = pageMetadata(
@@ -10,7 +11,7 @@ export const metadata = pageMetadata(
 export default function PullRequestsPage() {
   return (
     <article>
-      <DocsHeader section="Contribute" title="Open a pull request" lead="Contributions to the directory are reviewed on GitHub." />
+      <DocsHeader section="Contribute" title="Open a pull request" lead="Contributions to the directory are reviewed on git.cafe." />
 
       <DocsSection title="Prepare your change">
         <DocsText>
@@ -32,7 +33,7 @@ export default function PullRequestsPage() {
       <DocsSection title="Describe it">
         <DocsText>Explain what changed, why it changed, and how you verified it. List check results and include screenshots for visible interface changes. For bug fixes, include reproduction steps and expected behavior.</DocsText>
         <DocsText>Use <code>Closes #123</code> when the PR fully resolves an issue, or <code>Refs #123</code> for a partial fix. Screen reviews and merges all pull requests and confirms issue completion after merge.</DocsText>
-        <DocsButton href="https://github.com/screen-gd/Col/blob/main/CONTRIBUTING.md">Read the contribution guide</DocsButton>
+        <DocsButton href={repoFile("CONTRIBUTING.md")}>Read the contribution guide</DocsButton>
       </DocsSection>
     </article>
   );

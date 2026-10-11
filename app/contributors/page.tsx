@@ -1,15 +1,15 @@
 import { pageMetadata } from "@/lib/site";
 import type { CSSProperties } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
-import { getContributors } from "@/lib/github-contributors";
+import { getContributors } from "@/lib/contributors";
+import { repo } from "@/lib/repo";
 
 export const metadata = pageMetadata(
   "/contributors",
   "Contributors | Col",
-  "See the GitHub contributors maintaining Col and learn how to contribute libraries, verified components, and fixes.",
+  "See the people maintaining Col and learn how to contribute libraries, verified components, and fixes.",
 );
 
-const GRAPH_URL = "https://github.com/screen-gd/Col/graphs/contributors";
 const number = new Intl.NumberFormat("en");
 
 /** Staggered entrance order, capped so long lists do not trail on. */
@@ -35,8 +35,8 @@ export default async function ContributorsPage() {
               <span><strong>{number.format(total)}</strong> {total === 1 ? "contribution" : "contributions"}</span>
             </p>
           )}
-          <a href={GRAPH_URL} target="_blank" rel="noopener noreferrer" className="ld-button">
-            <span className="cap">View on GitHub</span>
+          <a href={repo.pulls} target="_blank" rel="noopener noreferrer" className="ld-button">
+            <span className="cap">View on git.cafe</span>
             <ArrowUpRight aria-hidden />
           </a>
         </div>
@@ -47,16 +47,18 @@ export default async function ContributorsPage() {
           {contributors.map((contributor, index) => {
             const share = contributor.contributions / largest;
             return (
-              <li key={contributor.id} className="ld-reveal" style={reveal(index + 1)}>
-                <a href={contributor.html_url} target="_blank" rel="noopener noreferrer" className="cb-card" aria-label={`${contributor.login}, ${contributor.contributions} contributions, on GitHub`}>
+              <li key={contributor.key} className="ld-reveal" style={reveal(index + 1)}>
+                <a href={contributor.url} target="_blank" rel="noopener noreferrer" className="cb-card" aria-label={`${contributor.name}, ${contributor.contributions} contributions`}>
                   <span className="cb-media">
                     <span className="cb-rank">#{index + 1}</span>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={contributor.avatar_url} alt="" width={72} height={72} loading={index < 12 ? "eager" : "lazy"} className="cb-avatar" />
+                    {contributor.avatarUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={contributor.avatarUrl} alt="" width={72} height={72} loading={index < 12 ? "eager" : "lazy"} className="cb-avatar" />
+                    ) : <span className="cb-avatar" aria-hidden />}
                     <ArrowUpRight className="cb-open" aria-hidden />
                   </span>
                   <span className="cb-body">
-                    <span className="cb-name">{contributor.login}</span>
+                    <span className="cb-name">{contributor.name}</span>
                     <span className="cb-count">
                       {number.format(contributor.contributions)} {contributor.contributions === 1 ? "contribution" : "contributions"}
                     </span>
@@ -72,9 +74,9 @@ export default async function ContributorsPage() {
       ) : (
         <div className="cb-empty ld-reveal" style={reveal(1)}>
           <p className="cb-empty-title">Contributors could not be loaded right now.</p>
-          <p>GitHub did not answer. The full list is always on the contributor graph.</p>
-          <a href={GRAPH_URL} target="_blank" rel="noopener noreferrer" className="ld-button">
-            <span className="cap">Open the contributor graph</span>
+          <p>git.cafe did not answer. Every merged pull request is listed there.</p>
+          <a href={repo.pulls} target="_blank" rel="noopener noreferrer" className="ld-button">
+            <span className="cap">Open pull requests</span>
             <ArrowUpRight aria-hidden />
           </a>
         </div>
@@ -90,7 +92,7 @@ export default async function ContributorsPage() {
             <span className="cap">How to contribute</span>
             <ArrowRight aria-hidden />
           </a>
-          <a href="https://github.com/screen-gd/Col/issues" target="_blank" rel="noopener noreferrer" className="ld-button">
+          <a href={repo.issues} target="_blank" rel="noopener noreferrer" className="ld-button">
             <span className="cap">Open issues</span>
             <ArrowUpRight aria-hidden />
           </a>
