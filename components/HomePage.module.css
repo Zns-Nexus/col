@@ -91,6 +91,7 @@
 .cellTitle:is(:hover, :focus-visible) svg { translate: 2px 0; }
 .cellFoot { margin-top: auto; }
 .searchField { display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 14px; border-radius: 12px; background: var(--lib-field); box-shadow: var(--lib-depth-1); color: var(--lib-text-2); font-size: 14px; }
+.searchField + .searchField { margin-top: 8px; }
 .searchField svg { width: 16px; height: 16px; flex-shrink: 0; }
 .page .searchField:hover { text-decoration: none; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }

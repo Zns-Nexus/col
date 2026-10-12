@@ -14,8 +14,12 @@ test("homepage keeps its four sections, search shortcuts, and new-tab library li
   }
   const headline = markup.match(/<h1\b[^>]*id="home-title"[^>]*>([\s\S]*?)<\/h1>/)?.[1] ?? "";
   assert.equal(headline.replace(/<br\/>/g, " ").replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim(), "The libraries that developers love, all in one place");
-  for (const query of ["React", "Animation", "Tailwind", "Components", "Icons", "3D"]) {
+  for (const query of ["React", "Animation", "Tailwind", "Icons", "3D"]) {
     assert.ok(markup.includes(`href="/libraries?q=${query}"`), `Missing search shortcut: ${query}`);
+  }
+  const details = markup.match(/<section\b[^>]*aria-labelledby="details-title"[^>]*>([\s\S]*?)<\/section>/)?.[1] ?? "";
+  for (const route of ["/components", "/integrations", "/mcp"]) {
+    assert.ok(details.includes(`href="${route}"`), `Missing Details entry point: ${route}`);
   }
   const libraryLinks = [...markup.matchAll(/<a\b[^>]*href="\/libraries\/[^>]+>/g)];
   assert.ok(libraryLinks.length >= 3);

@@ -24,15 +24,16 @@ const newTab = { target: "_blank", rel: "noopener noreferrer" } as const;
 /** The three jobs Col MCP supports for a coding agent, in order. */
 const mcpSteps = [
   { title: "Find a fit", text: "Compare components across libraries for your stack." },
-  { title: "Inspect it", text: "Check component docs, setup, and known gaps." },
+  { title: "Inspect it", text: "Check previews, compatibility, and known gaps." },
   { title: "Implement it", text: "Your agent adds it to the project from the sources." },
 ] as const;
 
 /**
- * Homepage "Details" bento: six tiles on a three-column grid. Search spans two
- * columns, Col MCP spans a full row, the rest take one. Each pairs
+ * Homepage "Details" bento: six tiles in a responsive grid. Search and Col MCP
+ * span columns on wider screens. Each pairs
  * a short description with a real way in: search shortcuts, directory counts,
  * featured libraries, an official install guide, the saved list, and MCP setup.
+ * Components and integrations have their own entry points within those tiles.
  */
 export function WhatsInsideSection() {
   return (
@@ -40,21 +41,25 @@ export function WhatsInsideSection() {
       <div className={styles.sectionHeading}>
         <div>
           <h2 id="details-title">Details</h2>
-          <p>From finding a library to adding it to your project.</p>
+          <p>Find libraries, preview components, and follow official setup docs.</p>
         </div>
       </div>
       <div className={styles.bento}>
         <article className={`${styles.cell} ${styles.cellWide}`}>
-          <h3><Link href="/libraries" className={styles.cellTitle}>Search and filter <ArrowRight aria-hidden /></Link></h3>
-          <p>Find libraries by name, component, category, stack, or use case.</p>
+          <h3><Link href="/libraries" className={styles.cellTitle}>Libraries and components <ArrowRight aria-hidden /></Link></h3>
+          <p>Filter libraries by category, stack, or use case. Search components and select a match to view its official demo and docs.</p>
           <div className={styles.cellFoot}>
             <Link href="/libraries" className={styles.searchField}>
               <Search aria-hidden />
-              <span>Search libraries and components</span>
+              <span>Search libraries</span>
+            </Link>
+            <Link href="/components" className={styles.searchField}>
+              <Search aria-hidden />
+              <span>Search components and view demos</span>
             </Link>
             <nav className={styles.chips} aria-label="Popular library searches">
               {popularSearches.map((query) => (
-                <Link key={query} href={`/libraries?q=${encodeURIComponent(query)}`}>{query}</Link>
+                <Link key={query} href={query === "Components" ? "/components" : `/libraries?q=${encodeURIComponent(query)}`}>{query}</Link>
               ))}
             </nav>
           </div>
@@ -105,7 +110,8 @@ export function WhatsInsideSection() {
             <h3>
               <Link href="/mcp" className={styles.cellTitle}>Col MCP <ArrowRight aria-hidden /></Link>
             </h3>
-            <p>Search UI libraries and verified components with your coding agent.</p>
+            <p>Search libraries and verified components with your coding agent, with previews where available.</p>
+            <Link href="/integrations" className={styles.cellTitle}>MCP servers and connectors <ArrowRight aria-hidden /></Link>
           </div>
           <ol className={styles.flow}>
             {mcpSteps.map(({ title, text }, index) => (
