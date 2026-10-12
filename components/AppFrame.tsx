@@ -7,7 +7,6 @@ import { Header } from "./Header";
 import { BrandLink, RepoStars, SiteSearch, useRepoStars } from "./SiteChrome";
 import { SIDEBAR_SLOT_ID } from "./SidebarSlot";
 import { ThemeToggle } from "./ThemeToggle";
-import { isPreviewPath } from "@/lib/preview-stories";
 
 type SidebarMode = "narrow" | "wide";
 
@@ -56,9 +55,6 @@ export function AppFrame({ children }: { children: ReactNode }) {
     window.addEventListener("keydown", handleShortcut);
     return () => window.removeEventListener("keydown", handleShortcut);
   }, []);
-
-  // Preview pages render bare so widgets and screenshots show only the story.
-  if (isPreviewPath(pathname)) return <>{children}</>;
 
   return (
     <div className="app-frame library-page-shell" data-sidebar={mode}>

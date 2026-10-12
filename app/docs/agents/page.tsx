@@ -13,7 +13,7 @@ export default function AgentsPage() {
       <DocsHeader section="Get started" title="Agents and LLMs" lead="Give your agent Col’s catalog, then verify the shortlist against each library’s official docs." />
 
       <DocsSection title="Connect Col MCP">
-        <DocsText>Connect your coding agent to Col to search libraries and verified components, then inspect their setup and source links. When Col has recorded a story, <code>get_component</code> also shows how the component looks in a use-case scene — a themed preview URL and a screenshot — so fit can be checked before implementing. The server is read-only and needs no credentials.</DocsText>
+        <DocsText>Connect your coding agent to Col to search libraries and verified components, then inspect their setup and source links. <code>render_component</code> then shows the chosen component live in the chat, rendered from code your agent writes for your use case. The server is read-only and needs no credentials.</DocsText>
         <DocsLinks items={[
           { href: "/mcp", title: "Set up Col MCP", text: "Client commands, configuration, plugins, and troubleshooting." },
           { href: "/mcp/agents", title: "MCP agent guide", text: "Setup prompt, tool arguments, and the component workflow." },
