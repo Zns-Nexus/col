@@ -73,7 +73,7 @@ export function SponsorsSection() {
       </section>
 
       <p className="pg-foot ld-reveal" style={reveal(3)}>
-        Inquiries are public git.cafe issues, so leave billing and private contact details out.
+        Inquiries are public GitHub issues, so leave billing and private contact details out.
       </p>
     </div>
   );

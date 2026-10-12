@@ -1,4 +1,4 @@
-<!-- Col reviews pull requests on git.cafe: https://git.cafe/screen/col/pulls. The GitHub repository is separate and does not sync automatically. -->
+<!-- Col reviews pull requests on GitHub: https://github.com/Zns-Nexus/col/pulls. -->
 
 ## What changed
 

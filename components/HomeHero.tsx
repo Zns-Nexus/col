@@ -98,7 +98,7 @@ export function HeroCopy() {
         </Link>
         <a href={repo.url} target="_blank" rel="noopener noreferrer" className={styles.starLink}>
           <Star aria-hidden />
-          <RollText>Star on git.cafe</RollText>
+          <RollText>Star on GitHub</RollText>
         </a>
       </div>
       {sponsors.length > 0 && (

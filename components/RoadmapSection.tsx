@@ -14,7 +14,7 @@ const when = (milestone: Milestone) =>
     : statusText[milestone.status];
 
 /**
- * Homepage roadmap: a timeline of major git.cafe issues, refreshed every five
+ * Homepage roadmap: a timeline of major GitHub issues, refreshed every five
  * minutes. Shipped milestones sit on a solid line, then a "Now" marker, then
  * upcoming work on a dashed line. Issues labelled "roadmap" are used when any
  * exist; otherwise feature requests are (see lib/roadmap.ts).
@@ -30,7 +30,7 @@ export async function RoadmapSection() {
       <div className={styles.sectionHeading}>
         <div>
           <h2 id="roadmap-title">Roadmap</h2>
-          <p>Major milestones, straight from git.cafe issues.</p>
+          <p>Major milestones, straight from GitHub issues.</p>
         </div>
         <a href={repo.issues} target="_blank" rel="noopener noreferrer" className="ld-button">
           <span className="cap">View all issues</span>
@@ -53,7 +53,7 @@ export async function RoadmapSection() {
         </ol>
       ) : (
         <p className={styles.timelineEmpty}>
-          {roadmap ? "No milestones yet." : "The roadmap could not be loaded right now."} Follow along in the git.cafe issues.
+          {roadmap ? "No milestones yet." : "The roadmap could not be loaded right now."} Follow along in the GitHub issues.
         </p>
       )}
     </section>

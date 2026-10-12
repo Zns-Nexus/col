@@ -88,16 +88,15 @@ Before changing this repository, read [CONTRIBUTING.md](CONTRIBUTING.md). Before
 
 Link every issue the PR fully resolves, including issues you opened, with a separate `Closes #123` in the PR description. Use `Refs #123` for partial work and explain what remains. After merge, verify resolved issues are closed; close any that remain open with a link to the merged PR. Leave partial issues open. Only Screen merges PRs.
 
-Version history is generated from merged git.cafe PRs targeting `main`. Use a clear title describing the shipped change; keep the history page and discovery outputs working when changing repository integration or navigation.
+Version history is generated from merged GitHub PRs targeting `main`. Use a clear title describing the shipped change; keep the history page and discovery outputs working when changing repository integration or navigation.
 
-The GitHub repo is separate: nothing syncs to it automatically. When Screen wants a deploy after a git.cafe merge, push `main` to the `nexus` remote by hand (`git push nexus main:refs/heads/main`). Never force-push without Screen's approval.
+Never force-push without Screen's approval.
 
 ## Git and hosting
 
-- git.cafe (`https://git.cafe/screen/col`) is the source of truth for code, stars, issues, the roadmap, and pull requests. Open issues and pull requests there, not on GitHub; `gh` does not work against it.
-- GitHub (`https://github.com/Zns-Nexus/col`) is a separate repo that Vercel deploys from; Vercel cannot read git.cafe. Push there by hand only when a deploy or preview is wanted. `origin` points at git.cafe only.
-- Site code reads git.cafe URLs from `lib/repo.ts` and its API through `lib/git-cafe.ts`. Do not hard-code repository URLs.
-
+- GitHub (`https://github.com/Zns-Nexus/col`) is the source of truth for code, stars, issues, the roadmap, and pull requests. Open issues and pull requests there; `gh` supports this repository.
+- Vercel deploys from this GitHub repository. Submit changes through pull requests and leave merging to Screen. Use the remote that points to `Zns-Nexus/col` (`nexus` in this checkout).
+- Site code reads repository URLs from `lib/repo.ts` and its API through `lib/git-cafe.ts`. Do not hard-code repository URLs.
 
 
 <!-- BEGIN:nextjs-agent-rules -->

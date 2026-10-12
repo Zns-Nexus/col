@@ -4,8 +4,8 @@ Thanks for helping make UI libraries easier to discover.
 
 ## Before you start
 
-- Col is maintained on [git.cafe](https://git.cafe/screen/col). Open issues and pull requests there. The GitHub repository (`Zns-Nexus/col`) is a separate repo that Vercel deploys from; the two are not kept in sync automatically.
-- Search existing [issues](https://git.cafe/screen/col/issues) and [pull requests](https://git.cafe/screen/col/pulls).
+- Col is maintained on [GitHub](https://github.com/Zns-Nexus/col). Open issues and pull requests there. Vercel deploys from this repository.
+- Search existing [issues](https://github.com/Zns-Nexus/col/issues) and [pull requests](https://github.com/Zns-Nexus/col/pulls).
 - For a library request, feature request, or bug report, include the details the [README](README.md#request-something) lists.
 - Keep each issue and pull request focused on one outcome.
 - For a major feature, redesign, or new dependency, open an issue and get Screen's agreement before implementation.
@@ -13,7 +13,7 @@ Thanks for helping make UI libraries easier to discover.
 ## Local setup
 
 ```bash
-git clone https://git.cafe/screen/col.git Col
+git clone https://github.com/Zns-Nexus/col.git Col
 cd Col
 npm install
 npm run dev
@@ -113,20 +113,12 @@ Screen is the only person who merges pull requests for now. Contributors submit 
 
 ### Version history
 
-The sidebar's `/version-history` page lists merged git.cafe pull requests targeting `main`, ordered by PR number. It refreshes on visits using a five-minute cache, so each merged PR appears without a manual changelog edit. Use a clear PR title describing the shipped change. This is a change history, not a list of numbered releases.
+The sidebar's `/version-history` page lists merged GitHub pull requests targeting `main`, ordered by PR number. It refreshes on visits using a five-minute cache, so each merged PR appears without a manual changelog edit. Use a clear PR title describing the shipped change. This is a change history, not a list of numbered releases.
 
 Agents must read `AGENTS.md` and this guide before changing the repository, and complete the applicable PR template checks before submitting work.
 
 ## Deploys from GitHub
 
-Vercel can only deploy from GitHub, so production deploys from the separate `Zns-Nexus/col` repository. The two repos are not linked: nothing syncs automatically.
-
-After Screen merges a PR on git.cafe, push `main` to GitHub by hand only when a deploy is wanted:
-
-```bash
-git push nexus main:refs/heads/main
-```
-
-`nexus` is the local remote for `https://github.com/Zns-Nexus/col.git`. Never force-push without Screen's approval.
+Vercel deploys from `Zns-Nexus/col` on GitHub. Submit changes through a pull request; only Screen merges into `main`. Do not push directly to `main` or force-push without Screen's approval.
 
 Reviewers may request metadata corrections, a smaller scope, accessibility fixes, or links to official sources before merging.

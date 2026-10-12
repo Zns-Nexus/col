@@ -3,8 +3,8 @@
   "displayName": "Col",
   "version": "0.1.0",
   "description": "Find, inspect, and implement UI components from Col's curated catalogue inside your project, with source-linked setup and explicit gaps.",
-  "homepage": "https://collection-of-libs.vercel.app",
-  "repository": "https://git.cafe/screen/col",
+  "homepage": "https://usecol.com",
+  "repository": "https://github.com/Zns-Nexus/col",
   "license": "MIT",
   "keywords": ["ui", "components", "mcp", "catalogue"]
 }

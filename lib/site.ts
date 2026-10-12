@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-export const siteUrl = "https://collection-of-libs.vercel.app";
+export const siteUrl = "https://usecol.com";
 
 export const socialImage = "/col-social-preview-v5.jpg";
 

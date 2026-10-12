@@ -1,5 +1,5 @@
-blank_issues_enabled: false
+blank_issues_enabled: true
 contact_links:
-  - name: Open issues on git.cafe
-    url: https://git.cafe/screen/col/issues
-    about: Col tracks issues and its roadmap on git.cafe. The GitHub repository is separate and does not sync automatically.
+  - name: Open issues on GitHub
+    url: https://github.com/Zns-Nexus/col/issues
+    about: Col tracks issues and its roadmap on GitHub.

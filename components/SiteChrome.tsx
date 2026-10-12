@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Coffee, Search, Star } from "lucide-react";
+import { Search, Star } from "lucide-react";
+import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { libraries } from "@/data/libraries";
 import { componentIndex } from "@/data/components";
 import { integrations, integrationTypes } from "@/data/integrations";
@@ -27,7 +28,7 @@ const IN_PLACE_SEARCH: Partial<Record<string, { placeholder: string; label: stri
 
 let starsRequest: Promise<number | null> | null = null;
 
-/** git.cafe star count for the repo, fetched once per page load through `/api/stars` and shared by every caller. */
+/** GitHub star count for the repo, fetched once per page load through `/api/stars` and shared by every caller. */
 export function useRepoStars() {
   const [stars, setStars] = useState<number | null>(null);
   useEffect(() => {
@@ -51,7 +52,7 @@ export function BrandLink({ className = "" }: { className?: string }) {
   );
 }
 
-/** Link to the repo on git.cafe with its star count. */
+/** Link to the repo on GitHub with its star count. */
 export function RepoStars({ stars, className = "" }: { stars: number | null; className?: string }) {
   return (
     <a
@@ -59,10 +60,10 @@ export function RepoStars({ stars, className = "" }: { stars: number | null; cla
       target="_blank"
       rel="noopener noreferrer"
       className={`site-repo ${className}`}
-      aria-label={`Col on git.cafe${stars === null ? "" : `, ${stars} stars`}`}
-      title="Col on git.cafe"
+      aria-label={`Col on GitHub${stars === null ? "" : `, ${stars} stars`}`}
+      title="Col on GitHub"
     >
-      <Coffee width={15} height={15} aria-hidden="true" />
+      <GitHubLogoIcon width={15} height={15} aria-hidden="true" />
       <span className="site-repo-count">
         <Star className="site-repo-star" aria-hidden="true" />
         <span className="cap">{stars === null ? "–" : compactNumber.format(stars)}</span>

@@ -10,7 +10,7 @@ const links = [
   ["Docs", "/docs"],
   ["Contributors", "/contributors"],
   ["Sponsors", "/sponsors"],
-  ["git.cafe", repo.url],
+  ["GitHub", repo.url],
   ["Contribute", repo.newIssue],
 ] as const;
 
