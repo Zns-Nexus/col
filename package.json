@@ -9,8 +9,7 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test": "npm run build && node --test",
-    "repo:sync": "node scripts/sync-repo.mjs"
+    "test": "npm run build && node --test"
   },
   "dependencies": {
     "@modelcontextprotocol/server": "^2.3.0",

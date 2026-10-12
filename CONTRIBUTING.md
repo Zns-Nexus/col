@@ -4,7 +4,7 @@ Thanks for helping make UI libraries easier to discover.
 
 ## Before you start
 
-- Col is maintained on [git.cafe](https://git.cafe/screen/col). Open issues and pull requests there; the GitHub repository is only a deploy mirror.
+- Col is maintained on [git.cafe](https://git.cafe/screen/col). Open issues and pull requests there. The GitHub repository (`Zns-Nexus/col`) is a separate repo that Vercel deploys from; the two are not kept in sync automatically.
 - Search existing [issues](https://git.cafe/screen/col/issues) and [pull requests](https://git.cafe/screen/col/pulls).
 - For a library request, feature request, or bug report, include the details the [README](README.md#request-something) lists.
 - Keep each issue and pull request focused on one outcome.
@@ -117,24 +117,16 @@ The sidebar's `/version-history` page lists merged git.cafe pull requests target
 
 Agents must read `AGENTS.md` and this guide before changing the repository, and complete the applicable PR template checks before submitting work.
 
-## Deploys and the GitHub mirror
+## Deploys from GitHub
 
-### Merge and sync to Zns-Nexus/col
+Vercel can only deploy from GitHub, so production deploys from the separate `Zns-Nexus/col` repository. The two repos are not linked: nothing syncs automatically.
 
-After reviewing a PR, run `npm run repo:sync -- 63` (replace `63` with its number). The command checks git.cafe merge readiness, merges the PR, fetches `main`, rebases the current local branch, installs locked dependencies, runs typechecking and tests, and pushes the fetched git.cafe commit to `Zns-Nexus/col` on GitHub. Run `npm run repo:sync` to sync without merging a PR. GitHub authentication comes from Git's credential helper; git.cafe PR operations use your `cafe` login (`cafe auth login` if needed).
-
-The command stashes and restores uncommitted work, including untracked files, and retains the backup stash. It never commits local edits, publishes unpublished local commits, or force-pushes. On conflicts, it stops and prints how to restore the stash after resolving the Git operation. A failed local check stops the GitHub push; an already completed git.cafe merge stays merged. Readiness checks enforce configured server rules, not a human code review. Review the PR before running the merge command.
-
-Agent prompt: **“Review and merge git.cafe PR #63, then sync to Zns-Nexus/col.”** Agents must inspect the diff and issue links before running the command, and verify resolved issues are closed afterward.
-
-Vercel deploys from the GitHub mirror (`https://github.com/screen-gd/Col`) until Vercel and Cloudflare can deploy from git.cafe. Maintainers push every branch to both remotes so the two stay identical:
+After Screen merges a PR on git.cafe, push `main` to GitHub by hand only when a deploy is wanted:
 
 ```bash
-git remote add github https://github.com/screen-gd/Col
-git remote set-url --add --push origin https://git.cafe/screen/col.git
-git remote set-url --add --push origin https://github.com/screen-gd/Col
+git push nexus main:refs/heads/main
 ```
 
-After this, `git push origin <branch>` updates git.cafe first, then GitHub. Merge pull requests on git.cafe and push `main` so the mirror deploys.
+`nexus` is the local remote for `https://github.com/Zns-Nexus/col.git`. Never force-push without Screen's approval.
 
 Reviewers may request metadata corrections, a smaller scope, accessibility fixes, or links to official sources before merging.

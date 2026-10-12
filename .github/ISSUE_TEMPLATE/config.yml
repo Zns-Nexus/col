@@ -2,4 +2,4 @@ blank_issues_enabled: false
 contact_links:
   - name: Open issues on git.cafe
     url: https://git.cafe/screen/col/issues
-    about: Col tracks issues and its roadmap on git.cafe. This GitHub repository is a deploy mirror.
+    about: Col tracks issues and its roadmap on git.cafe. The GitHub repository is separate and does not sync automatically.
