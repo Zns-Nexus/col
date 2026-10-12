@@ -33,7 +33,7 @@ export default function McpPage() {
         <DocsText>Every result is built to be checked, by the agent and by you:</DocsText>
         <DocsList items={[
           <>A canonical source link on every record — always the library's own documentation.</>,
-          <>Verification stated per part — <code>page</code>, <code>install</code>, <code>compatibility</code>, <code>snapshot</code> — so "verified" never means different things in different tools.</>,
+          <>Verification stated per part — <code>page</code>, <code>compatibility</code>, <code>snapshot</code> — so "verified" never means different things in different tools.</>,
           <>Gaps stay explicit. A missing component means "not yet verified", never "this library lacks it", and unverified compatibility stays <code>unknown</code>.</>,
           <><code>matchedOn</code> says why a result matched: name, alias, tag, or description.</>,
           <>Empty results explain themselves (<code>indexStatus</code>) and suggest close matches instead of returning silence.</>,
@@ -62,7 +62,6 @@ export default function McpPage() {
   "evidence": {
     "verification": {
       "page": "verified",
-      "install": "library-level",
       "compatibility": "recorded",
       "snapshot": "ingested"
     },
@@ -111,7 +110,8 @@ export default function McpPage() {
       <DocsSection title="Try the connection">
         <DocsText>Start a new agent session and confirm Col exposes <code>search_libraries</code>, <code>search_components</code>, <code>get_library</code>, and <code>get_component</code>. Then try:</DocsText>
         <DocsCode code={"Use Col to find a React command menu for a Tailwind CSS project.\nInspect the exact component and its library’s setup.\nShow me how it looks in my project’s theme.\nLink the official docs and tell me what is unverified."} label="Example prompt" />
-        <DocsNote>Col returns source links and recorded setup guidance. Its component coverage is partial; missing entries do not mean a library lacks a component. When Col recorded a story, <code>get_component</code> also returns a rendered preview — a themed URL and a screenshot — so the component can be seen in a use case before implementing.</DocsNote>
+                <DocsCode code={"Use Col to find a React command menu for a Tailwind CSS project.\nInspect the exact component and its library’s setup.\nLink the official docs and tell me what is unverified."} label="Example prompt" />
+        <DocsNote>Col returns source links and points at each library's own current setup docs. It records no install commands of its own, and its component coverage is partial; missing entries do not mean a library lacks a component. When Col recorded a story, <code>get_component</code> also returns a rendered preview — a themed URL and a screenshot — so the component can be seen in a use case before implementing.</DocsNote>
       </DocsSection>
 
       <DocsSection title="Troubleshooting">

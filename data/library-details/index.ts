@@ -1,4 +1,5 @@
 import type { LibraryDetails } from "./types.ts";
+import uiarc from "./uiarc.ts";
 import _21st_dev from "./21st-dev.ts";
 import react_bits from "./react-bits.ts";
 import transition_dev from "./transition-dev.ts";
@@ -96,6 +97,7 @@ export type { LibraryDetails };
  * are identical.
  */
 export const libraryDetails: Record<string, LibraryDetails> = {
+  "uiarc": uiarc,
   "21st-dev": _21st_dev,
   "react-bits": react_bits,
   "transition-dev": transition_dev,

@@ -11,7 +11,7 @@ import { isPreviewPath } from "@/lib/preview-stories";
 
 type SidebarMode = "narrow" | "wide";
 
-/** Directories with a filter panel in the sidebar. */
+/** Directories with a filter panel and an in-place search in the sidebar. */
 const DIRECTORY_PATHS = new Set(["/libraries", "/integrations"]);
 
 function sidebarModeFor(pathname: string): SidebarMode {
@@ -44,8 +44,11 @@ export function AppFrame({ children }: { children: ReactNode }) {
       const slash = event.key === "/" && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey;
       const command = (event.ctrlKey || event.metaKey) && !event.altKey && !event.shiftKey && event.key.toLowerCase() === "k";
       if (!slash && !command) return;
-      // Focus whichever search field is on screen: the directory search on a directory, the site search elsewhere.
-      const field = [...document.querySelectorAll<HTMLInputElement>("[data-directory-search], [data-site-search]")].find((input) => input.offsetParent !== null);
+      // Focus whichever search field is on screen, preferring a page's own
+      // directory field over the global one.
+      const visible = [...document.querySelectorAll<HTMLInputElement>("[data-directory-search], [data-site-search]")]
+        .filter((input) => input.offsetParent !== null);
+      const field = visible.find((input) => input.hasAttribute("data-directory-search")) ?? visible[0];
       if (!field) return;
       event.preventDefault();
       field.focus();

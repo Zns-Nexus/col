@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Heart, Search } from "lucide-react";
 import { CATEGORIES, STACKS, libraries, libraryBySlug } from "@/data/libraries";
 import { libraryDetails } from "@/data/library-details";
+import { hostname } from "@/lib/utils";
 import { LibraryLogo } from "./LibraryLogo";
 import styles from "./HomePage.module.css";
 
@@ -15,12 +16,8 @@ const stats = [
   { value: STACKS.length, label: "stacks" },
 ] as const;
 
-/** A real install command from the React Bits page, so the example never drifts from the data. */
-const exampleInstall = (() => {
-  const install = libraryDetails["react-bits"]?.install?.find(({ label }) => label === "shadcn (registry alias)");
-  if (!install) throw new Error("React Bits install example is missing from data/library-details");
-  return install.command;
-})();
+/** The React Bits install guide, so the featured example points at real official docs. */
+const installGuidesDocs = libraryDetails["react-bits"].docsUrl;
 
 const newTab = { target: "_blank", rel: "noopener noreferrer" } as const;
 
@@ -35,7 +32,7 @@ const mcpSteps = [
  * Homepage "Details" bento: six tiles on a three-column grid. Search spans two
  * columns, Col MCP spans a full row, the rest take one. Each pairs
  * a short description with a real way in: search shortcuts, directory counts,
- * featured libraries, an install command, the saved list, and MCP setup.
+ * featured libraries, an official install guide, the saved list, and MCP setup.
  */
 export function WhatsInsideSection() {
   return (
@@ -92,9 +89,9 @@ export function WhatsInsideSection() {
         </article>
 
         <article className={styles.cell}>
-          <h3><Link href="/libraries/react-bits" {...newTab} className={styles.cellTitle}>Installation guides <ArrowUpRight aria-hidden /></Link></h3>
-          <p>Set up registries, copy install commands, and get an agent setup prompt.</p>
-          <code className={`${styles.cellFoot} ${styles.command}`}>{exampleInstall}</code>
+          <h3><Link href="/libraries/react-bits" {...newTab} className={styles.cellTitle}>Official install guides <ArrowUpRight aria-hidden /></Link></h3>
+          <p>Col keeps no install commands of its own. Every listing points at the library&apos;s current setup docs.</p>
+          <a href={installGuidesDocs} {...newTab} className={`${styles.cellFoot} ${styles.command}`}>{hostname(installGuidesDocs)}</a>
         </article>
 
         <article className={styles.cell}>

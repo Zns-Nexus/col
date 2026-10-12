@@ -26,7 +26,8 @@
 - [ ] I added screenshots or a recording for visible changes.
 - [ ] If I added a major feature, I included usage and setup documentation, linked it from `/docs`, and updated the README where needed.
 - [ ] For catalog, public page, or agent capability changes, I verified `llms.txt`, `robots.txt`, and the sitemap, and updated affected metadata and agent guides.
-- [ ] If this PR fully resolves an issue, I added a closing reference below. Partial fixes use `Refs #`.
+- [ ] I linked every fully resolved issue, including issues I opened, with a separate `Closes #123` below. Partial fixes use `Refs #123` and explain the remaining work.
+- [ ] My title describes the shipped change for the automatically updated version history.
 
 <!-- List verification commands and results, and explain any discovery outputs that did not need changes. -->
 
@@ -43,6 +44,6 @@
 
 ## Related issue
 
-<!-- Use Closes #123 only if this PR fully resolves the issue. Use Refs #123 for a partial fix and explain what remains. If there is no related issue, write None. Issues stay open until merge. Screen merges all PRs and confirms issue completion afterward. -->
+<!-- Link every resolved issue, including your own, using a separate Closes #123. Use Refs #123 for partial fixes and explain what remains. If there is no related issue, write None. After Screen merges the PR, verify resolved issues are closed; close any that remain open with a link to the merged PR. Leave partial issues open. -->
 
 Closes #

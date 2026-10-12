@@ -74,9 +74,23 @@ export interface Library {
   tags?: string[];
   /** When this library joined the catalog, used for the seven-day new label. */
   addedAt?: string;
+  /** Set at the founder's request to show official links with no setup guidance of Col's own. */
+  outboundOnly?: boolean;
 }
 
 export const libraries: Library[] = [
+  {
+    name: "Arc",
+    slug: "uiarc",
+    addedAt: "2026-10-12T12:13:53+04:00",
+    description:
+      "React components and blocks with motion, CSS modules, and shared theme tokens, installed through the shadcn CLI or copied as source.",
+    url: "https://uiarc.dev",
+    category: "Component Library",
+    stacks: ["React", "Next.js", "TypeScript"],
+    useCases: ["Dashboards", "Landing Pages", "Micro-interactions", "Rapid Prototyping"],
+    tags: ["uiarc", "shadcn registry", "css modules", "copy paste"],
+  },
   {
     name: "21st.dev",
     slug: "21st-dev",
