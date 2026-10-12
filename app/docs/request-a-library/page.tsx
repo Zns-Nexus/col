@@ -5,7 +5,7 @@ import { DocsButton, DocsHeader, DocsList, DocsSection, DocsText } from "@/compo
 export const metadata = pageMetadata(
   "/docs/request-a-library",
   "Request a Library | Col",
-  "Request a missing UI library on git.cafe with its official URL, supported stacks, category, and use cases.",
+  "Request a missing UI library on GitHub with its official URL, supported stacks, category, and use cases.",
 );
 
 export default function RequestLibraryPage() {

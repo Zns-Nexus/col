@@ -36,7 +36,7 @@ export default async function ContributorsPage() {
             </p>
           )}
           <a href={repo.pulls} target="_blank" rel="noopener noreferrer" className="ld-button">
-            <span className="cap">View on git.cafe</span>
+            <span className="cap">View on GitHub</span>
             <ArrowUpRight aria-hidden />
           </a>
         </div>
@@ -74,7 +74,7 @@ export default async function ContributorsPage() {
       ) : (
         <div className="cb-empty ld-reveal" style={reveal(1)}>
           <p className="cb-empty-title">Contributors could not be loaded right now.</p>
-          <p>git.cafe did not answer. Every merged pull request is listed there.</p>
+          <p>GitHub did not answer. Every merged pull request is listed there.</p>
           <a href={repo.pulls} target="_blank" rel="noopener noreferrer" className="ld-button">
             <span className="cap">Open pull requests</span>
             <ArrowUpRight aria-hidden />

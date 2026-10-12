@@ -5,10 +5,12 @@ import { repo } from "./repo.ts";
 const Issue = Schema.Struct({
   number: Schema.Number,
   title: Schema.String,
-  /** git.cafe's workflow state. Triage, backlog, and unstarted are open; completed and canceled are closed. */
-  stateType: Schema.Literal("triage", "backlog", "unstarted", "started", "completed", "canceled"),
-  labels: Schema.Array(Schema.Struct({ name: Schema.String })),
-  closedAt: Schema.NullOr(Schema.String),
+  state: Schema.Literal("open", "closed"),
+  state_reason: Schema.optional(Schema.NullOr(Schema.String)),
+  labels: Schema.Array(Schema.Union(Schema.String, Schema.Struct({ name: Schema.String }))),
+  closed_at: Schema.NullOr(Schema.String),
+  // GitHub's issues endpoint also returns pull requests.
+  pull_request: Schema.optional(Schema.Unknown),
 });
 
 type Issue = Schema.Schema.Type<typeof Issue>;
@@ -17,7 +19,7 @@ export type Milestone = {
   number: number;
   title: string;
   url: string;
-  /** Completed, started (or labelled "in progress"), or accepted but not started. */
+  /** Completed, labelled "in progress", or planned work. */
   status: "shipped" | "in-progress" | "planned";
   closedAt: string | null;
 };
@@ -28,39 +30,40 @@ export type Roadmap = { shipped: Milestone[]; upcoming: Milestone[] };
 /** Label that hand-picks milestones. When no issue has it, feature requests stand in. */
 const ROADMAP_LABEL = "roadmap";
 const FEATURE_LABEL = "enhancement";
-/** Issues imported from GitHub mark ongoing work with this label instead of the started state. */
+/** Open issues with this label are in progress. */
 const IN_PROGRESS_LABEL = "in progress";
 const SHIPPED_LIMIT = 3;
 const UPCOMING_LIMIT = 3;
 /** Enough for every issue in the repo today, while bounding the work if it grows. */
 const MAX_PAGES = 3;
 
-const hasLabel = (issue: Issue, label: string) => issue.labels.some(({ name }) => name === label);
+const hasLabel = (issue: Issue, label: string) => issue.labels.some((entry) => (typeof entry === "string" ? entry : entry.name) === label);
 
-const isInProgress = (issue: Issue) => issue.stateType === "started" || hasLabel(issue, IN_PROGRESS_LABEL);
+const isInProgress = (issue: Issue) => hasLabel(issue, IN_PROGRESS_LABEL);
 
-/** Accepted, still-open work. Triage is excluded until someone accepts the issue. */
-const isUpcoming = (issue: Issue) => issue.stateType === "backlog" || issue.stateType === "unstarted" || issue.stateType === "started";
+/** The roadmap or enhancement label selects planned work. */
+const isUpcoming = (issue: Issue) => issue.state === "open";
 
 const toMilestone = (issue: Issue): Milestone => ({
   number: issue.number,
   title: issue.title,
   url: `${repo.issues}/${issue.number}`,
-  status: issue.stateType === "completed" ? "shipped" : isInProgress(issue) ? "in-progress" : "planned",
-  closedAt: issue.closedAt,
+  status: issue.state === "closed" ? "shipped" : isInProgress(issue) ? "in-progress" : "planned",
+  closedAt: issue.closed_at,
 });
 
 /**
- * Picks the timeline's milestones from git.cafe issues. Canceled and
- * untriaged issues are ignored. Shipped keeps the most recent few; upcoming
+ * Picks the timeline's milestones from labelled GitHub issues. Pull requests
+ * and issues closed as not planned are ignored. Shipped keeps the most recent few; upcoming
  * puts in-progress work first, then the oldest open issues.
  */
 function toRoadmap(issues: readonly Issue[]): Roadmap {
-  const curated = issues.filter((issue) => hasLabel(issue, ROADMAP_LABEL));
-  const pool = curated.length > 0 ? curated : issues.filter((issue) => hasLabel(issue, FEATURE_LABEL));
+  const eligible = issues.filter((issue) => issue.pull_request === undefined && issue.state_reason !== "not_planned");
+  const curated = eligible.filter((issue) => hasLabel(issue, ROADMAP_LABEL));
+  const pool = curated.length > 0 ? curated : eligible.filter((issue) => hasLabel(issue, FEATURE_LABEL));
   const shipped = pool
-    .filter((issue) => issue.stateType === "completed")
-    .sort((a, b) => (a.closedAt ?? "").localeCompare(b.closedAt ?? "") || a.number - b.number)
+    .filter((issue) => issue.state === "closed")
+    .sort((a, b) => (a.closed_at ?? "").localeCompare(b.closed_at ?? "") || a.number - b.number)
     .slice(-SHIPPED_LIMIT);
   const upcoming = pool
     .filter(isUpcoming)
@@ -70,8 +73,8 @@ function toRoadmap(issues: readonly Issue[]): Roadmap {
 }
 
 /**
- * Loads the roadmap from the repo's git.cafe issues, cached for five minutes
- * to match the homepage's revalidation. Returns null when git.cafe is
+ * Loads the roadmap from the repo's GitHub issues, cached for five minutes
+ * to match the homepage's revalidation. Returns null when GitHub is
  * unavailable or the response is not the expected shape, so the page can show
  * a fallback.
  */
@@ -79,7 +82,7 @@ export function getRoadmap(request: typeof fetch = fetch): Promise<Roadmap | nul
   const load = listAll(request, "issues", Issue, { maxPages: MAX_PAGES, revalidate: 300 }).pipe(Effect.map(toRoadmap));
 
   return Effect.runPromise(load.pipe(Effect.catchAll((error) => Effect.sync(() => {
-    console.warn("Unable to load the git.cafe roadmap", error);
+    console.warn("Unable to load the GitHub roadmap", error);
     return null;
   }))));
 }

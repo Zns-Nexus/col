@@ -19,7 +19,7 @@ The package is shared by both hosts:
 ## Claude Code
 
 ```sh
-claude plugin marketplace add https://git.cafe/screen/col.git
+claude plugin marketplace add https://github.com/Zns-Nexus/col.git
 claude plugin install col@col
 ```
 
@@ -38,7 +38,7 @@ claude mcp add --transport http col https://usecol.com/api/mcp
 ## Codex
 
 ```sh
-codex plugin marketplace add https://git.cafe/screen/col.git
+codex plugin marketplace add https://github.com/Zns-Nexus/col.git
 codex plugin add col@col
 ```
 

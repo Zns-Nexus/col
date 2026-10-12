@@ -27,7 +27,7 @@ test("homepage keeps its four sections, search shortcuts, and new-tab library li
     assert.ok(link[0].includes('target="_blank"'));
     assert.ok(link[0].includes('rel="noopener noreferrer"'));
   }
-  assert.ok(markup.includes('href="https://git.cafe/screen/col/issues/new"'));
+  assert.ok(markup.includes('href="https://github.com/Zns-Nexus/col/issues/new"'));
 });
 
 test("homepage components only use classes the CSS module defines", () => {

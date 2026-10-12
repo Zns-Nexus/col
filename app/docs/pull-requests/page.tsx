@@ -11,7 +11,7 @@ export const metadata = pageMetadata(
 export default function PullRequestsPage() {
   return (
     <article>
-      <DocsHeader section="Contribute" title="Open a pull request" lead="Contributions to the directory are reviewed on git.cafe." />
+      <DocsHeader section="Contribute" title="Open a pull request" lead="Contributions to the directory are reviewed on GitHub." />
 
       <DocsSection title="Prepare your change">
         <DocsText>
