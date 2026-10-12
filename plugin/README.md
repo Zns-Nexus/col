@@ -4,9 +4,9 @@ One MCP connection to Col's hosted catalogue plus a `ui-components` skill that
 scripts the find → inspect → implement workflow. The server is read-only and
 never requests credentials.
 
-Read the [client setup guide](https://collection-of-libs.vercel.app/mcp) for
+Read the [client setup guide](https://usecol.com/mcp) for
 connection options and troubleshooting, or the
-[agent guide](https://collection-of-libs.vercel.app/mcp/agents) for tool
+[agent guide](https://usecol.com/mcp/agents) for tool
 arguments and the component workflow. Use either this plugin or a direct
 connection to avoid configuring Col twice.
 
@@ -32,7 +32,7 @@ claude --plugin-dir /path/to/Col/plugin
 Or connect only the server:
 
 ```sh
-claude mcp add --transport http col https://collection-of-libs.vercel.app/api/mcp
+claude mcp add --transport http col https://usecol.com/api/mcp
 ```
 
 ## Codex
@@ -45,13 +45,13 @@ codex plugin add col@col
 Or connect only the server:
 
 ```sh
-codex mcp add col --url https://collection-of-libs.vercel.app/api/mcp
+codex mcp add col --url https://usecol.com/api/mcp
 ```
 
 ## Verify the connection
 
 ```sh
-curl -s -X POST https://collection-of-libs.vercel.app/api/mcp \
+curl -s -X POST https://usecol.com/api/mcp \
   -H 'content-type: application/json' \
   -H 'accept: application/json, text/event-stream' \
   -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"smoke","version":"1.0"}}}'

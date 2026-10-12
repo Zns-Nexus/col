@@ -4,7 +4,7 @@ Research date: 2026-10-02. Linked research sources were opened on this date. Sco
 
 ## Site and outcome
 
-- Site: https://collection-of-libs.vercel.app, confirmed accessible and configured in `lib/site.ts`. No alternate owned domain supplied.
+- Canonical site: https://usecol.com, configured in `lib/site.ts` after the domain was acquired on 2026-10-12. Production observations below predate the domain migration and must be rechecked after deployment.
 - Offering: Col, an open-source, community-maintained directory of 56 UI libraries with stack/category/use-case filtering, recorded component search, local saves, official documentation links, setup guidance and coding-agent prompts.
 - Audience: frontend developers and product designers choosing libraries for active projects, plus contributors. English and global, inferred from PRODUCT.md and the catalog; no regional demand evidence.
 - Primary conversion: finding a suitable library and opening its official website or component documentation. Secondary: a useful catalog contribution. Sponsorship is a separate supporting goal.
@@ -33,11 +33,11 @@ Implementation follows the installed Next.js 16.3.5 metadata, sitemap and JSON-L
 ## Ownership and release handoff
 
 1. Review and authorize deployment of these changes alongside the pre-existing agents/social work. Recheck `/docs/agents`, public canonicals, all 66 sitemap URLs and placeholder noindex on production.
-2. In [Google Search Console](https://search.google.com/search-console), select the existing exact property or add URL-prefix `https://collection-of-libs.vercel.app/`. Do not attempt DNS verification of the parent `vercel.app` domain. [Verification methods](https://support.google.com/webmasters/answer/9008080).
+2. In [Google Search Console](https://search.google.com/search-console), select the existing exact property or add URL-prefix `https://usecol.com/`. For a Domain property covering all protocols and subdomains, verify `usecol.com` through its DNS provider. [Verification methods](https://support.google.com/webmasters/answer/9008080).
 3. If already verified, retain that method. Otherwise supply the actual public HTML-tag content token for Next.js `metadata.verification.google`, or use the provider's exact file method. No placeholder token added. Deploy it, verify its public response, then click Verify in the owner account.
-4. Submit `https://collection-of-libs.vercel.app/sitemap.xml`. Inspect `/`, `/libraries`, `/libraries/shadcn-ui`, `/docs/agents`. Record ownership verified, sitemap accepted, crawl and indexing separately.
+4. Submit `https://usecol.com/sitemap.xml`. Inspect `/`, `/libraries`, `/libraries/shadcn-ui`, `/docs/agents`. Record ownership verified, sitemap accepted, crawl and indexing separately.
 5. In [Bing Webmaster Tools](https://www.bing.com/webmasters/), import the verified Google property or use the owner's supported method, then submit the same sitemap. [Bing setup guidance](https://blogs.bing.com/webmaster/2025/6/Start-Using-Bing-Webmaster-Tools-to-Improve-Your-Site-Visibility/).
-6. Keep verification tokens in place. A future owned-domain move must align `siteUrl`, redirects, provider properties and campaign links. IndexNow is deferred because frequent publication is not established.
+6. Keep verification tokens in place. For the move to `usecol.com`, configure the domain in Vercel, redirect the previous deployment domain, and update provider properties and campaign links. IndexNow is deferred because frequent publication is not established.
 
 ## Search and content strategy
 
@@ -75,11 +75,11 @@ Where supported, use `utm_source=x`, `utm_medium=social`, `utm_campaign=col_laun
 
 Intended account: `@Screeendev`, confirm owner/account before publishing. Asset: existing `public/col-social-preview.jpg`.
 
-> I built Col to help find UI libraries by stack, use case, or component name. Component matches link to official docs. Coverage is partial, and the directory is open source. Try it: https://collection-of-libs.vercel.app/libraries
+> I built Col to help find UI libraries by stack, use case, or component name. Component matches link to official docs. Coverage is partial, and the directory is open source. Try it: https://usecol.com/libraries
 
 ### Show HN
 
-Destination: https://news.ycombinator.com/submit with the owner's intended account. Link: https://collection-of-libs.vercel.app/libraries. Title:
+Destination: https://news.ycombinator.com/submit with the owner's intended account. Link: https://usecol.com/libraries. Title:
 
 > Show HN: Col, an open-source UI library directory with component-doc search
 
@@ -123,7 +123,7 @@ Subject: Col: UI library discovery with direct component-documentation links
 >
 > Your September 30 tools section included Transitions.dev and soundcn. Col may be useful to readers deciding which library fits a project before they install it.
 >
-> Directory: https://collection-of-libs.vercel.app/libraries
+> Directory: https://usecol.com/libraries
 > Source and contribution guide: https://git.cafe/screen/col
 >
 > I'm happy to walk through a component query or explain how source verification works.
@@ -142,7 +142,7 @@ Subject: Col: shortlist React UI libraries and check their component docs
 >
 > Your recent tools section covered pdfcn and Frimousse. Col offers readers a way to shortlist libraries for their own projects. Component coverage is explicitly partial rather than an exhaustive compatibility matrix.
 >
-> React directory: https://collection-of-libs.vercel.app/libraries?q=React
+> React directory: https://usecol.com/libraries?q=React
 > Source: https://git.cafe/screen/col
 >
 > Happy to share a walkthrough or answer questions about the catalog.
@@ -171,7 +171,7 @@ Production HTTP requests using Twitterbot and Discordbot user agents returned th
 
 Changed the shared image URL to `/col-social-preview-v5.jpg` and preserved the previous file. Updated the generator to produce the versioned file. Both old and versioned preview JPEG paths receive `Cache-Control: public, max-age=60, s-maxage=60`. This controls HTTP cache freshness, not X's independent card cache. On artwork changes, use another new filename and update the shared URL and generator together.
 
-Typecheck, production build, discovery tests and local HTTP checks passed. Twitterbot metadata points to the new filename; both JPEG responses returned 200 with the 60-second cache header. After release, share `https://collection-of-libs.vercel.app/?share=col-v5` to give X a fresh page URL to fetch. Canonical URLs remain clean. X preview refresh is not guaranteed or browser-verified.
+Typecheck, production build, discovery tests and local HTTP checks passed. Twitterbot metadata points to the new filename; both JPEG responses returned 200 with the 60-second cache header. After release, share `https://usecol.com/?share=col-v5` to give X a fresh page URL to fetch. Canonical URLs remain clean. X preview refresh is not guaranteed or browser-verified.
 
 Production audit: 68 successful inventory requests as described above; additional probes established `/docs/agents` and a nonexistent route return 404, `/Alexandria` is currently indexable, query URL lacks canonical, and HTTP/trailing-slash redirects are 308. This did not audit every external library link or revalidate installation claims for all 56 libraries.
 

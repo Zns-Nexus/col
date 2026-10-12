@@ -6,7 +6,7 @@
     "name": "screen-gd",
     "url": "https://git.cafe/screen"
   },
-  "homepage": "https://collection-of-libs.vercel.app",
+  "homepage": "https://usecol.com",
   "repository": "https://git.cafe/screen/col",
   "license": "MIT",
   "keywords": ["ui", "components", "mcp", "catalogue"],
@@ -18,7 +18,7 @@
     "longDescription": "Search Col's curated UI library catalogue and verified component index from your coding agent. Every answer links to its canonical documentation and marks what is verified, partial, or unverified, so implementation steps come from the library's own sources instead of guesswork.",
     "developerName": "screen-gd",
     "category": "Developer Tools",
-    "websiteURL": "https://collection-of-libs.vercel.app",
+    "websiteURL": "https://usecol.com",
     "defaultPrompt": [
       "Find a UI library that fits this project",
       "Find a command palette component with setup steps",
