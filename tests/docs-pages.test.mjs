@@ -44,7 +44,7 @@ test("MCP setup snippets connect to the plugin endpoint and the sidebar selects 
 
   const agents = readFileSync(join(process.cwd(), ".next/server/app/mcp/agents.html"), "utf8");
   assert.ok(activeMcpSidebar(agents), "The agent guide must select MCP in the main sidebar");
-  for (const tool of ["search_libraries", "search_components", "get_library", "get_component"]) {
+  for (const tool of ["search_libraries", "search_components", "get_library", "get_component", "render_component"]) {
     assert.ok(agents.includes(tool), `Agent guide is missing ${tool}`);
   }
 });

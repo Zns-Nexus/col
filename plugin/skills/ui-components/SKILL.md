@@ -32,17 +32,19 @@ three candidates and show the user the source links before committing.
   Compatibility facts are `supported`, `unsupported`, or `unknown` — never guess
   past `unknown`, and check `evidence.gaps` for what is unverified.
 
-## 3. Show how it looks
+## 3. Render it in the chat
 
-`get_component` also returns a **preview** when Col recorded a story for the
-component: a URL rendering it in a use-case scene, honest markers (the
-rendered source and applied theme), and a screenshot the client shows inline.
-Pass the project's theme as `tokens` (semantic colours plus `radius` and
-`font`), pick a `scene` for the use-case setting, and label the render with
-`sample` short synthetic strings. Never send real user data in tool
-arguments. Show the user the preview link before implementing. A missing
-preview is an explicit gap — `preview-unavailable` where the stack has no
-story runtime — and never evidence about the library.
+Call `render_component` with one TSX module whose default export shows the
+chosen component in the user's own use case: their labels, layout, and theme,
+not a generic demo. Import packages by npm name, optionally pinned
+(`@mantine/core@9.7.1`); they load from esm.sh with React 19 shared. Import
+package CSS directly (`@mantine/core/styles.css`); Tailwind classes work.
+Relative and `@/` imports fail, so inline local files such as shadcn's
+`components/ui` sources. Never send real user data in tool arguments.
+
+Hosts that support MCP Apps render the module live in the chat. Terminal
+clients show nothing, so say so rather than claiming a render. If the module
+fails, the error comes back to you as model context: fix it and call again.
 
 ## 4. Implement in context
 

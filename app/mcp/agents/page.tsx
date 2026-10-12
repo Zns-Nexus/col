@@ -32,10 +32,10 @@ export default function McpAgentsPage() {
         <DocsNote>Component IDs are case-sensitive. Copy them from search results rather than constructing them. An unknown ID or invalid filter returns a tool error.</DocsNote>
       </DocsSection>
 
-      <DocsSection title="See the look">
-        <DocsText>When Col has recorded a story for a component, <code>get_component</code> also returns a <code>preview</code>: a URL rendering the component in a use-case scene, honest markers (rendered source, applied theme, explicit gaps), and a screenshot as an image block. Pass the project’s theme as <code>tokens</code> — semantic colours plus <code>radius</code> and <code>font</code> — a <code>scene</code> to choose the use-case setting, and <code>sample</code> short synthetic strings to label the render:</DocsText>
-        <DocsCode code={JSON.stringify({ id: "shadcn-ui/Button", tokens: { primary: "#0800ff", radius: "12px" }, scene: "Dashboards", sample: { primaryLabel: "Invite team" } }, null, 2)} label="get_component with theme, scene, and sample" />
-        <DocsNote>A missing preview is an explicit gap — withheld where no granted reuse permission is recorded, or preview-unavailable where the stack has no story runtime — never evidence about the library. Hosts that support MCP Apps render the preview inline as a widget; every other host receives the same information as text, image, and URL. Show the user the preview link before implementing, and send synthetic sample data only.</DocsNote>
+      <DocsSection title="Render it in the chat">
+        <DocsText>After choosing a component, call <code>render_component</code> with one TSX module whose default export shows it in the user’s own use case: their labels, layout, and theme. Import packages by npm name, optionally pinned; they load from esm.sh with React 19 shared. Import package CSS directly. Tailwind classes work.</DocsText>
+        <DocsCode code={JSON.stringify({ code: 'import "@mantine/core/styles.css";\nimport { MantineProvider, Button } from "@mantine/core@9.7.1";\n\nexport default function Checkout() {\n  return <MantineProvider><Button>Pay $42.00</Button></MantineProvider>;\n}' }, null, 2)} label="render_component arguments" />
+        <DocsNote>Relative and <code>@/</code> imports fail: inline local files such as shadcn’s <code>components/ui</code> sources. Hosts that support MCP Apps render the module inline; terminal clients show nothing, so do not claim a render there. A compile or render error appears in the chat and comes back to you as model context. Use synthetic sample data only.</DocsNote>
       </DocsSection>
 
       <DocsSection title="Use the evidence">

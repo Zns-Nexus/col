@@ -3,14 +3,11 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { repo } from "@/lib/repo";
-import { usePathname } from "next/navigation";
-import { isPreviewPath } from "@/lib/preview-stories";
 
 const noticeKey = "col:mcp-library-rework-notice-dismissed";
 
 export function SiteNotice() {
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
 
   useEffect(() => {
     try {
@@ -28,9 +25,6 @@ export function SiteNotice() {
       // The notice still closes when storage is unavailable.
     }
   };
-
-  // Never over a preview: widgets and screenshots must show only the story.
-  if (isPreviewPath(pathname)) return null;
 
   if (!open) return null;
 

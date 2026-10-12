@@ -4,7 +4,6 @@ import { componentIndex } from "@/data/components";
 import { libraryDetails } from "@/data/library-details";
 import { libraryCorpus } from "@/data/library-corpus";
 import { compatibility } from "@/data/compatibility";
-import { previewStories } from "@/data/preview-stories";
 import { createColMcpServer } from "@/lib/mcp-server";
 
 /**
@@ -20,7 +19,6 @@ const handler = createMcpHandler(() =>
     details: libraryDetails,
     corpus: libraryCorpus,
     compatibility,
-    previewStories,
   }),
 );
 
