@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Star } from "lucide-react";
 import { libraryBySlug } from "@/data/libraries";
+import { sponsors } from "@/data/sponsors";
 import { repo } from "@/lib/repo";
 import { RollText } from "./RollText";
 import styles from "./HomePage.module.css";
@@ -72,7 +73,7 @@ export function HeroBackdrop() {
   );
 }
 
-/** The hero's copy: headline (words blur in one by one), subtitle, and the two calls to action. */
+/** The hero's copy: headline (words blur in one by one), subtitle, the two calls to action, and the sponsors line. */
 export function HeroCopy() {
   return (
     <section className={styles.heroCopy} aria-labelledby="home-title">
@@ -100,6 +101,18 @@ export function HeroCopy() {
           <RollText>Star on git.cafe</RollText>
         </a>
       </div>
+      {sponsors.length > 0 && (
+        <p className={styles.sponsors}>
+          <span>Sponsored by</span>
+          {sponsors.map(({ name, url, tier, logo }) => (
+            <a key={name} href={url} target="_blank" rel="noopener noreferrer">
+              <Image src={logo} alt="" width={128} height={128} className={styles.sponsorMark} />
+              <span className={styles.sponsorName}>{name}</span>
+              <span className={styles.sponsorTier}>· {tier}</span>
+            </a>
+          ))}
+        </p>
+      )}
     </section>
   );
 }
