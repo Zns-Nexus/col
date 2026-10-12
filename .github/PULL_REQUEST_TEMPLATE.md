@@ -1,4 +1,4 @@
-<!-- Col reviews pull requests on git.cafe: https://git.cafe/screen/col/pulls. This GitHub repository is a deploy mirror. -->
+<!-- Col reviews pull requests on git.cafe: https://git.cafe/screen/col/pulls. The GitHub repository is separate and does not sync automatically. -->
 
 ## What changed
 

@@ -10,8 +10,7 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "previews": "node scripts/render-previews.mjs",
-    "test": "npm run build && npm run previews && node --test",
-    "repo:sync": "node scripts/sync-repo.mjs"
+    "test": "npm run build && npm run previews && node --test"
   },
   "dependencies": {
     "@ark-ui/react": "^5.39.3",

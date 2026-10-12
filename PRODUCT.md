@@ -37,7 +37,7 @@ The product is named Col and uses the line “Sol could not do it himself, so we
 
 ## Evidence on Hand
 
-The curated registry lives in `data/libraries.ts`; verified components live in `data/components.ts`; integrations live in `data/integrations.ts`, with terms defined in `CONTEXT.md`. Contribution rules live in `README.md`, and `CONTRIBUTING.md`. Issues, the roadmap, and pull requests live on git.cafe; GitHub is a deploy mirror.
+The curated registry lives in `data/libraries.ts`; verified components live in `data/components.ts`; integrations live in `data/integrations.ts`, with terms defined in `CONTEXT.md`. Contribution rules live in `README.md`, and `CONTRIBUTING.md`. Issues, the roadmap, and pull requests live on git.cafe; the GitHub repo is separate and Vercel deploys from it.
 
 ## Product Principles
 
