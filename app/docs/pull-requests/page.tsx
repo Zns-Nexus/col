@@ -32,7 +32,8 @@ export default function PullRequestsPage() {
 
       <DocsSection title="Describe it">
         <DocsText>Explain what changed, why it changed, and how you verified it. List check results and include screenshots for visible interface changes. For bug fixes, include reproduction steps and expected behavior.</DocsText>
-        <DocsText>Use <code>Closes #123</code> when the PR fully resolves an issue, or <code>Refs #123</code> for a partial fix. Screen reviews and merges all pull requests and confirms issue completion after merge.</DocsText>
+        <DocsText>Link every fully resolved issue, including your own, with a separate <code>Closes #123</code>. Use <code>Refs #123</code> for partial fixes and describe what remains. After Screen merges the PR, verify resolved issues are closed; close any still open with a link to the merged PR.</DocsText>
+        <DocsText>Your PR title appears in <a href="/version-history">version history</a> after merging into <code>main</code>. Describe the shipped change clearly.</DocsText>
         <DocsButton href={repoFile("CONTRIBUTING.md")}>Read the contribution guide</DocsButton>
       </DocsSection>
     </article>

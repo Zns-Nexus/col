@@ -17,8 +17,15 @@ export default function FindLibraryPage() {
       </DocsSection>
 
       <DocsSection title="Search by component">
+        <DocsText>Open Components to search by name or alias. Select a match to view its official demo and documentation beside the results. Use Open docs if the library blocks embedding.</DocsText>
+        <DocsButton href="/components">Browse components</DocsButton>
         <DocsText>Search for a component such as “date picker” or “cmdk” to find the libraries that document it. Each match links straight to that component’s official documentation, so you can confirm it is really there.</DocsText>
         <DocsNote>Component coverage is partial and grows by contribution. A component missing from Col is not necessarily missing from the library, and Col never lists a component just because a library’s tags are broad.</DocsNote>
+      </DocsSection>
+
+      <DocsSection title="See it in a use case">
+        <DocsText>Library pages render Col’s own component previews: each recorded component shown in a use-case scene, with a shareable preview page you can open to see it in your project’s theme.</DocsText>
+        <DocsNote>A preview renders one recorded story, not the library’s full variant set, and a missing preview is not evidence a component cannot be previewed.</DocsNote>
       </DocsSection>
 
       <DocsSection title="Filter and compare">

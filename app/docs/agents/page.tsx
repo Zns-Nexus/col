@@ -13,7 +13,7 @@ export default function AgentsPage() {
       <DocsHeader section="Get started" title="Agents and LLMs" lead="Give your agent Col’s catalog, then verify the shortlist against each library’s official docs." />
 
       <DocsSection title="Connect Col MCP">
-        <DocsText>Connect your coding agent to Col to search libraries and verified components, then inspect their setup and source links. The server is read-only and needs no credentials.</DocsText>
+        <DocsText>Connect your coding agent to Col to search libraries and verified components, then inspect their setup and source links. When Col has recorded a story, <code>get_component</code> also shows how the component looks in a use-case scene — a themed preview URL and a screenshot — so fit can be checked before implementing. The server is read-only and needs no credentials.</DocsText>
         <DocsLinks items={[
           { href: "/mcp", title: "Set up Col MCP", text: "Client commands, configuration, plugins, and troubleshooting." },
           { href: "/mcp/agents", title: "MCP agent guide", text: "Setup prompt, tool arguments, and the component workflow." },
@@ -40,7 +40,7 @@ export default function AgentsPage() {
       </DocsSection>
 
       <DocsSection title="Contribute with an agent">
-        <DocsText>When working in the repository, read <code>AGENTS.md</code> and <code>CONTRIBUTING.md</code> first. Follow the existing taxonomy and keep each change focused.</DocsText>
+        <DocsText>When working in the repository, read <code>AGENTS.md</code> and <code>CONTRIBUTING.md</code> first. Every agent must follow the contribution rules and complete the applicable PR template checks. Link all resolved issues with closing references and verify they are closed after merge.</DocsText>
         <DocsList items={[
           <>Add libraries in <code>data/libraries.ts</code>, with the matching entry in <code>data/library-details/</code> and its index. Use the official name, canonical URL, and a factual description.</>,
           <>Add components in <code>data/components.ts</code> only after checking the library’s own documentation. Record the official component name and its specific documentation URL.</>,

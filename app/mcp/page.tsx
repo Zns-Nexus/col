@@ -28,6 +28,49 @@ export default function McpPage() {
         ]} />
       </DocsSection>
 
+      <DocsSection title="How Col answers">
+        <DocsText>Col is read-only: it never touches your project, and never asks for an account, API key, or any credential. Its four tools search one curated catalogue — <code>search_libraries</code>, <code>search_components</code>, <code>get_library</code>, and <code>get_component</code>.</DocsText>
+        <DocsText>Every result is built to be checked, by the agent and by you:</DocsText>
+        <DocsList items={[
+          <>A canonical source link on every record — always the library's own documentation.</>,
+          <>Verification stated per part — <code>page</code>, <code>compatibility</code>, <code>snapshot</code> — so "verified" never means different things in different tools.</>,
+          <>Gaps stay explicit. A missing component means "not yet verified", never "this library lacks it", and unverified compatibility stays <code>unknown</code>.</>,
+          <><code>matchedOn</code> says why a result matched: name, alias, tag, or description.</>,
+          <>Empty results explain themselves (<code>indexStatus</code>) and suggest close matches instead of returning silence.</>,
+          <>Documentation snapshots carry their fetch date and source revision, so anything quoted can be re-checked later.</>,
+          <>When Col recorded a story, <code>get_component</code> also returns a <code>preview</code>: a themed URL and a screenshot showing the component in a use-case scene, with the rendered source, applied theme, and its own explicit gaps. A missing preview is itself a gap — never evidence about the library.</>,
+        ]} />
+        <DocsText>This is a real result, exactly as an agent receives it:</DocsText>
+        <DocsCode code={`{
+  "id": "mantine/Spotlight",
+  "kind": "full-pattern",
+  "verifiedAt": "2026-10-10",
+  "url": "https://mantine.dev/x/spotlight/",
+  "matchedOn": ["name:spotlight"],
+  "preview": {
+    "url": "https://collection-of-libs.vercel.app/preview/mantine/spotlight/rapid-prototyping",
+    "scene": "Rapid Prototyping",
+    "renderedFrom": "story",
+    "theme": "library default",
+    "verification": "partial",
+    "gaps": [
+      "The preview renders one recorded story in a use-case scene, not the library's full variant set; the project render will differ once the component is adapted to its conventions.",
+      "A preview shows fit, not proof: only the compatibility facts above are verified evidence."
+    ],
+    "screenshot": { "mimeType": "image/png", "alt": "Mantine Spotlight rendered in a Rapid Prototyping scene" }
+  },
+  "evidence": {
+    "verification": {
+      "page": "verified",
+      "compatibility": "recorded",
+      "snapshot": "ingested"
+    },
+    "gaps": []
+  }
+}`} label="Result anatomy" />
+        <DocsText>The agent sees exactly this, and you can verify any claim by following its link. Same evidence on both sides — that is what makes a recommendation checkable instead of a black box.</DocsText>
+      </DocsSection>
+
       <DocsSection title="Claude Code">
         <DocsText>With Claude Code installed, run this command to make Col available across your projects. Use <code>--scope project</code> instead of <code>--scope user</code> to save it in the current project’s <code>.mcp.json</code>.</DocsText>
         <DocsCode code={`claude mcp add --transport http --scope user col ${endpoint}`} label="Claude Code command" />
@@ -66,8 +109,9 @@ export default function McpPage() {
 
       <DocsSection title="Try the connection">
         <DocsText>Start a new agent session and confirm Col exposes <code>search_libraries</code>, <code>search_components</code>, <code>get_library</code>, and <code>get_component</code>. Then try:</DocsText>
-        <DocsCode code={"Use Col to find a React command menu for a Tailwind CSS project.\nInspect the exact component and its library’s setup.\nLink the official docs and tell me what is unverified."} label="Example prompt" />
-        <DocsNote>Col returns source links and recorded setup guidance. Its component coverage is partial; missing entries do not mean a library lacks a component.</DocsNote>
+        <DocsCode code={"Use Col to find a React command menu for a Tailwind CSS project.\nInspect the exact component and its library’s setup.\nShow me how it looks in my project’s theme.\nLink the official docs and tell me what is unverified."} label="Example prompt" />
+                <DocsCode code={"Use Col to find a React command menu for a Tailwind CSS project.\nInspect the exact component and its library’s setup.\nLink the official docs and tell me what is unverified."} label="Example prompt" />
+        <DocsNote>Col returns source links and points at each library's own current setup docs. It records no install commands of its own, and its component coverage is partial; missing entries do not mean a library lacks a component. When Col recorded a story, <code>get_component</code> also returns a rendered preview — a themed URL and a screenshot — so the component can be seen in a use case before implementing.</DocsNote>
       </DocsSection>
 
       <DocsSection title="Troubleshooting">

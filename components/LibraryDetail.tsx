@@ -1,15 +1,19 @@
 import Link from "next/link";
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties } from "react";
 import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, CircleDollarSign, GitBranch, UsersRound } from "lucide-react";
 import { integrationTypes, type Integration } from "@/data/integrations";
 import type { Library } from "@/data/libraries";
 import type { LibraryDetails } from "@/data/library-details";
 import { libraryPreviews } from "@/data/library-previews";
+import { previewStories } from "@/data/preview-stories";
 import { publisherOf } from "@/lib/integration-directory";
+import { previewPath, previewScreenshotPath, shippableStories } from "@/lib/preview-stories";
 import type { RelatedLibraries } from "@/lib/related-libraries";
 import { integrationPath, libraryPath } from "@/lib/site";
 import { hostname } from "@/lib/utils";
-import { AgentPrompt, InstallTabs } from "./LibraryDetailParts";
+import { libraryOutbound } from "@/lib/library-outbound";
+import { AgentPrompt } from "./LibraryDetailParts";
+import { LibraryListing } from "./LibraryListing";
 import { LibraryLogo } from "./LibraryLogo";
 import { categoryIcons } from "./MaskIcon";
 import { NewAdditionLabel } from "./NewAdditionLabel";
@@ -23,20 +27,6 @@ interface LibraryDetailProps {
   integrations: readonly Integration[];
 }
 
-const URL_PATTERN = /(https?:\/\/[^\s)"'<>]+[^\s).,;"'<>])/g;
-
-/** Turns bare URLs in a getting-started step into links. */
-function linkify(text: string): ReactNode[] {
-  const parts = text.split(URL_PATTERN);
-  return parts.map((part, index) => {
-    // Odd parts are URLs; leave templates such as https://site/r/{name}.json or /r/<slug> as plain text.
-    const isLink = index % 2 === 1 && !part.includes("{") && !/^[{<]/.test(parts[index + 1] ?? "");
-    return isLink
-      ? <a key={index} href={part} target="_blank" rel="noopener noreferrer">{part.replace(/^https?:\/\//, "")}</a>
-      : part;
-  });
-}
-
 /** Short labels for each pricing model, used on the chip and the notice. */
 const pricingLabel = { free: "Free", freemium: "Free + paid", paid: "Paid" } satisfies Record<LibraryDetails["pricing"]["model"], string>;
 
@@ -45,17 +35,22 @@ const reveal = (index: number) => ({ "--i": index }) as CSSProperties;
 
 /** Shared detail-page layout for a single library; all content comes from props. */
 export function LibraryDetail({ library, details, related, integrations }: LibraryDetailProps) {
-  const install = details.install ?? [];
+  const setup = libraryOutbound(library, details);
   const preview = libraryPreviews[library.slug] ?? (details.preview ? { src: details.preview.src, width: 1200, height: 630 } : undefined);
   const previewAlt = details.preview?.alt ?? `${library.name} website preview`;
   const CategoryIcon = categoryIcons[library.category];
+  const stories = shippableStories(previewStories, library.slug).map((story) => ({
+    story,
+    href: previewPath(library.slug, story),
+    image: `/${previewScreenshotPath(library.slug, story.component)}`,
+  }));
   const relatedGroups = [
     { title: "Alternatives", items: related.alternatives },
     { title: "Pairs well with", items: related.pairsWith },
   ].filter(({ items }) => items.length > 0);
 
   return (
-    <article className="ld">
+    <LibraryListing key={library.slug} slug={library.slug}>
       <Link href="/libraries" className="ld-back ld-reveal" style={reveal(0)}>
         <ArrowLeft aria-hidden />
         <span className="cap">Libraries</span>
@@ -70,13 +65,29 @@ export function LibraryDetail({ library, details, related, integrations }: Libra
               </span>
               <div className="ld-identity-text">
                 <h1>{library.name}</h1>
-                <a href={library.url} target="_blank" rel="noopener noreferrer" className="ld-host">
+                <a href={library.url} target="_blank" rel="noopener" data-library-outbound="website" className="ld-host">
                   <span className="cap">{hostname(library.url)}</span>
                   <ArrowUpRight aria-hidden />
                 </a>
               </div>
             </div>
             <p className="ld-description">{library.description}</p>
+            <div className="ld-actions-row ld-main-actions">
+              <a href={library.url} target="_blank" rel="noopener" data-library-outbound="website" className="ld-button ld-button-primary">
+                <span className="cap">Visit website</span>
+                <ArrowUpRight aria-hidden />
+              </a>
+              <a href={details.docsUrl} target="_blank" rel="noopener" data-library-outbound="docs" className="ld-button">
+                <BookOpen aria-hidden />
+                <span className="cap">Docs</span>
+              </a>
+              {details.repoUrl && (
+                <a href={details.repoUrl} target="_blank" rel="noopener" className="ld-button">
+                  <GitBranch aria-hidden />
+                  <span className="cap">Source</span>
+                </a>
+              )}
+            </div>
             {(details.pricing.model !== "free" || details.collection) && (
               <div className="ld-notices">
                 {details.pricing.model !== "free" && (
@@ -84,7 +95,7 @@ export function LibraryDetail({ library, details, related, integrations }: Libra
                     <CircleDollarSign aria-hidden />
                     <span>
                       <strong>{pricingLabel[details.pricing.model]}.</strong> {details.pricing.summary}{" "}
-                      <a href={details.pricing.source} target="_blank" rel="noopener noreferrer">Pricing</a>
+                      <a href={details.pricing.source} target="_blank" rel="noopener">Pricing</a>
                     </span>
                   </p>
                 )}
@@ -98,48 +109,42 @@ export function LibraryDetail({ library, details, related, integrations }: Libra
             )}
           </header>
 
-          {details.registrySetup && (
-            <section className="ld-section ld-reveal" style={reveal(3)} aria-labelledby="ld-registry">
-              <h2 id="ld-registry">Registry setup</h2>
-              <p className="ld-section-note">{details.registrySetup.description}</p>
-              <InstallTabs
-                label="Registry setup"
-                steps={[
-                  { label: "Initialize shadcn", command: "npx shadcn@latest init" },
-                  ...(details.registrySetup.config ? [{ label: "components.json", command: details.registrySetup.config, language: "json" as const }] : []),
-                ]}
-              />
+          {setup.links.length > 0 && (
+            <section className="ld-section ld-reveal" style={reveal(3)} aria-labelledby="ld-setup">
+              <h2 id="ld-setup">Setup</h2>
+              <p className="ld-section-note">{library.name} publishes the current install commands and prerequisites in its own docs, so this page only points at them.</p>
+              {setup.links.map(({ url, text }) => (
+                <p key={url + text} className="ld-section-note"><a href={url} target="_blank" rel="noopener" data-library-outbound={url === details.docsUrl ? "docs" : "website"}>{text}</a></p>
+              ))}
             </section>
           )}
 
-          {install.length > 0 && (
-            <section className="ld-section ld-reveal" style={reveal(3)} aria-labelledby="ld-install">
-              <h2 id="ld-install">Install</h2>
-              <InstallTabs steps={install} />
-            </section>
-          )}
-
-          {details.gettingStarted.length > 0 && (
-            <section className="ld-section ld-reveal" style={reveal(4)} aria-labelledby="ld-start">
-              <h2 id="ld-start">Getting started</h2>
-              <ol className="ld-timeline">
-                {details.gettingStarted.map((step, index) => (
-                  <li key={index}>
-                    <span className="ld-timeline-dot" aria-hidden>{index + 1}</span>
-                    <p>{linkify(step)}</p>
+          {stories.length > 0 && (
+            <section className="ld-section ld-reveal" style={reveal(4)} aria-labelledby="ld-previews">
+              <h2 id="ld-previews">Component previews</h2>
+              <p className="ld-section-note">
+                Each component rendered by Col in a use-case scene. Your project&apos;s theme will differ; open a preview to see it in your own tokens.
+              </p>
+              <ul className="ld-previews">
+                {stories.map(({ story, href, image }) => (
+                  <li key={href}>
+                    <a href={href} className="ld-preview-link">
+                      <img src={image} alt={`${library.name} ${story.component} rendered in a ${story.scene} scene`} loading="lazy" />
+                      <span className="ld-preview-caption">{story.component} · {story.scene}</span>
+                    </a>
                   </li>
                 ))}
-              </ol>
+              </ul>
             </section>
           )}
 
-          <section className="ld-section ld-reveal" style={reveal(5)} aria-labelledby="ld-agent">
+          {setup.agentPrompt && <section className="ld-section ld-reveal" style={reveal(5)} aria-labelledby="ld-agent">
             <h2 id="ld-agent">Agent setup prompt</h2>
-            <p className="ld-section-note">Paste this into a coding agent to set {library.name} up in an existing project.</p>
-            <AgentPrompt prompt={details.agentPrompt} />
-          </section>
+            <p className="ld-section-note">Send your agent to the current official docs.</p>
+            <AgentPrompt prompt={setup.agentPrompt} />
+          </section>}
 
-          {integrations.length > 0 && (
+          {!library.outboundOnly && integrations.length > 0 && (
             <section className="ld-section ld-reveal" style={reveal(6)} aria-labelledby="ld-integrations">
               <h2 id="ld-integrations">Integrations</h2>
               <ul className="ld-related-list">
@@ -159,7 +164,7 @@ export function LibraryDetail({ library, details, related, integrations }: Libra
             </section>
           )}
 
-          {relatedGroups.length > 0 && (
+          {!library.outboundOnly && relatedGroups.length > 0 && (
             <section className="ld-section ld-reveal" style={reveal(7)} aria-labelledby="ld-related">
               <h2 id="ld-related">Related libraries</h2>
               <div className="ld-related">
@@ -198,17 +203,17 @@ export function LibraryDetail({ library, details, related, integrations }: Libra
             )}
             <div className="ld-side-body">
               <div className="ld-actions">
-                <a href={library.url} target="_blank" rel="noopener noreferrer" className="ld-button ld-button-primary">
+                <a href={library.url} target="_blank" rel="noopener" data-library-outbound="website" className="ld-button ld-button-primary">
                   <span className="cap">Visit website</span>
                   <ArrowUpRight aria-hidden />
                 </a>
                 <div className="ld-actions-row">
-                  <a href={details.docsUrl} target="_blank" rel="noopener noreferrer" className="ld-button">
+                  <a href={details.docsUrl} target="_blank" rel="noopener" data-library-outbound="docs" className="ld-button">
                     <BookOpen aria-hidden />
                     <span className="cap">Docs</span>
                   </a>
                   {details.repoUrl && (
-                    <a href={details.repoUrl} target="_blank" rel="noopener noreferrer" className="ld-button">
+                    <a href={details.repoUrl} target="_blank" rel="noopener" className="ld-button">
                       <GitBranch aria-hidden />
                       <span className="cap">Source</span>
                     </a>
@@ -220,7 +225,7 @@ export function LibraryDetail({ library, details, related, integrations }: Libra
                 <div>
                   <dt>Pricing</dt>
                   <dd>
-                    <a href={details.pricing.source} target="_blank" rel="noopener noreferrer" className="ld-chip ld-chip-link" title={details.pricing.summary}>
+                    <a href={details.pricing.source} target="_blank" rel="noopener" className="ld-chip ld-chip-link" title={details.pricing.summary}>
                       <span className="cap">{pricingLabel[details.pricing.model]}</span>
                     </a>
                     {details.pricing.license && <span className="ld-chip"><span className="cap">{details.pricing.license}</span></span>}
@@ -248,6 +253,6 @@ export function LibraryDetail({ library, details, related, integrations }: Libra
           </div>
         </aside>
       </div>
-    </article>
+    </LibraryListing>
   );
 }

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { test } from "node:test";
 import ts from "typescript";
+import { libraryOutbound } from "../lib/library-outbound.ts";
 
 const transpileUrl = (source) =>
   `data:text/javascript,${encodeURIComponent(ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext } }).outputText)}`;
@@ -73,41 +74,49 @@ test("every library has a built detail page with name, website link, docs link, 
     const websiteLink = html.match(/<a\b[^>]*class="ld-button ld-button-primary"[^>]*>/)?.[0];
     assert.ok(websiteLink?.includes('target="_blank"'), `${library.slug}: visit website must open a new tab`);
     assert.ok(html.includes(details.docsUrl), `${library.slug}: page is missing the docs link`);
-    assert.ok(html.includes("Copy prompt"), `${library.slug}: page is missing the agent prompt block`);
-    assert.ok(html.includes(details.agentPrompt), `${library.slug}: page is missing the agent prompt text`);
+    const setup = libraryOutbound(library, details);
+    assert.equal(html.includes("Copy prompt"), !library.outboundOnly, `${library.slug}: page is missing the agent prompt block`);
+    if (setup.agentPrompt) assert.ok(html.includes(setup.agentPrompt), `${library.slug}: page is missing the outbound agent prompt`);
     assert.ok(html.includes('class="ld-layout"'), `${library.slug}: missing the two-column layout`);
     assert.ok(html.includes('class="ld-side ld-reveal"'), `${library.slug}: missing the preview/details column`);
     assert.equal(html.includes("<footer"), false, `${library.slug}: renders the removed footer`);
   }
 });
 
-test("detail pages explain third-party registry setup before installation", async () => {
+test("library pages point at the official docs and publish no install commands", async () => {
   for (const library of libraries) {
     const details = await loadDetails(library.slug);
     const html = decodeHtml(readBuilt(`libraries/${library.slug}.html`));
-    assert.equal((html.match(/<main[\s>]/g) ?? []).length, 1, `${library.slug}: duplicates the app frame's main landmark`);
+    const main = html.split('<div class="ld-main">')[1].split('</header>')[0];
+    assert.ok(main.includes('data-library-outbound="website"'), `${library.slug}: missing primary website action`);
+    assert.ok(main.includes('data-library-outbound="docs"'), `${library.slug}: missing primary docs action`);
+    assert.equal(html.includes('rel="noopener noreferrer" class="ld-button'), false);
 
-    const usesRegistry = details.install?.some(({ command }) => /shadcn(?:@\S+)? add/.test(command));
-    if (usesRegistry && library.slug !== "shadcn-ui") {
-      assert.ok(details.registrySetup?.description, `${library.slug}: missing registry setup guide`);
-      assert.ok(html.includes(details.registrySetup.description), `${library.slug}: registry guide is not rendered`);
-      assert.ok(html.indexOf("Registry setup") < html.indexOf(details.install[0].command), `${library.slug}: setup follows installation`);
-      if (details.registrySetup.config) {
-        const { registries } = JSON.parse(details.registrySetup.config);
-        assert.ok(Object.keys(registries).length > 0);
-        for (const value of Object.values(registries)) {
-          assert.ok((typeof value === "string" ? value : value.url).includes("{name}"));
-        }
-        assert.ok(html.includes('aria-label="Registry setup"'), `${library.slug}: registry setup tabs are missing`);
-        assert.ok(html.includes('>components.json</span>'), `${library.slug}: registry config tab is missing`);
-      }
+    // Col publishes no install commands of its own: no install section, no command
+    // block, and no shell command anywhere in the main column.
+    assert.equal(html.includes('id="ld-install"'), false, `${library.slug}: still renders an install section`);
+    assert.equal(html.includes("ld-screen-command"), false, `${library.slug}: still renders a command block`);
+    const column = html.split('<div class="ld-main">')[1] ?? html;
+    assert.equal(/<code>[^<]*(npx|npm|pnpm|yarn|bun|jsrepo)\s/.test(column), false, `${library.slug}: prints an install command`);
+
+    const setup = libraryOutbound(library, details);
+    for (const { url, text } of setup.links) {
+      assert.ok(html.includes(`href="${url}"`), `${library.slug}: missing setup link to ${url}`);
+      assert.ok(html.includes(text), `${library.slug}: missing setup link text`);
     }
-    const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
-    assert.equal(new Set(ids).size, ids.length, `${library.slug}: duplicate tab or panel IDs`);
-    for (const [, panel] of html.matchAll(/<button[^>]*role="tab"[^>]*aria-controls="([^"]+)"/g)) {
-      assert.ok(ids.includes(panel), `${library.slug}: tab points to a missing panel`);
+    if (setup.agentPrompt) {
+      assert.ok(setup.agentPrompt.startsWith(`Read the current official docs / llms.txt at ${details.docsUrl}, then install from there.`));
+      assert.equal(setup.agentPrompt.includes("npx"), false);
     }
   }
+});
+
+test("outbound-only libraries provide no public setup pointers", async () => {
+  const library = libraries.find(({ slug }) => slug === "wensity-ui");
+  const details = await loadDetails(library.slug);
+  const setup = libraryOutbound({ ...library, outboundOnly: true }, details);
+  assert.deepEqual(setup, { links: [], agentPrompt: null });
+  assert.equal(library.outboundOnly, undefined, "do not opt founders out without their request");
 });
 
 // The discovery suite already asserts sitemap coverage for every slug.
@@ -158,17 +167,26 @@ test("every registry slug has complete detail content", async () => {
     const details = await loadDetails(library.slug);
     assert.ok(details, `Missing data/library-details/${library.slug}.ts`);
     assert.ok(details.docsUrl.trim(), `${library.slug}: docsUrl is empty`);
-    assert.ok(details.agentPrompt.trim(), `${library.slug}: agentPrompt is empty`);
-    assert.ok(
-      Array.isArray(details.gettingStarted) && details.gettingStarted.length >= 3,
-      `${library.slug}: gettingStarted needs at least 3 steps`,
-    );
-    assert.ok(
-      details.gettingStarted.every((step) => String(step).trim()),
-      `${library.slug}: gettingStarted has an empty step`,
-    );
+    // Setup content is the library's to publish: a detail file carries only the
+    // official links, pricing, and an optional preview.
+    for (const field of ["install", "registrySetup", "componentInstallTemplate", "gettingStarted", "agentPrompt"]) {
+      assert.equal(field in details, false, `${library.slug}: ${field} must not be recorded on Col's side`);
+    }
     assert.ok(["free", "freemium", "paid"].includes(details.pricing?.model), `${library.slug}: pricing.model must be free, freemium, or paid`);
     assert.ok(details.pricing.summary.trim(), `${library.slug}: pricing.summary is empty`);
     assert.match(details.pricing.source, /^https:\/\//, `${library.slug}: pricing.source must be an https URL`);
   }
+});
+
+test("a library with shipped stories shows its component previews", () => {
+  const html = readBuilt("libraries/shadcn-ui.html");
+  assert.ok(html.includes("/preview/shadcn-ui/button"), "expected a link to the story's preview page");
+  assert.ok(html.includes("/previews/shadcn-ui/button.png"), "expected the rendered screenshot");
+  const without = readBuilt("libraries/magic-ui.html");
+  assert.ok(without, "expected the magic-ui page to exist");
+  assert.equal(
+    without.includes('id="ld-previews"'),
+    false,
+    "a library with no shipped stories must not show a previews section",
+  );
 });

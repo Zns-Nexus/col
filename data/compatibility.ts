@@ -32,6 +32,12 @@ export interface LibraryCompatibility {
 
 export const compatibility: LibraryCompatibility[] = [
   {
+    slug: "uiarc",
+    facts: [
+      { subject: "react", constraint: "19", status: "supported", evidence: "https://uiarc.dev/docs/installation#requirements" },
+    ],
+  },
+  {
     slug: "ant-design",
     facts: [
       {
@@ -68,6 +74,152 @@ export const compatibility: LibraryCompatibility[] = [
         constraint: ">= 20",
         status: "supported",
         evidence: "https://chakra-ui.com/docs/get-started/installation",
+      },
+    ],
+  },
+  {
+    slug: "heroui",
+    facts: [
+      {
+        subject: "react",
+        constraint: ">= 19",
+        status: "supported",
+        evidence: "https://registry.npmjs.org/@heroui/react",
+      },
+      {
+        subject: "react-dom",
+        constraint: ">= 19",
+        status: "supported",
+        evidence: "https://registry.npmjs.org/@heroui/react",
+      },
+    ],
+  },
+  {
+    slug: "radix-ui",
+    facts: [
+      {
+        subject: "react",
+        constraint: "^16.8 || ^17.0 || ^18.0 || ^19.0",
+        status: "supported",
+        evidence: "https://registry.npmjs.org/@radix-ui/react-dialog",
+      },
+      {
+        subject: "react-dom",
+        constraint: "^16.8 || ^17.0 || ^18.0 || ^19.0",
+        status: "supported",
+        evidence: "https://registry.npmjs.org/@radix-ui/react-dialog",
+      },
+    ],
+  },
+  {
+    slug: "mantine",
+    facts: [
+      {
+        subject: "react",
+        constraint: "^19.2.0",
+        status: "supported",
+        evidence: "https://registry.npmjs.org/@mantine/core",
+      },
+      {
+        subject: "react-dom",
+        constraint: "^19.2.0",
+        status: "supported",
+        evidence: "https://registry.npmjs.org/@mantine/core",
+      },
+    ],
+  },
+  {
+    slug: "kibo-ui",
+    facts: [
+      {
+        subject: "react",
+        constraint: ">= 18",
+        status: "supported",
+        evidence: "https://www.kibo-ui.com/docs/setup",
+      },
+    ],
+  },
+  {
+    slug: "recharts",
+    facts: [
+      {
+        subject: "react",
+        constraint: "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+        status: "supported",
+        evidence: "https://registry.npmjs.org/recharts",
+      },
+      {
+        subject: "react-dom",
+        constraint: "^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+        status: "supported",
+        evidence: "https://registry.npmjs.org/recharts",
+      },
+    ],
+  },
+  {
+    slug: "wensity-ui",
+    facts: [
+      {
+        subject: "react",
+        constraint: ">= 18.2",
+        status: "supported",
+        evidence: "https://ui.wensity.com/docs/installation",
+      },
+    ],
+  },
+  {
+    slug: "cmdk",
+    facts: [
+      {
+        subject: "react",
+        constraint: "^18 || ^19",
+        status: "supported",
+        evidence: "https://registry.npmjs.org/cmdk",
+      },
+      {
+        subject: "react-dom",
+        constraint: "^18 || ^19",
+        status: "supported",
+        evidence: "https://registry.npmjs.org/cmdk",
+      },
+    ],
+  },
+  {
+    slug: "kbar",
+    facts: [
+      {
+        subject: "react",
+        constraint: "^17 || ^18 || ^19",
+        status: "supported",
+        evidence: "https://registry.npmjs.org/kbar",
+      },
+      {
+        subject: "react-dom",
+        constraint: "^17 || ^18 || ^19",
+        status: "supported",
+        evidence: "https://registry.npmjs.org/kbar",
+      },
+    ],
+  },
+  {
+    slug: "tween-ui",
+    facts: [
+      {
+        subject: "react",
+        constraint: ">= 19",
+        status: "supported",
+        evidence: "https://tween-ui.vercel.app/installation/setup-guide",
+      },
+    ],
+  },
+  {
+    slug: "drawably",
+    facts: [
+      {
+        subject: "react",
+        constraint: ">= 18 < 20",
+        status: "supported",
+        evidence: "https://github.com/danielwh2/drawably/blob/main/package.json",
       },
     ],
   },

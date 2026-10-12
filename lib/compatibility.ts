@@ -1,4 +1,5 @@
 import type { CompatibilityFact } from "../data/compatibility";
+import type { Stack } from "../data/libraries";
 
 /**
  * The compatibility resolver: versions and variants per subject, with three
@@ -35,4 +36,25 @@ export function compatibilityReport(
     unsupported: resolved.filter((fact) => fact.status === "unsupported"),
     unknown: resolved.filter((fact) => fact.status === "unknown").map((fact) => fact.subject),
   };
+}
+
+/** npm subjects that apply to a library, derived from the frameworks it targets. */
+const FRAMEWORK_SUBJECTS: Partial<Record<Stack, readonly string[]>> = {
+  React: ["react", "react-dom"],
+  "Next.js": ["react", "react-dom"],
+  Vue: ["vue"],
+  Svelte: ["svelte"],
+  SvelteKit: ["svelte"],
+  Angular: ["@angular/core"],
+  SolidJS: ["solid-js"],
+};
+
+/**
+ * The subjects Col tracks for one library: the frameworks it targets, the Node
+ * runtime every install runs under, and anything it records a fact for. Never
+ * the global union of subjects some other library happens to use.
+ */
+export function trackedSubjects(stacks: readonly Stack[], facts: readonly CompatibilityFact[]): string[] {
+  const derived = stacks.flatMap((stack) => FRAMEWORK_SUBJECTS[stack] ?? []);
+  return [...new Set(["node", ...derived, ...facts.map((fact) => fact.subject)])];
 }

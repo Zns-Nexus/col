@@ -82,6 +82,16 @@ review that challenges the work.
 
 - Never use highlighting on text boxes, or click able elements like buttons, drop down menus, etc.
 
+## Contribution rules for every agent
+
+Before changing this repository, read [CONTRIBUTING.md](CONTRIBUTING.md). Before preparing a pull request, read [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) and complete its applicable checks. These requirements apply to every agent and contributor.
+
+Link every issue the PR fully resolves, including issues you opened, with a separate `Closes #123` in the PR description. Use `Refs #123` for partial work and explain what remains. After merge, verify resolved issues are closed; close any that remain open with a link to the merged PR. Leave partial issues open. Only Screen merges PRs.
+
+Version history is generated from merged git.cafe PRs targeting `main`. Use a clear title describing the shipped change; keep the history page and discovery outputs working when changing repository integration or navigation.
+
+When Screen requests a PR merge and mirror sync, review the specified git.cafe PR and its issue links, then run `npm run repo:sync -- <number>`. For sync only, run `npm run repo:sync`. Verify linked resolved issues are closed after merge and report the mirrored commit. The script preserves local edits and pushes only published git.cafe `main` to `Zns-Nexus/col`.
+
 ## Git and hosting
 
 - git.cafe (`https://git.cafe/screen/col`) is the source of truth for code, stars, issues, the roadmap, and pull requests. Open issues and pull requests there, not on GitHub; `gh` does not work against it.

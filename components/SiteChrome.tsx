@@ -72,6 +72,42 @@ export function RepoStars({ stars, className = "" }: { stars: number | null; cla
 }
 
 /**
+ * A filtering search field in the site search's own shape, bound to whatever
+ * query its caller owns. The frame's in-place directory fields render it, and a
+ * page can render its own field with it without sharing the global query.
+ */
+export function SearchField({ value, onChange, placeholder, label, className = "" }: {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+  label: string;
+  className?: string;
+}) {
+  return (
+    <form role="search" className={`site-search ${className}`} onSubmit={(event) => event.preventDefault()}>
+      <Search aria-hidden="true" />
+      <input
+        data-directory-search=""
+        type="search"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === "Escape") {
+            if (value) onChange("");
+            else event.currentTarget.blur();
+          }
+        }}
+        placeholder={placeholder}
+        aria-label={label}
+        aria-description="Press slash to focus search"
+        aria-keyshortcuts="/"
+      />
+      <span className={styles.shortcut} title="Press / to search" aria-hidden="true">Press <kbd>/</kbd></span>
+    </form>
+  );
+}
+
+/**
  * Site search with a quick-results dropdown covering libraries and
  * integrations. On a directory it filters that directory in place instead.
  * `collapsed` renders only an icon that opens the library directory with its
@@ -93,26 +129,13 @@ export function SiteSearch({ className = "", collapsed = false }: { className?: 
 
   if (inPlace) {
     return (
-      <form role="search" className={`site-search ${className}`} onSubmit={(event) => event.preventDefault()}>
-        <Search aria-hidden="true" />
-        <input
-          data-directory-search=""
-          type="search"
-          value={directoryValue}
-          onChange={(event) => directoryQuery.set(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === "Escape") {
-              if (directoryValue) directoryQuery.set("");
-              else event.currentTarget.blur();
-            }
-          }}
-          placeholder={inPlace.placeholder}
-          aria-label={inPlace.label}
-          aria-description="Press slash to focus search"
-          aria-keyshortcuts="/"
-        />
-        <span className={styles.shortcut} title="Press / to search" aria-hidden="true">Press <kbd>/</kbd></span>
-      </form>
+      <SearchField
+        value={directoryValue}
+        onChange={directoryQuery.set}
+        placeholder={inPlace.placeholder}
+        label={inPlace.label}
+        className={className}
+      />
     );
   }
 
