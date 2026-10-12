@@ -90,12 +90,12 @@ Link every issue the PR fully resolves, including issues you opened, with a sepa
 
 Version history is generated from merged git.cafe PRs targeting `main`. Use a clear title describing the shipped change; keep the history page and discovery outputs working when changing repository integration or navigation.
 
-When Screen requests a PR merge and mirror sync, review the specified git.cafe PR and its issue links, then run `npm run repo:sync -- <number>`. For sync only, run `npm run repo:sync`. Verify linked resolved issues are closed after merge and report the mirrored commit. The script preserves local edits and pushes only published git.cafe `main` to `Zns-Nexus/col`.
+The GitHub repo is separate: nothing syncs to it automatically. When Screen wants a deploy after a git.cafe merge, push `main` to the `nexus` remote by hand (`git push nexus main:refs/heads/main`). Never force-push without Screen's approval.
 
 ## Git and hosting
 
 - git.cafe (`https://git.cafe/screen/col`) is the source of truth for code, stars, issues, the roadmap, and pull requests. Open issues and pull requests there, not on GitHub; `gh` does not work against it.
-- GitHub (`https://github.com/screen-gd/Col`) is a mirror that Vercel deploys from until Vercel and Cloudflare support git.cafe. Push every branch to both. Locally, `origin` pushes to git.cafe then GitHub, as set up in CONTRIBUTING.md.
+- GitHub (`https://github.com/Zns-Nexus/col`) is a separate repo that Vercel deploys from; Vercel cannot read git.cafe. Push there by hand only when a deploy or preview is wanted. `origin` points at git.cafe only.
 - Site code reads git.cafe URLs from `lib/repo.ts` and its API through `lib/git-cafe.ts`. Do not hard-code repository URLs.
 
 

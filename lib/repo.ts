@@ -2,8 +2,8 @@ const url = "https://git.cafe/screen/col";
 
 /**
  * Col's home on git.cafe, which holds the code, stars, issues, and roadmap.
- * GitHub stays a mirror that Vercel deploys from until Vercel and Cloudflare
- * can deploy from git.cafe directly.
+ * The GitHub repo is separate; Vercel deploys from it because Vercel cannot
+ * read git.cafe directly.
  */
 export const repo = {
   url,
