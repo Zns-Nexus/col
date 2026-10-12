@@ -9,7 +9,7 @@ const reveal = (index: number) => ({ "--i": index }) as CSSProperties;
 /** Things maintainers spend their time on, which sponsorship pays for. */
 const supports = [
   ["Reviewing submissions", "Checking every new library and component against its official source."],
-  ["Keeping listings current", "Updating links, install commands, and details as projects change."],
+  ["Keeping listings current", "Updating links, component records, and details as projects change."],
   ["Improving the directory", "Better search, filters, and pages for everyone who uses Col."],
 ] as const;
 

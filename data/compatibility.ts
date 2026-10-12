@@ -32,6 +32,12 @@ export interface LibraryCompatibility {
 
 export const compatibility: LibraryCompatibility[] = [
   {
+    slug: "uiarc",
+    facts: [
+      { subject: "react", constraint: "19", status: "supported", evidence: "https://uiarc.dev/docs/installation#requirements" },
+    ],
+  },
+  {
     slug: "ant-design",
     facts: [
       {

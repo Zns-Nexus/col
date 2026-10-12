@@ -17,14 +17,14 @@ function waveChars(text: string, direction: "in" | "out" | "rest") {
 }
 
 /**
- * Install commands in a card shaped like the library cards: the command sits
- * in an inset "screen" on top, the method tabs and copy action below. The
+ * Client setup snippets in a card shaped like the library cards: the snippet
+ * sits in an inset "screen" on top, the method tabs and copy action below. The
  * active pill slides between tabs; switching sends a blur wave from the start
- * of the command to the end, replacing the old command character by character.
- * A step with a `language` is a file snippet rather than a shell command, and
+ * of the snippet to the end, replacing the old one character by character.
+ * A step with a `language` is a config file rather than a shell command, and
  * its optional `caption` explains where it goes.
  */
-export function InstallTabs({ steps, label = "Install method" }: { steps: { label: string; command: string; language?: "json" | "toml"; caption?: ReactNode }[]; label?: string }) {
+export function InstallTabs({ steps, label }: { steps: { label: string; command: string; language?: "json" | "toml"; caption?: ReactNode }[]; label: string }) {
   const id = useId();
   const [active, setActive] = useState(0);
   const [swap, setSwap] = useState<{ from: number; id: number } | null>(null);

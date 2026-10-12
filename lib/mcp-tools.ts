@@ -21,6 +21,7 @@ import { PREVIEW_WIDGET_URI } from "./preview-widget.ts";
 import { admissibleSnapshots } from "./corpus.ts";
 import { compatibilityReport, trackedSubjects, type CompatibilityReport } from "./compatibility.ts";
 import { libraryPath, siteUrl } from "./site.ts";
+import { libraryOutbound } from "./library-outbound.ts";
 
 /**
  * The MCP tool layer — the one seam the MCP endpoint serves.
@@ -49,7 +50,6 @@ export type Verification = "verified" | "partial" | "unverified";
  */
 export interface FieldVerification {
   page: "verified" | "unverified";
-  install: "component" | "library-level" | "none";
   compatibility: "recorded" | "unknown";
   snapshot: "ingested" | "none";
 }
@@ -139,11 +139,10 @@ export interface LibraryDetailsResult {
   useCases: UseCase[];
   docsUrl: string | null;
   repoUrl: string | null;
-  install: { label: string; command: string }[];
-  registrySetup: { description: string; config?: string } | null;
   /** Every component Col records for this library, browsable without guessing queries. */
   components: ComponentRef[];
   componentCount: number;
+  /** Official setup links; Col publishes no install commands of its own. */
   gettingStarted: string[];
   pricing: LibraryDetails["pricing"] | null;
   /** Recorded facts and named unknowns; never a guess. */
@@ -173,13 +172,10 @@ export interface PreviewDetails {
 
 export type ComponentDetailsResult = Omit<ComponentHit, "library"> & {
   library: { slug: string; name: string; url: string; docsUrl: string | null; stacks: Stack[] };
-  /** Installation evidence is only claimed when the library's details record it. */
-  install: { label: string; command: string }[];
   /** npm packages this component installs, as its registry records them. */
   dependencies: string[];
   /** Registry components this one pulls in, by registry name. */
   registryDependencies: string[];
-  registrySetup: { description: string; config?: string } | null;
   compatibility: CompatibilityReport;
   /** How the component looks in a use-case scene, when Col recorded a story for it. */
   preview: PreviewDetails | null;
@@ -246,11 +242,6 @@ function parseComponentId(id: string): { slug: string; name: string } | null {
   const separator = id.indexOf("/");
   if (separator < 1 || separator === id.length - 1) return null;
   return { slug: id.slice(0, separator), name: id.slice(separator + 1) };
-}
-
-/** The slug a registry-style CLI expects for a component name, e.g. "Alert Dialog" -> "alert-dialog". */
-function registrySlug(name: string): string {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 }
 
 const PAGE_ARGS = {
@@ -402,26 +393,21 @@ function evidenceState(
 }
 
 function componentVerification(
-  component: LibraryComponent,
-  details: LibraryDetails | undefined,
   facts: readonly CompatibilityFact[],
   entry: LibraryCorpusEntry | undefined,
 ): FieldVerification {
   return {
     page: "verified",
-    install: component.install || details?.componentInstallTemplate ? "component" : details?.install?.length ? "library-level" : "none",
     ...evidenceState(facts, entry),
   };
 }
 
 function libraryVerification(
-  details: LibraryDetails | undefined,
   facts: readonly CompatibilityFact[],
   entry: LibraryCorpusEntry | undefined,
 ): FieldVerification {
   return {
     page: "verified",
-    install: details?.install?.length ? "library-level" : "none",
     ...evidenceState(facts, entry),
   };
 }
@@ -435,7 +421,6 @@ function weakestVerification(states: readonly FieldVerification[]): FieldVerific
     [...order].reverse().find((value) => values.includes(value)) ?? order[order.length - 1];
   return {
     page: worst(states.map((state) => state.page), ["verified", "unverified"]),
-    install: worst(states.map((state) => state.install), ["component", "library-level", "none"]),
     compatibility: worst(states.map((state) => state.compatibility), ["recorded", "unknown"]),
     snapshot: worst(states.map((state) => state.snapshot), ["ingested", "none"]),
   };
@@ -487,14 +472,14 @@ export function createCatalogueTools(data: CatalogueData): CatalogueTools {
     });
     return {
       results: matches.slice(offset, offset + limit).map((match) =>
-        libraryHit(match, libraryVerification(data.details[match.library.slug], compatibilityFor(data, match.library.slug), corpusFor(data, match.library.slug))),
+        libraryHit(match, libraryVerification(compatibilityFor(data, match.library.slug), corpusFor(data, match.library.slug))),
       ),
       total: matches.length,
       ...(matches.length === 0 ? { indexStatus: "no recorded library matches" as EmptyHint } : {}),
       evidence: {
         verification: weakestVerification(
           matches.map((match) =>
-            libraryVerification(data.details[match.library.slug], compatibilityFor(data, match.library.slug), corpusFor(data, match.library.slug)),
+            libraryVerification(compatibilityFor(data, match.library.slug), corpusFor(data, match.library.slug)),
           ),
         ),
         gaps: [
@@ -532,7 +517,7 @@ export function createCatalogueTools(data: CatalogueData): CatalogueTools {
             ...(args.stacks ?? []).map((stack) => `stack:${stack}`),
           ];
           matches.push({
-            ...componentHit(entry, component, componentVerification(component, details, facts, corpusEntry)),
+            ...componentHit(entry, component, componentVerification(facts, corpusEntry)),
             matchedOn,
           });
         }
@@ -588,6 +573,7 @@ export function createCatalogueTools(data: CatalogueData): CatalogueTools {
     const details = data.details[library.slug];
     const entry = corpusFor(data, library.slug);
     const facts = compatibilityFor(data, library.slug);
+    const setup = details ? libraryOutbound(library, details) : null;
 
     return {
       slug: library.slug,
@@ -600,20 +586,18 @@ export function createCatalogueTools(data: CatalogueData): CatalogueTools {
       useCases: library.useCases,
       docsUrl: details?.docsUrl ?? null,
       repoUrl: details?.repoUrl ?? null,
-      install: details?.install ?? [],
-      registrySetup: details?.registrySetup ?? null,
       components: (index[library.slug] ?? []).map((component) => ({
         id: componentId(library.slug, component.name),
         name: component.name,
         kind: component.kind,
       })),
       componentCount: (index[library.slug] ?? []).length,
-      gettingStarted: details?.gettingStarted ?? [],
+      gettingStarted: setup?.links.map(({ url, text }) => `${text} ${url}`) ?? [],
       pricing: details?.pricing ?? null,
       compatibility: compatibilityReport(facts, trackedSubjects(library.stacks, facts)),
-      documentation: { verification: verificationFor(entry), snapshots: entry ? admissibleSnapshots(entry) : [] },
+      documentation: { verification: verificationFor(entry), snapshots: !library.outboundOnly && entry ? admissibleSnapshots(entry) : [] },
       evidence: {
-        verification: libraryVerification(details, facts, entry),
+        verification: libraryVerification(facts, entry),
         gaps: [
           COVERAGE_GAP,
           compatibilityGap(facts),
@@ -639,13 +623,9 @@ export function createCatalogueTools(data: CatalogueData): CatalogueTools {
     }
     const details = data.details[library.slug];
     const facts = compatibilityFor(data, library.slug);
-    const componentCommand =
-      component.install ?? details?.componentInstallTemplate?.replace("{slug}", registrySlug(component.name));
 
     const gaps = [
-      componentCommand
-        ? "API and usage details come from the library's setup docs and may cover more than this component."
-        : "The component page is verified on the library's own documentation; installation and API details come from the library's setup docs and may cover more than this component.",
+      "The component page is verified on the library's own documentation. Col publishes no install commands, so read the library's setup docs for installation and API details, which may cover more than this component.",
       compatibilityGap(facts),
       COVERAGE_GAP,
     ];
@@ -702,18 +682,14 @@ export function createCatalogueTools(data: CatalogueData): CatalogueTools {
     }
 
     const payload: ComponentDetailsResult = {
-      ...componentHit(library, component, componentVerification(component, details, facts, corpusFor(data, library.slug))),
+      ...componentHit(library, component, componentVerification(facts, corpusFor(data, library.slug))),
       library: { slug: library.slug, name: library.name, url: library.url, docsUrl: details?.docsUrl ?? null, stacks: library.stacks },
-      install: componentCommand
-        ? [{ label: `Add ${component.name}`, command: componentCommand }]
-        : details?.install ?? [],
-      dependencies: component.dependencies ?? [],
-      registryDependencies: component.registryDependencies ?? [],
-      registrySetup: details?.registrySetup ?? null,
+      dependencies: library.outboundOnly ? [] : component.dependencies ?? [],
+      registryDependencies: library.outboundOnly ? [] : component.registryDependencies ?? [],
       compatibility: compatibilityReport(facts, trackedSubjects(library.stacks, facts)),
       preview,
       evidence: {
-        verification: componentVerification(component, details, facts, corpusFor(data, library.slug)),
+        verification: componentVerification(facts, corpusFor(data, library.slug)),
         gaps,
       },
     };
@@ -779,14 +755,14 @@ const TOOL_DEFINITIONS: ToolDefinition[] = [
   {
     name: "get_library",
     title: "Inspect one library in Col",
-    description: `Everything Col records about one library: description, stacks, install commands, registry setup, pricing, the components Col records for it (with componentCount), verified compatibility facts (explicit "unknown" where nothing is verified), and any ingested documentation snapshots. ${COVERAGE_NOTE} ${NO_CREDENTIALS_NOTE}`,
+    description: `Discover one library: description, stacks, the official docs and site to set it up from, pricing, the components Col records for it (with componentCount), verified compatibility facts (explicit "unknown" where nothing is verified), and permitted documentation snapshots. Col publishes no install commands: read the current official docs before installing. Libraries marked outboundOnly omit setup links and snapshots. ${COVERAGE_NOTE} ${NO_CREDENTIALS_NOTE}`,
     args: getLibraryArgs,
     annotations: annotation,
   },
   {
     name: "get_component",
     title: "Inspect one component in Col",
-    description: `One component's canonical documentation link plus its exact install command and dependencies where the library records them (otherwise the library's install commands), registry setup, and verified compatibility facts (explicit "unknown" where nothing is verified). When Col has recorded a story for the component, also returns how it looks in a use-case scene: a preview URL (themed with \`tokens\` when supplied), honest preview markers, and a rendered screenshot. A missing preview is an explicit gap, never evidence about the library. Ids come from search_components as '<library-slug>/<component name>'. ${COVERAGE_NOTE} ${NO_CREDENTIALS_NOTE}`,
+    description: `One component's canonical documentation link, the npm dependencies and registry components the library records for it, and verified compatibility facts (explicit "unknown" where nothing is verified). Col publishes no install commands: read the library's setup docs for those. When Col has recorded a story for the component, also returns how it looks in a use-case scene: a preview URL (themed with \`tokens\` when supplied), honest preview markers, and a rendered screenshot. A missing preview is an explicit gap, never evidence about the library. Ids come from search_components as '<library-slug>/<component name>'. ${COVERAGE_NOTE} ${NO_CREDENTIALS_NOTE}`,
     args: getComponentArgs,
     annotations: annotation,
     meta: { ui: { resourceUri: PREVIEW_WIDGET_URI } },

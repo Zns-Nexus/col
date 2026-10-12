@@ -17,6 +17,8 @@ export default function FindLibraryPage() {
       </DocsSection>
 
       <DocsSection title="Search by component">
+        <DocsText>Open Components to search by name or alias. Select a match to view its official demo and documentation beside the results. Use Open docs if the library blocks embedding.</DocsText>
+        <DocsButton href="/components">Browse components</DocsButton>
         <DocsText>Search for a component such as “date picker” or “cmdk” to find the libraries that document it. Each match links straight to that component’s official documentation, so you can confirm it is really there.</DocsText>
         <DocsNote>Component coverage is partial and grows by contribution. A component missing from Col is not necessarily missing from the library, and Col never lists a component just because a library’s tags are broad.</DocsNote>
       </DocsSection>

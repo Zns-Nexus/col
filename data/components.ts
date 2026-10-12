@@ -30,8 +30,6 @@ export interface LibraryComponent {
   aliases?: string[];
   /** Canonical documentation page for this exact component. */
   url: string;
-  /** Exact command that installs this component, when the library documents one. */
-  install?: string;
   /** npm packages this component installs, as its registry records them. */
   dependencies?: string[];
   /** Registry components this one pulls in, by registry name. */
@@ -66,6 +64,11 @@ export const componentConcepts: Record<string, string[]> = {
 export type ComponentIndex = Record<string, LibraryComponent[]>;
 
 export const componentIndex: ComponentIndex = {
+  "uiarc": [
+    { name: "Button", kind: "full-pattern", summary: "A native button with animated press feedback, loading states, and labels that resize as their content changes.", verifiedAt: "2026-10-12", url: "https://uiarc.dev/components/button", dependencies: ["motion"] },
+    { name: "Dialog", kind: "full-pattern", summary: "A modal surface for confirmations, decisions, and short forms.", builtOn: "@radix-ui/react-dialog", concept: "dialog", verifiedAt: "2026-10-12", url: "https://uiarc.dev/components/dialog", dependencies: ["@radix-ui/react-dialog", "motion", "lucide-react"] },
+    { name: "Tabs", kind: "full-pattern", summary: "Switch between related panels with animated indicators and horizontally scrollable tab sets.", builtOn: "@radix-ui/react-tabs", verifiedAt: "2026-10-12", url: "https://uiarc.dev/components/tabs", dependencies: ["@radix-ui/react-tabs", "motion", "lucide-react"] },
+  ],
   "intent-ui": [
     { name: "Button", kind: "full-pattern", summary: "Buttons play a crucial role in functionality, whether for submitting a form or navigating to another page. They come in various styles and states.", verifiedAt: "2026-10-10", url: "https://intentui.com/docs/components/buttons/button" },
     { name: "Combo Box", kind: "full-pattern", summary: "An advanced dropdown component that allows users to search, filter, and select options dynamically, enhancing data entry and selection processes.", verifiedAt: "2026-10-10", url: "https://intentui.com/docs/components/pickers/combo-box" },

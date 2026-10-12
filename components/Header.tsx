@@ -10,6 +10,7 @@ import { ThemeToggle } from "./ThemeToggle";
 const links = [
   ["Home", "/"],
   ["Libraries", "/libraries"],
+  ["Components", "/components"],
   ["Integrations", "/integrations"],
   ["MCP", "/mcp"],
   ["Docs", "/docs"],

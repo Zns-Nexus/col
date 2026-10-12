@@ -40,7 +40,7 @@ export default function AgentsPage() {
       </DocsSection>
 
       <DocsSection title="Contribute with an agent">
-        <DocsText>When working in the repository, read <code>AGENTS.md</code> and <code>CONTRIBUTING.md</code> first. Follow the existing taxonomy and keep each change focused.</DocsText>
+        <DocsText>When working in the repository, read <code>AGENTS.md</code> and <code>CONTRIBUTING.md</code> first. Every agent must follow the contribution rules and complete the applicable PR template checks. Link all resolved issues with closing references and verify they are closed after merge.</DocsText>
         <DocsList items={[
           <>Add libraries in <code>data/libraries.ts</code>, with the matching entry in <code>data/library-details/</code> and its index. Use the official name, canonical URL, and a factual description.</>,
           <>Add components in <code>data/components.ts</code> only after checking the library’s own documentation. Record the official component name and its specific documentation URL.</>,

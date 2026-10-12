@@ -26,7 +26,7 @@ export default function McpAgentsPage() {
       <DocsSection title="Inspect the component">
         <DocsText>Call <code>search_components</code> with a documented name or alias. Optionally restrict the search to a library slug:</DocsText>
         <DocsCode code={JSON.stringify({ query: "command palette", library: "shadcn-ui", limit: 5 }, null, 2)} label="search_components arguments" />
-        <DocsText>Pass the exact returned ID to <code>get_component</code>, then use <code>get_library</code> for the library’s setup, pricing, documentation, and recorded compatibility.</DocsText>
+        <DocsText>Pass the exact returned ID to <code>get_component</code>, then use <code>get_library</code> for official setup links, pricing, documentation, and recorded compatibility. Col records no install commands of its own: read the current official docs before installing. Libraries that request outbound-only listings omit setup links.</DocsText>
         <DocsCode code={JSON.stringify({ id: "shadcn-ui/Command" }, null, 2)} label="get_component arguments" />
         <DocsCode code={JSON.stringify({ slug: "shadcn-ui" }, null, 2)} label="get_library arguments" />
         <DocsNote>Component IDs are case-sensitive. Copy them from search results rather than constructing them. An unknown ID or invalid filter returns a tool error.</DocsNote>
@@ -50,7 +50,7 @@ export default function McpAgentsPage() {
       <DocsSection title="Implement in the project">
         <DocsList items={[
           "Read the chosen component’s official docs and confirm they fit the project’s versions and styling.",
-          "Apply registry prerequisites before installation. Install only what the selected component needs and follow the project’s conventions.",
+          "Read the library’s own setup docs before installing anything. Install only what the selected component needs and follow the project’s conventions.",
           "Run the project’s relevant checks. Report the component, sources used, and anything that remains unverified.",
         ]} />
         <DocsText>Col supplies catalogue evidence. The coding agent performs project changes; the Col server does not read or modify the project.</DocsText>

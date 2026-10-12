@@ -17,7 +17,8 @@
   [Request a library](#request-a-library) ·
   [Request a feature](#request-a-feature) ·
   [Report a bug](#report-a-bug) ·
-  [Contribute](CONTRIBUTING.md)
+  [Contribute](CONTRIBUTING.md) ·
+  [Version history](https://collection-of-libs.vercel.app/version-history)
 </div>
 
 <br />
@@ -35,7 +36,7 @@
 Col organizes UI libraries by category, stack, and use case. Search from the homepage, then compare matching libraries in the directory.
 
 - Search by name, keyword, category, stack, or use case.
-- Search by component name, and jump straight to that component's official docs.
+- Use the Components section to search by name or alias and view a selected component’s official demo and docs beside the results.
 - Filter libraries without leaving the directory.
 - Save useful libraries locally.
 - Open the official website or documentation from each listing.
@@ -196,7 +197,7 @@ Each library will have a dedicated Col page with:
 
 - a clear overview and best-fit use cases;
 - supported stacks and key capabilities;
-- official documentation, repository, and installation links;
+- official documentation and repository links, since setup always comes from the project's own docs;
 - useful comparisons and alternatives;
 - a copyable setup prompt for coding agents.
 
@@ -222,7 +223,10 @@ After implementation:
 4. Call out any manual setup still required.
 ```
 
-When contributing a future detail page, keep the prompt specific to that library and link every installation claim to official documentation.
+Detail pages store only official links, pricing, and a preview. The setup
+links and the agent prompt on a library page are generated from that library's
+`docsUrl` in [`lib/library-outbound.ts`](lib/library-outbound.ts), so Col
+publishes no install commands or setup steps of its own to keep current.
 
 ## Project structure
 
