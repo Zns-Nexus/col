@@ -32,6 +32,12 @@ export default function McpAgentsPage() {
         <DocsNote>Component IDs are case-sensitive. Copy them from search results rather than constructing them. An unknown ID or invalid filter returns a tool error.</DocsNote>
       </DocsSection>
 
+      <DocsSection title="See the look">
+        <DocsText>When Col has recorded a story for a component, <code>get_component</code> also returns a <code>preview</code>: a URL rendering the component in a use-case scene, honest markers (rendered source, applied theme, explicit gaps), and a screenshot as an image block. Pass the project’s theme as <code>tokens</code> — semantic colours plus <code>radius</code> and <code>font</code> — a <code>scene</code> to choose the use-case setting, and <code>sample</code> short synthetic strings to label the render:</DocsText>
+        <DocsCode code={JSON.stringify({ id: "shadcn-ui/Button", tokens: { primary: "#0800ff", radius: "12px" }, scene: "Dashboards", sample: { primaryLabel: "Invite team" } }, null, 2)} label="get_component with theme, scene, and sample" />
+        <DocsNote>A missing preview is an explicit gap — withheld where no granted reuse permission is recorded, or preview-unavailable where the stack has no story runtime — never evidence about the library. Hosts that support MCP Apps render the preview inline as a widget; every other host receives the same information as text, image, and URL. Show the user the preview link before implementing, and send synthetic sample data only.</DocsNote>
+      </DocsSection>
+
       <DocsSection title="Use the evidence">
         <DocsList items={[
           <>Keep <code>evidence.verification</code> and <code>evidence.gaps</code> in the recommendation. A verified component link does not verify every API, dependency, or variant.</>,

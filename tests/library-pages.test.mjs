@@ -172,3 +172,16 @@ test("every registry slug has complete detail content", async () => {
     assert.match(details.pricing.source, /^https:\/\//, `${library.slug}: pricing.source must be an https URL`);
   }
 });
+
+test("a library with shipped stories shows its component previews", () => {
+  const html = readBuilt("libraries/shadcn-ui.html");
+  assert.ok(html.includes("/preview/shadcn-ui/button"), "expected a link to the story's preview page");
+  assert.ok(html.includes("/previews/shadcn-ui/button.png"), "expected the rendered screenshot");
+  const without = readBuilt("libraries/magic-ui.html");
+  assert.ok(without, "expected the magic-ui page to exist");
+  assert.equal(
+    without.includes('id="ld-previews"'),
+    false,
+    "a library with no shipped stories must not show a previews section",
+  );
+});

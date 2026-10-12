@@ -3,19 +3,27 @@ import { libraries } from "@/data/libraries";
 import { publisherOf } from "@/lib/integration-directory";
 import { hostname } from "@/lib/utils";
 import { integrationPath, libraryPath, siteUrl } from "@/lib/site";
+import { previewPath, shippableStories } from "@/lib/preview-stories";
+import { previewStories } from "@/data/preview-stories";
 
 export const dynamic = "force-static";
 
 export function GET() {
-  const entries = libraries.map((library) => [
-    `## ${library.name}`,
-    `- Domain: [${hostname(library.url)}](${library.url})`,
-    `- Col listing: ${new URL(libraryPath(library.slug), siteUrl)}`,
-    `- Description: ${library.description}`,
-    `- Category: ${library.category}`,
-    `- Stacks: ${library.stacks.join(", ")}`,
-    `- Use cases: ${library.useCases.join(", ")}`,
-  ].join("\n"));
+  const entries = libraries.map((library) => {
+    const previews = shippableStories(previewStories, library.slug).map(
+      (story) => new URL(previewPath(library.slug, story), siteUrl).toString(),
+    );
+    return [
+      `## ${library.name}`,
+      `- Domain: [${hostname(library.url)}](${library.url})`,
+      `- Col listing: ${new URL(libraryPath(library.slug), siteUrl)}`,
+      `- Description: ${library.description}`,
+      `- Category: ${library.category}`,
+      `- Stacks: ${library.stacks.join(", ")}`,
+      `- Use cases: ${library.useCases.join(", ")}`,
+      ...(previews.length > 0 ? [`- Component previews: ${previews.join(", ")}`] : []),
+    ].join("\n");
+  });
 
   const integrationEntries = integrations.map((integration) => [
     `## ${integration.name}`,
@@ -33,7 +41,7 @@ export function GET() {
     "## Instructions for agents and LLMs",
     `- Read the guide: ${siteUrl}/docs/agents`,
     `- To connect Col MCP, read ${siteUrl}/mcp. The read-only Streamable HTTP endpoint is ${siteUrl}/api/mcp and needs no credentials.`,
-    `- Before using Col MCP tools, read ${siteUrl}/mcp/agents for arguments, source evidence, and coverage rules. The tools are search_libraries, search_components, get_library, and get_component.`,
+    `- Before using Col MCP tools, read ${siteUrl}/mcp/agents for arguments, source evidence, and coverage rules. The tools are search_libraries, search_components, get_library, and get_component. get_component also returns a rendered preview (a themed URL and a screenshot) when Col recorded a story for the component.`,
     "- Match the user's framework, styling approach, accessibility needs, and required components before recommending a library.",
     "- Verify current APIs, installation, compatibility, and licensing against each library's official documentation. Cite the exact pages checked and state uncertainty.",
     "- This catalog contains library metadata, not component coverage. Col's component index is partial; a missing component is not evidence that a library lacks it. Verify component support in official component docs, not generic tags.",
