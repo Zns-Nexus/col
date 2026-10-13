@@ -139,6 +139,6 @@ tests/                Build output and integration checks
 docs/                 Architecture decisions and project documentation
 ```
 
-Built with Next.js, React, TypeScript, Tailwind CSS, shadcn/ui, and Radix UI. See [CONTEXT.md](CONTEXT.md) for catalog terminology and [version history](https://usecol.com/version-history) for shipped changes.
+Built with Next.js, React, TypeScript, Tailwind CSS, shadcn/ui, and Radix UI. See [CONTEXT.md](CONTEXT.md) for catalog terminology.
 
 Col is licensed under the [MIT License](LICENSE).

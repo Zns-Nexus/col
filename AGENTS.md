@@ -88,7 +88,7 @@ Before changing this repository, read [CONTRIBUTING.md](CONTRIBUTING.md). Before
 
 Link every issue the PR fully resolves, including issues you opened, with a separate `Closes #123` in the PR description. Use `Refs #123` for partial work and explain what remains. After merge, verify resolved issues are closed; close any that remain open with a link to the merged PR. Leave partial issues open. Only Screen merges PRs.
 
-Version history is generated from merged GitHub PRs targeting `main`. Use a clear title describing the shipped change; keep the history page and discovery outputs working when changing repository integration or navigation.
+The sidebar version display reads its value from `package.json`. Keep that source of truth when changing the sidebar.
 
 Never force-push without Screen's approval.
 

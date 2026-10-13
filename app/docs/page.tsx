@@ -26,7 +26,6 @@ export default function DocsPage() {
             { href: "/integrations", title: "Integrations", text: "MCP servers and connectors for UI libraries and design tools." },
             { href: "/mcp", title: "Col MCP", text: "Connect your coding agent to Col’s library and component catalogue." },
             { href: "/docs/agents", title: "Agents and LLMs", text: "Use the catalog with your agent and verify recommendations." },
-            { href: "/version-history", title: "Version history", text: "Changes from merged pull requests." },
             { href: "/docs/request-a-library", title: "Request a library", text: "Missing something useful? Ask for it on GitHub." },
           ]}
         />
