@@ -8,8 +8,9 @@
  *   tool arguments through the official ext-apps `App` bridge.
  * - `previewFragmentHtml(code)`: a self-contained HTML fragment with the code
  *   embedded, returned by `render_component({ format: "html" })` for hosts that
- *   cannot show MCP Apps, such as Claude Code. The agent passes it to an inline
- *   HTML widget tool, or saves it as a file and opens it in a browser.
+ *   cannot show MCP Apps, such as Claude Code. It isolates the render in an
+ *   `<iframe srcdoc>` so the host's CSS cannot restyle it. The agent passes it
+ *   to an inline HTML widget tool, or saves it as a file and opens it in a browser.
  *
  * The runtime compiles the TSX with sucrase, points the module's imports at
  * esm.sh, and mounts its default export with React. Col bundles nothing: every
@@ -44,22 +45,6 @@ const RUNTIME = {
   apps: "https://esm.sh/@modelcontextprotocol/ext-apps@2.0.3/app-with-deps",
 } as const;
 
-/**
- * Tailwind for the render. Preflight and utilities load outside any cascade
- * layer: hosts that inject their own unlayered CSS (Claude Code's inline widget
- * pre-styles inputs and resets padding) would otherwise beat every Tailwind
- * rule regardless of specificity. Unlayered, utility classes outrank those
- * element and universal rules, and preflight, which Tailwind components assume
- * as their baseline, competes with the host's element styles by order. Theme
- * variables stay layered, so a host's own design tokens keep priority.
- */
-const TAILWIND = `<style type="text/tailwindcss">
-@layer theme;
-@import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/preflight.css";
-@import "tailwindcss/utilities.css";
-</style>
-<script src="${RUNTIME.tailwind}"></script>`;
 
 /**
  * Where one import in the agent's code loads from. React and react-dom resolve
@@ -164,17 +149,20 @@ async function colRuntime(report) {
 `;
 }
 
-/** The MCP Apps view: reads the agent's code from the tool input and reports failures back to the agent. */
-export function previewWidgetHtml(): string {
+/**
+ * The document every render runs in: Tailwind, a status line for failures, and
+ * the mount point. `script` boots the runtime for the shell that uses it.
+ */
+function previewPage(script: string): string {
   return `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="light dark" />
 <title>Component preview</title>
-${TAILWIND}
+<script src="${RUNTIME.tailwind}"></script>
 <style>
-  :root { color-scheme: light dark; }
   body { margin: 0; padding: 16px; background: transparent; color: light-dark(#000, #fff); font: 14px/1.5 system-ui, sans-serif; }
   #col-status { margin: 0; white-space: pre-wrap; }
 </style>
@@ -182,7 +170,15 @@ ${TAILWIND}
 <body>
 <p id="col-status">Rendering…</p>
 <div id="col-root"></div>
-<script type="module">
+${script}
+</body>
+</html>
+`;
+}
+
+/** The MCP Apps view: reads the agent's code from the tool input and reports failures back to the agent. */
+export function previewWidgetHtml(): string {
+  return previewPage(`<script type="module">
   import { App, applyDocumentTheme } from "${RUNTIME.apps}";
 ${runtimeScript()}
   const app = new App({ name: "Col component preview", version: "1.0.0" });
@@ -211,31 +207,37 @@ ${runtimeScript()}
   await app.connect();
   const context = app.getHostContext();
   if (context && context.theme) applyDocumentTheme(context.theme);
-</script>
-</body>
-</html>
-`;
+</script>`);
 }
 
 /**
- * The same render as an HTML fragment with the code embedded, for hosts without
- * MCP Apps. It has no document wrapper, so inline HTML widget tools accept it;
- * saved after `FRAGMENT_PAGE_PREFIX`, it opens in any browser. The code rides a
- * JSON string with `<` escaped, so it cannot close the script element early.
+ * The same render with the code embedded, for hosts without MCP Apps. It is an
+ * HTML fragment, which inline HTML widget tools accept, holding the page in an
+ * `<iframe srcdoc>`: the frame is a clean document, so a host's own CSS (Claude
+ * Code's widget restyles every input) cannot reach the component. The frame
+ * inherits the host's script allowlist, and reports its height so it fits the
+ * render. Saved after `FRAGMENT_PAGE_PREFIX`, it also opens in any browser.
+ * The code rides a JSON string with `<` escaped, so it cannot close its script
+ * element early.
  */
 export function previewFragmentHtml(code: string): string {
   const embedded = JSON.stringify(code).replace(/</g, "\\u003c");
-  return `<p id="col-status" style="margin:0;white-space:pre-wrap;font:14px/1.5 system-ui,sans-serif">Rendering…</p>
-<div id="col-root"></div>
-${TAILWIND}
-<script>
+  const page = previewPage(`<script>
 ${runtimeScript()}
 colRuntime()
   .then(({ render, fail }) => render(${embedded}).catch(fail))
   .catch((error) => {
-    const status = document.getElementById("col-status");
-    status.textContent = String((error && error.message) || error);
+    document.getElementById("col-status").textContent = String((error && error.message) || error);
   });
+new ResizeObserver(() => parent.postMessage({ colHeight: Math.ceil(document.body.getBoundingClientRect().height) }, "*")).observe(document.body);
+</script>`);
+  const srcdoc = page.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+  return `<iframe data-col-preview title="Component preview" srcdoc="${srcdoc}" style="display:block;width:100%;height:160px;border:0"></iframe>
+<script>
+addEventListener("message", (event) => {
+  const frame = document.querySelector("iframe[data-col-preview]");
+  if (frame && event.source === frame.contentWindow && typeof event.data?.colHeight === "number") frame.style.height = event.data.colHeight + "px";
+});
 </script>
 `;
 }
