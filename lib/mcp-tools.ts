@@ -7,7 +7,7 @@ import type { LibraryDetails } from "../data/library-details/types";
 import type { DocSnapshot, LibraryCorpusEntry } from "../data/library-corpus/types";
 import type { CompatibilityFact, LibraryCompatibility } from "../data/compatibility";
 import { componentHaystack, componentRank, createDirectorySearch, normalizeWords, tokenMatches, wordTokens, type SearchResult } from "./directory.ts";
-import { PREVIEW_WIDGET_URI } from "./preview-widget.ts";
+import { FRAGMENT_PAGE_PREFIX, PREVIEW_WIDGET_URI, previewFragmentHtml } from "./preview-widget.ts";
 import { admissibleSnapshots } from "./corpus.ts";
 import { compatibilityReport, trackedSubjects, type CompatibilityReport } from "./compatibility.ts";
 import { libraryPath, siteUrl } from "./site.ts";
@@ -257,17 +257,27 @@ const renderComponentArgs = z.object({
     .describe(
       "One self-contained TSX module whose default export is a React component showing the chosen component in the user's own use case. Import packages by npm name, optionally pinned ('@mantine/core@9.7.1'); they load from esm.sh with React 19 shared. Import package CSS directly ('@mantine/core/styles.css'). Tailwind utility classes work. Relative and '@/' imports fail: inline local files such as shadcn's components/ui sources. Use synthetic sample data only.",
     ),
+  format: z
+    .enum(["widget", "html"])
+    .optional()
+    .describe(
+      `'widget' (default) renders through MCP Apps. 'html' also returns the same render as a self-contained HTML fragment, for hosts that cannot show MCP Apps, such as Claude Code: pass it to an inline HTML widget tool (e.g. show_widget), or save it as an .html file that starts with '${FRAGMENT_PAGE_PREFIX}' and open it in the browser.`,
+    ),
 });
 
-/** What render_component answers: the render itself happens in the user's chat, never on Col's server. */
-export interface RenderComponentResult {
-  status: "sent-to-chat";
-  gaps: string[];
-}
+/** What render_component answers: the render itself happens in the user's chat or browser, never on Col's server. */
+export type RenderComponentResult =
+  | { status: "sent-to-chat"; gaps: string[] }
+  | { status: "html"; html: string; gaps: string[] };
 
 const RENDER_GAPS = [
-  "The component renders inside the chat only on hosts that support MCP Apps (such as Claude, ChatGPT, and VS Code); terminal hosts show nothing, so do not claim a render there.",
+  "The component renders inside the chat only on hosts that support MCP Apps (such as Claude, ChatGPT, VS Code, and Codex). Claude Code does not show MCP Apps: call render_component again with format 'html' and show that instead. Never claim a render you did not see happen.",
   "If the module fails to compile or render, the chat shows the error and reports it back to you as model context; fix the code and call render_component again.",
+];
+
+const HTML_GAPS = [
+  `Pass 'html' unchanged to an inline HTML widget tool if this host has one (e.g. show_widget). Otherwise write '${FRAGMENT_PAGE_PREFIX}' followed by 'html' to a temporary .html file and open it in the user's browser.`,
+  "Errors show inside the render only; they are not reported back to you, so ask the user what they see.",
 ];
 
 /**
@@ -625,10 +635,16 @@ export function createCatalogueTools(data: CatalogueData): CatalogueTools {
     };
   }
 
-  /** Validates the module and hands it to the chat widget, which does the rendering; Col's server runs no code. */
+  /**
+   * Validates the module and hands it to the renderer: the MCP Apps widget by
+   * default, or an HTML fragment with the code embedded for hosts without MCP
+   * Apps. Col's server never runs the code.
+   */
   function renderComponent(raw: unknown): RenderComponentResult {
-    parseArgs("render_component", renderComponentArgs, raw);
-    return { status: "sent-to-chat", gaps: RENDER_GAPS };
+    const args = parseArgs("render_component", renderComponentArgs, raw);
+    return args.format === "html"
+      ? { status: "html", html: previewFragmentHtml(args.code), gaps: HTML_GAPS }
+      : { status: "sent-to-chat", gaps: RENDER_GAPS };
   }
 
   const handlers: Record<string, (args: unknown) => unknown> = {
@@ -697,7 +713,7 @@ const TOOL_DEFINITIONS: ToolDefinition[] = [
   {
     name: "render_component",
     title: "Render a component in the chat",
-    description: `Show the user a live, interactive render of a component inside the chat, after choosing it with search_components and get_component. Write the module for the user's real use case (their labels, layout, and theme), not a generic demo. Packages load from esm.sh at render time; Col bundles none. ${NO_CREDENTIALS_NOTE}`,
+    description: `Show the user a live, interactive render of a component inside the chat, after choosing it with search_components and get_component. Write the module for the user's real use case (their labels, layout, and theme), not a generic demo. Packages load from esm.sh at render time; Col bundles none. In Claude Code, which does not show MCP Apps, pass format 'html' and show the returned fragment with an inline HTML widget tool, or open it in the browser. ${NO_CREDENTIALS_NOTE}`,
     args: renderComponentArgs,
     annotations: annotation,
     meta: { ui: { resourceUri: PREVIEW_WIDGET_URI } },

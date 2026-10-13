@@ -35,7 +35,7 @@ export function GET() {
     `- Read the guide: ${siteUrl}/docs/agents`,
     `- Version history: ${siteUrl}/version-history lists merged changes to main and updates automatically from GitHub.`,
     `- To connect Col MCP, read ${siteUrl}/mcp. The read-only Streamable HTTP endpoint is ${siteUrl}/api/mcp and needs no credentials.`,
-    `- Before using Col MCP tools, read ${siteUrl}/mcp/agents for arguments, source evidence, and coverage rules. The tools are search_libraries, search_components, get_library, get_component, and render_component. render_component renders TSX the agent writes inside the chat, on hosts that support MCP Apps.`,
+    `- Before using Col MCP tools, read ${siteUrl}/mcp/agents for arguments, source evidence, and coverage rules. The tools are search_libraries, search_components, get_library, get_component, and render_component. render_component renders TSX the agent writes inside the chat on hosts that support MCP Apps; with format "html" it returns the same render as an HTML fragment for hosts without MCP Apps, such as Claude Code.`,
     "- Match the user's framework, styling approach, accessibility needs, and required components before recommending a library.",
     "- Verify current APIs, installation, compatibility, and licensing against each library's official documentation. Cite the exact pages checked and state uncertainty.",
     "- Library listings are choosers and never carry Col's own install commands: open each library's linked current official docs or llms.txt for setup. Libraries marked outboundOnly provide official links without setup guidance.",
