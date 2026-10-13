@@ -42,9 +42,19 @@ package CSS directly (`@mantine/core/styles.css`); Tailwind classes work.
 Relative and `@/` imports fail, so inline local files such as shadcn's
 `components/ui` sources. Never send real user data in tool arguments.
 
-Hosts that support MCP Apps render the module live in the chat. Terminal
-clients show nothing, so say so rather than claiming a render. If the module
+Hosts that support MCP Apps render the module live in the chat. If the module
 fails, the error comes back to you as model context: fix it and call again.
+
+Claude Code does not show MCP Apps. There, call `render_component` with the
+same code and `format: "html"`, then show the returned `html`:
+
+- If you have an inline HTML widget tool (such as `show_widget`), pass `html`
+  to it unchanged.
+- Otherwise write `<!doctype html>` followed by `html` to a temporary `.html`
+  file and open it in the user's browser.
+
+Errors in this fallback show only inside the render, so ask the user what they
+see. Never claim a render you did not see happen.
 
 ## 4. Implement in context
 

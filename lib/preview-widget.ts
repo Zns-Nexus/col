@@ -1,48 +1,67 @@
 /**
- * The MCP Apps view behind `render_component`: renders the TSX module the agent
- * wrote, live inside the user's chat.
+ * The renderer behind `render_component`: turns the TSX module the agent wrote
+ * into a live React render inside the user's chat. It ships in two shells that
+ * share one runtime (`runtimeScript`):
  *
- * The tool's `_meta.ui.resourceUri` points here. The host loads this HTML in a
- * sandboxed iframe and passes the tool arguments to it through the official
- * ext-apps `App` bridge. The view then compiles the TSX with sucrase, points the
- * module's imports at esm.sh, and mounts its default export with React. Col
- * bundles nothing: every package loads from esm.sh on demand. Hosts without MCP
- * Apps (terminal clients) only receive the text result.
+ * - `previewWidgetHtml()`: the MCP Apps view. The tool's `_meta.ui.resourceUri`
+ *   points here; MCP Apps hosts load it in a sandboxed iframe and pass it the
+ *   tool arguments through the official ext-apps `App` bridge.
+ * - `previewFragmentHtml(code)`: a self-contained HTML fragment with the code
+ *   embedded, returned by `render_component({ format: "html" })` for hosts that
+ *   cannot show MCP Apps, such as Claude Code. The agent passes it to an inline
+ *   HTML widget tool, or saves it as a file and opens it in a browser.
+ *
+ * The runtime compiles the TSX with sucrase, points the module's imports at
+ * esm.sh, and mounts its default export with React. Col bundles nothing: every
+ * package loads from esm.sh, with `?deps=` pinning React so the render and every
+ * package share one React without an import map.
  */
 export const PREVIEW_WIDGET_URI = "ui://col/render-component.html";
 
 /** The standard MCP Apps UI resource mime type. */
 export const PREVIEW_WIDGET_MIME = "text/html;profile=mcp-app";
 
-/** Script and style origins the view loads from. Hosts deny everything else (MCP Apps default CSP). */
+/** Script and style origins the renderer loads from. Hosts deny everything else (MCP Apps default CSP). */
 export const PREVIEW_WIDGET_CSP = { resourceDomains: ["https://esm.sh", "https://cdn.jsdelivr.net"] };
 
-/** React is pinned once in the import map so the preview and every package share one copy. */
 const REACT_VERSION = "19.3.0";
 
+/** Pinned runtime modules. Each version is at least two weeks old at the time it was pinned. */
+const RUNTIME = {
+  react: `https://esm.sh/react@${REACT_VERSION}`,
+  reactDomClient: `https://esm.sh/react-dom@${REACT_VERSION}/client?deps=react@${REACT_VERSION}`,
+  sucrase: "https://esm.sh/sucrase@3.35.1",
+  lexer: "https://esm.sh/es-module-lexer@3.0.2/js",
+  tailwind: "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3",
+  apps: "https://esm.sh/@modelcontextprotocol/ext-apps@2.0.3/app-with-deps",
+} as const;
+
 /**
- * Where one import in the agent's code loads from. React stays a bare specifier
- * so the import map resolves it; packages and package stylesheets come from
- * esm.sh with React kept external. Local files cannot be served, so they throw
- * and the message tells the agent to inline them.
+ * Where one import in the agent's code loads from. React and react-dom resolve
+ * to the pinned copies; other packages come from esm.sh with React pinned by
+ * `?deps=`, which esm.sh resolves to those same module URLs. Local files cannot
+ * be served, so they throw and the message tells the agent to inline them.
  *
- * ponytail: embedded in the view via `toString()`, so it must stay a
+ * ponytail: embedded in the runtime via `toString()`, so it must stay a
  * self-contained arrow function with no outside references.
  */
-export const resolveImport = (specifier: string): string => {
-  if (/^(react|react-dom)(\/|$)/.test(specifier)) return specifier;
+export const resolveImport = (specifier: string, reactVersion: string): string => {
+  const react = specifier.match(/^react(\/.*)?$/);
+  if (react) return `https://esm.sh/react@${reactVersion}${react[1] ?? ""}`;
+  const reactDom = specifier.match(/^react-dom(\/.*)?$/);
+  if (reactDom) return `https://esm.sh/react-dom@${reactVersion}${reactDom[1] ?? ""}?deps=react@${reactVersion}`;
   if (specifier.startsWith("https://")) return specifier;
   if (/^(\.|\/|@\/|~\/)/.test(specifier)) {
     throw new Error(`"${specifier}" is a local file; inline its code in the module instead`);
   }
   if (specifier.endsWith(".css")) return `https://esm.sh/${specifier}`;
-  return `https://esm.sh/${specifier}?external=react,react-dom`;
+  return `https://esm.sh/${specifier}?deps=react@${reactVersion},react-dom@${reactVersion}`;
 };
 
 /**
  * Turns the compiled module into one that mounts itself: its default export
- * becomes a local and is handed to the view's `__colMount`. Inline module
- * scripts cannot export to the page, and the host CSP forbids blob: imports.
+ * becomes a local and is handed to the runtime's `__colMount`. Inline module
+ * scripts cannot export to the page, and host CSPs forbid blob: imports.
  *
  * ponytail: embedded via `toString()` like `resolveImport`. The regex takes the
  * first `export default`; `export { X as default }` asks for the plain form.
@@ -55,57 +74,31 @@ export const mountable = (js: string): string => {
   return `${js.replace(marker, "const __ColComponent = ")}\nwindow.__colMount(__ColComponent);\n`;
 };
 
-export function previewWidgetHtml(): string {
-  const importMap = {
-    imports: {
-      react: `https://esm.sh/react@${REACT_VERSION}`,
-      "react/": `https://esm.sh/react@${REACT_VERSION}/`,
-      "react-dom": `https://esm.sh/react-dom@${REACT_VERSION}?external=react`,
-      "react-dom/client": `https://esm.sh/react-dom@${REACT_VERSION}/client?external=react`,
-    },
-  };
-  return `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Component preview</title>
-<script type="importmap">${JSON.stringify(importMap)}</script>
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
-<style>
-  :root { color-scheme: light dark; }
-  body { margin: 0; padding: 16px; background: transparent; color: light-dark(#000, #fff); font: 14px/1.5 system-ui, sans-serif; }
-  #status { margin: 0; white-space: pre-wrap; }
-</style>
-</head>
-<body>
-<p id="status">Rendering…</p>
-<div id="root"></div>
-<script type="module">
-  import { App, applyDocumentTheme } from "https://esm.sh/@modelcontextprotocol/ext-apps@2.0.3/app-with-deps";
-  import { createElement } from "react";
-  import { createRoot } from "react-dom/client";
-  import { transform } from "https://esm.sh/sucrase@3.35.1";
-  import { init, parse } from "https://esm.sh/es-module-lexer@3.0.2/js";
-
+/**
+ * The shared runtime: defines `colRuntime(report?)`, which loads React and the
+ * compiler, then resolves to `{ render(code), fail(error) }`. Failures show in
+ * `#col-status`; `report` also forwards them, e.g. to the agent's context.
+ * Uses only dynamic `import()`, so it runs in classic and module scripts alike.
+ */
+function runtimeScript(): string {
+  return `
+async function colRuntime(report) {
   const resolveImport = ${resolveImport.toString()};
   const mountable = ${mountable.toString()};
-
-  const status = document.getElementById("status");
-  const app = new App({ name: "Col component preview", version: "1.0.0" });
-  const root = createRoot(document.getElementById("root"), { onUncaughtError: (error) => fail(error) });
-
-  // A failed render is shown to the user and reported to the agent, so it can fix the code and call again.
+  const [{ createElement }, { createRoot }, { transform }, { init, parse }] = await Promise.all([
+    import(${JSON.stringify(RUNTIME.react)}),
+    import(${JSON.stringify(RUNTIME.reactDomClient)}),
+    import(${JSON.stringify(RUNTIME.sucrase)}),
+    import(${JSON.stringify(RUNTIME.lexer)}),
+  ]);
+  const status = document.getElementById("col-status");
   function fail(error) {
     const message = String((error && error.message) || error);
     status.textContent = message;
     status.hidden = false;
-    // Hosts may not support model-context updates; the on-screen message still stands.
-    Promise.resolve()
-      .then(() => app.updateModelContext({ content: [{ type: "text", text: "render_component failed in the chat: " + message }] }))
-      .catch(() => {});
+    if (report) report(message);
   }
-
+  const root = createRoot(document.getElementById("col-root"), { onUncaughtError: (error) => fail(error) });
   window.__colMount = (Component) => {
     status.hidden = true;
     root.render(createElement(Component));
@@ -121,7 +114,7 @@ export function previewWidgetHtml(): string {
     let last = 0;
     for (const entry of imports) {
       if (entry.type !== "static" && entry.type !== "reexport-star") continue;
-      const url = resolveImport(entry.specifier);
+      const url = resolveImport(entry.specifier, ${JSON.stringify(REACT_VERSION)});
       if (entry.specifier.endsWith(".css")) {
         // Browsers cannot import CSS as a module: load it as a stylesheet and drop the statement.
         const link = document.createElement("link");
@@ -141,11 +134,50 @@ export function previewWidgetHtml(): string {
     script.addEventListener("error", () => fail("A package failed to load from esm.sh"));
     document.body.append(script);
   }
+  return { render, fail };
+}
+`;
+}
+
+/** The MCP Apps view: reads the agent's code from the tool input and reports failures back to the agent. */
+export function previewWidgetHtml(): string {
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Component preview</title>
+<script src="${RUNTIME.tailwind}"></script>
+<style>
+  :root { color-scheme: light dark; }
+  body { margin: 0; padding: 16px; background: transparent; color: light-dark(#000, #fff); font: 14px/1.5 system-ui, sans-serif; }
+  #col-status { margin: 0; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<p id="col-status">Rendering…</p>
+<div id="col-root"></div>
+<script type="module">
+  import { App, applyDocumentTheme } from "${RUNTIME.apps}";
+${runtimeScript()}
+  const app = new App({ name: "Col component preview", version: "1.0.0" });
+  // A failed render is shown to the user and reported to the agent, so it can fix the code and call again.
+  // Hosts may not support model-context updates; the on-screen message still stands.
+  const report = (message) =>
+    Promise.resolve()
+      .then(() => app.updateModelContext({ content: [{ type: "text", text: "render_component failed in the chat: " + message }] }))
+      .catch(() => {});
+  const runtime = colRuntime(report);
 
   app.ontoolinput = (params) => {
     const code = params.arguments && params.arguments.code;
-    if (typeof code !== "string") return fail("render_component was called without code");
-    render(code).catch(fail);
+    runtime
+      .then(({ render, fail }) => (typeof code === "string" ? render(code).catch(fail) : fail("render_component was called without code")))
+      .catch((error) => {
+        const message = String((error && error.message) || error);
+        document.getElementById("col-status").textContent = message;
+        report(message);
+      });
   };
   app.onhostcontextchanged = (context) => {
     if (context.theme) applyDocumentTheme(context.theme);
@@ -157,5 +189,28 @@ export function previewWidgetHtml(): string {
 </script>
 </body>
 </html>
+`;
+}
+
+/**
+ * The same render as an HTML fragment with the code embedded, for hosts without
+ * MCP Apps. It has no document wrapper, so inline HTML widget tools accept it;
+ * saved with a `<!doctype html>` line, it opens in any browser. The code rides a
+ * JSON string with `<` escaped, so it cannot close the script element early.
+ */
+export function previewFragmentHtml(code: string): string {
+  const embedded = JSON.stringify(code).replace(/</g, "\\u003c");
+  return `<p id="col-status" style="margin:0;white-space:pre-wrap;font:14px/1.5 system-ui,sans-serif">Rendering…</p>
+<div id="col-root"></div>
+<script src="${RUNTIME.tailwind}"></script>
+<script>
+${runtimeScript()}
+colRuntime()
+  .then(({ render, fail }) => render(${embedded}).catch(fail))
+  .catch((error) => {
+    const status = document.getElementById("col-status");
+    status.textContent = String((error && error.message) || error);
+  });
+</script>
 `;
 }
