@@ -18,6 +18,12 @@
  */
 export const PREVIEW_WIDGET_URI = "ui://col/render-component.html";
 
+/**
+ * What turns `previewFragmentHtml` output into a standalone page. The charset
+ * matters: without it a saved file garbles any non-ASCII text in the render.
+ */
+export const FRAGMENT_PAGE_PREFIX = '<!doctype html><meta charset="utf-8">';
+
 /** The standard MCP Apps UI resource mime type. */
 export const PREVIEW_WIDGET_MIME = "text/html;profile=mcp-app";
 
@@ -195,7 +201,7 @@ ${runtimeScript()}
 /**
  * The same render as an HTML fragment with the code embedded, for hosts without
  * MCP Apps. It has no document wrapper, so inline HTML widget tools accept it;
- * saved with a `<!doctype html>` line, it opens in any browser. The code rides a
+ * saved after `FRAGMENT_PAGE_PREFIX`, it opens in any browser. The code rides a
  * JSON string with `<` escaped, so it cannot close the script element early.
  */
 export function previewFragmentHtml(code: string): string {

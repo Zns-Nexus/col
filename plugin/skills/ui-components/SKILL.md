@@ -50,8 +50,8 @@ same code and `format: "html"`, then show the returned `html`:
 
 - If you have an inline HTML widget tool (such as `show_widget`), pass `html`
   to it unchanged.
-- Otherwise write `<!doctype html>` followed by `html` to a temporary `.html`
-  file and open it in the user's browser.
+- Otherwise write `<!doctype html><meta charset="utf-8">` followed by `html`
+  to a temporary `.html` file and open it in the user's browser.
 
 Errors in this fallback show only inside the render, so ask the user what they
 see. Never claim a render you did not see happen.

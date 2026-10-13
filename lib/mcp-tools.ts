@@ -7,7 +7,7 @@ import type { LibraryDetails } from "../data/library-details/types";
 import type { DocSnapshot, LibraryCorpusEntry } from "../data/library-corpus/types";
 import type { CompatibilityFact, LibraryCompatibility } from "../data/compatibility";
 import { componentHaystack, componentRank, createDirectorySearch, normalizeWords, tokenMatches, wordTokens, type SearchResult } from "./directory.ts";
-import { PREVIEW_WIDGET_URI, previewFragmentHtml } from "./preview-widget.ts";
+import { FRAGMENT_PAGE_PREFIX, PREVIEW_WIDGET_URI, previewFragmentHtml } from "./preview-widget.ts";
 import { admissibleSnapshots } from "./corpus.ts";
 import { compatibilityReport, trackedSubjects, type CompatibilityReport } from "./compatibility.ts";
 import { libraryPath, siteUrl } from "./site.ts";
@@ -261,7 +261,7 @@ const renderComponentArgs = z.object({
     .enum(["widget", "html"])
     .optional()
     .describe(
-      "'widget' (default) renders through MCP Apps. 'html' also returns the same render as a self-contained HTML fragment, for hosts that cannot show MCP Apps, such as Claude Code: pass it to an inline HTML widget tool (e.g. show_widget), or save it as an .html file with a '<!doctype html>' first line and open it in the browser.",
+      `'widget' (default) renders through MCP Apps. 'html' also returns the same render as a self-contained HTML fragment, for hosts that cannot show MCP Apps, such as Claude Code: pass it to an inline HTML widget tool (e.g. show_widget), or save it as an .html file that starts with '${FRAGMENT_PAGE_PREFIX}' and open it in the browser.`,
     ),
 });
 
@@ -276,7 +276,7 @@ const RENDER_GAPS = [
 ];
 
 const HTML_GAPS = [
-  "Pass `html` unchanged to an inline HTML widget tool if this host has one (e.g. show_widget). Otherwise write '<!doctype html>' followed by `html` to a temporary .html file and open it in the user's browser.",
+  `Pass 'html' unchanged to an inline HTML widget tool if this host has one (e.g. show_widget). Otherwise write '${FRAGMENT_PAGE_PREFIX}' followed by 'html' to a temporary .html file and open it in the user's browser.`,
   "Errors show inside the render only; they are not reported back to you, so ask the user what they see.",
 ];
 
