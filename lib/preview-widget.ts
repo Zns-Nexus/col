@@ -20,9 +20,11 @@ export const PREVIEW_WIDGET_URI = "ui://col/render-component.html";
 
 /**
  * What turns `previewFragmentHtml` output into a standalone page. The charset
- * matters: without it a saved file garbles any non-ASCII text in the render.
+ * keeps non-ASCII text intact; the color scheme makes the page canvas follow the
+ * system theme, which Tailwind's `dark:` variant also follows, so dark styles
+ * never land on a light page.
  */
-export const FRAGMENT_PAGE_PREFIX = '<!doctype html><meta charset="utf-8">';
+export const FRAGMENT_PAGE_PREFIX = '<!doctype html><meta charset="utf-8"><meta name="color-scheme" content="light dark">';
 
 /** The standard MCP Apps UI resource mime type. */
 export const PREVIEW_WIDGET_MIME = "text/html;profile=mcp-app";
@@ -41,6 +43,23 @@ const RUNTIME = {
   tailwind: "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3",
   apps: "https://esm.sh/@modelcontextprotocol/ext-apps@2.0.3/app-with-deps",
 } as const;
+
+/**
+ * Tailwind for the render. Preflight and utilities load outside any cascade
+ * layer: hosts that inject their own unlayered CSS (Claude Code's inline widget
+ * pre-styles inputs and resets padding) would otherwise beat every Tailwind
+ * rule regardless of specificity. Unlayered, utility classes outrank those
+ * element and universal rules, and preflight, which Tailwind components assume
+ * as their baseline, competes with the host's element styles by order. Theme
+ * variables stay layered, so a host's own design tokens keep priority.
+ */
+const TAILWIND = `<style type="text/tailwindcss">
+@layer theme;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css";
+@import "tailwindcss/utilities.css";
+</style>
+<script src="${RUNTIME.tailwind}"></script>`;
 
 /**
  * Where one import in the agent's code loads from. React and react-dom resolve
@@ -153,7 +172,7 @@ export function previewWidgetHtml(): string {
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Component preview</title>
-<script src="${RUNTIME.tailwind}"></script>
+${TAILWIND}
 <style>
   :root { color-scheme: light dark; }
   body { margin: 0; padding: 16px; background: transparent; color: light-dark(#000, #fff); font: 14px/1.5 system-ui, sans-serif; }
@@ -208,7 +227,7 @@ export function previewFragmentHtml(code: string): string {
   const embedded = JSON.stringify(code).replace(/</g, "\\u003c");
   return `<p id="col-status" style="margin:0;white-space:pre-wrap;font:14px/1.5 system-ui,sans-serif">Rendering…</p>
 <div id="col-root"></div>
-<script src="${RUNTIME.tailwind}"></script>
+${TAILWIND}
 <script>
 ${runtimeScript()}
 colRuntime()
