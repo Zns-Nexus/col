@@ -17,8 +17,6 @@ const reveal = (index: number) => ({ "--i": Math.min(index, 12) }) as CSSPropert
 
 export default async function ContributorsPage() {
   const contributors = await getContributors();
-  const total = contributors.reduce((sum, { contributions }) => sum + contributions, 0);
-  const largest = Math.max(...contributors.map(({ contributions }) => contributions), 1);
 
   return (
     <div className="cb">
@@ -29,10 +27,8 @@ export default async function ContributorsPage() {
         </div>
         <div className="cb-head-side">
           {contributors.length > 0 && (
-            <p className="cb-totals">
-              <span><strong>{number.format(contributors.length)}</strong> {contributors.length === 1 ? "contributor" : "contributors"}</span>
-              <span aria-hidden>·</span>
-              <span><strong>{number.format(total)}</strong> {total === 1 ? "contribution" : "contributions"}</span>
+            <p className="cb-contributor-count">
+              <strong>{number.format(contributors.length)}</strong> {contributors.length === 1 ? "contributor" : "contributors"}
             </p>
           )}
           <a href={repo.pulls} target="_blank" rel="noopener noreferrer" className="ld-button">
@@ -44,32 +40,22 @@ export default async function ContributorsPage() {
 
       {contributors.length ? (
         <ul className="cb-grid">
-          {contributors.map((contributor, index) => {
-            const share = contributor.contributions / largest;
-            return (
-              <li key={contributor.key} className="ld-reveal" style={reveal(index + 1)}>
-                <a href={contributor.url} target="_blank" rel="noopener noreferrer" className="cb-card" aria-label={`${contributor.name}, ${contributor.contributions} contributions`}>
-                  <span className="cb-media">
-                    <span className="cb-rank">#{index + 1}</span>
-                    {contributor.avatarUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={contributor.avatarUrl} alt="" width={72} height={72} loading={index < 12 ? "eager" : "lazy"} className="cb-avatar" />
-                    ) : <span className="cb-avatar" aria-hidden />}
-                    <ArrowUpRight className="cb-open" aria-hidden />
-                  </span>
-                  <span className="cb-body">
-                    <span className="cb-name">{contributor.name}</span>
-                    <span className="cb-count">
-                      {number.format(contributor.contributions)} {contributor.contributions === 1 ? "contribution" : "contributions"}
-                    </span>
-                    <span className="cb-bar" aria-hidden>
-                      <span style={{ width: `${Math.max(share * 100, 4)}%` }} />
-                    </span>
-                  </span>
-                </a>
-              </li>
-            );
-          })}
+          {contributors.map((contributor, index) => (
+            <li key={contributor.key} className="ld-reveal" style={reveal(index + 1)}>
+              <a href={contributor.url} target="_blank" rel="noopener noreferrer" className="cb-card">
+                <span className="cb-media">
+                  {contributor.avatarUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={contributor.avatarUrl} alt="" width={72} height={72} loading={index < 12 ? "eager" : "lazy"} className="cb-avatar" />
+                  ) : <span className="cb-avatar" aria-hidden />}
+                  <ArrowUpRight className="cb-open" aria-hidden />
+                </span>
+                <span className="cb-body">
+                  <span className="cb-name">{contributor.name}</span>
+                </span>
+              </a>
+            </li>
+          ))}
         </ul>
       ) : (
         <div className="cb-empty ld-reveal" style={reveal(1)}>

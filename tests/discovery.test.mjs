@@ -21,7 +21,7 @@ test("build emits complete discovery files", () => {
   assert.ok(robots.includes("Allow: /"));
   assert.ok(robots.includes("Sitemap: https://usecol.com/sitemap.xml"));
 
-  const staticRoutes = ["/", "/libraries", "/components", "/integrations", "/mcp", "/mcp/agents", "/docs", "/docs/agents", "/docs/find-a-library", "/docs/request-a-library", "/docs/report-issues", "/docs/pull-requests", "/contributors", "/sponsors", "/version-history"];
+  const staticRoutes = ["/", "/libraries", "/components", "/integrations", "/mcp", "/mcp/agents", "/docs", "/docs/agents", "/docs/find-a-library", "/docs/request-a-library", "/docs/report-issues", "/docs/pull-requests", "/contributors", "/sponsors"];
   for (const route of staticRoutes) {
     assert.ok(sitemap.includes(`<loc>https://usecol.com${route}</loc>`));
   }
@@ -33,7 +33,6 @@ test("build emits complete discovery files", () => {
 
   assert.ok(llms.includes("/docs/agents"));
   assert.ok(llms.includes("/components"));
-  assert.ok(llms.includes("/version-history"));
   assert.ok(llms.includes("https://usecol.com/mcp/agents"));
   assert.ok(llms.includes("https://usecol.com/api/mcp"));
   assert.ok(llms.includes("component index is partial"));
@@ -57,7 +56,7 @@ test("build emits complete discovery files", () => {
 });
 
 test("public pages emit their own canonical and social identity", () => {
-  const routes = ["/", "/mcp", "/mcp/agents", "/docs", "/docs/agents", "/docs/find-a-library", "/docs/request-a-library", "/docs/report-issues", "/docs/pull-requests", "/contributors", "/sponsors", "/version-history", ...libraries.map(({ slug }) => `/libraries/${slug}`), ...integrations.map(({ slug }) => `/integrations/${slug}`)];
+  const routes = ["/", "/mcp", "/mcp/agents", "/docs", "/docs/agents", "/docs/find-a-library", "/docs/request-a-library", "/docs/report-issues", "/docs/pull-requests", "/contributors", "/sponsors", ...libraries.map(({ slug }) => `/libraries/${slug}`), ...integrations.map(({ slug }) => `/integrations/${slug}`)];
   for (const route of routes) {
     const html = readFileSync(new URL(`../.next/server/app/${route === "/" ? "index" : route.slice(1)}.html`, import.meta.url), "utf8");
     const url = `https://usecol.com${route === "/" ? "" : route}`;

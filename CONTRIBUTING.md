@@ -111,10 +111,6 @@ In the description, explain what changed, why it changed, and how it was verifie
 
 Screen is the only person who merges pull requests for now. Contributors submit changes for review and leave merging to Screen.
 
-### Version history
-
-The sidebar's `/version-history` page lists merged GitHub pull requests targeting `main`, ordered by PR number. It refreshes on visits using a five-minute cache, so each merged PR appears without a manual changelog edit. Use a clear PR title describing the shipped change. This is a change history, not a list of numbered releases.
-
 Agents must read `AGENTS.md` and this guide before changing the repository, and complete the applicable PR template checks before submitting work.
 
 ## Deploys from GitHub

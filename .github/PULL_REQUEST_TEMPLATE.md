@@ -27,7 +27,7 @@
 - [ ] If I added a major feature, I included usage and setup documentation, linked it from `/docs`, and updated the README where needed.
 - [ ] For catalog, public page, or agent capability changes, I verified `llms.txt`, `robots.txt`, and the sitemap, and updated affected metadata and agent guides.
 - [ ] I linked every fully resolved issue, including issues I opened, with a separate `Closes #123` below. Partial fixes use `Refs #123` and explain the remaining work.
-- [ ] My title describes the shipped change for the automatically updated version history.
+- [ ] My title clearly describes the shipped change.
 
 <!-- List verification commands and results, and explain any discovery outputs that did not need changes. -->
 

@@ -11,7 +11,6 @@ const items: readonly (readonly [string, string, IconComponent])[] = [
   ["Integrations", "/integrations", Icons.integrations],
   ["MCP", "/mcp", Icons.integrations],
   ["Docs", "/docs", Icons.docs],
-  ["Version history", "/version-history", Icons.list],
   ["Contributors", "/contributors", Icons.contributors],
   ["Sponsors", "/sponsors", Icons.sponsors],
 ];
