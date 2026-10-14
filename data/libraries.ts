@@ -1010,6 +1010,30 @@ export const libraries: Library[] = [
     useCases: ["Rapid Prototyping", "Landing Pages"],
     tags: ["svg", "icons", "icon search", "mcp"],
   },
+  {
+    name: "Hugeicons",
+    slug: "hugeicons",
+    addedAt: "2026-10-14T18:02:46-04:00",
+    description:
+      "An icon library of 60,000+ icons in 10 styles, with 6,000+ free Stroke Rounded icons under MIT and Pro tiers for teams, packaged for React, Vue, Svelte, and more.",
+    url: "https://hugeicons.com",
+    category: "Icons",
+    stacks: ["React", "Vue", "Svelte", "Angular", "SolidJS", "Vanilla JS"],
+    useCases: ["Dashboards", "Landing Pages", "Marketing Sites", "Rapid Prototyping"],
+    tags: ["icons", "svg", "figma", "icon font", "mcp"],
+  },
+  {
+    name: "Rune Icons",
+    slug: "rune-icons",
+    addedAt: "2026-10-14T18:02:46-04:00",
+    description:
+      "An open-source icon set of 900+ icons in five styles — outline, duotone, fill, pixel, and glass — with a browser editor and 1,100+ brand logos, packaged for React, Vue, Svelte, and Astro.",
+    url: "https://www.runeicons.com",
+    category: "Icons",
+    stacks: ["React", "Vue", "Svelte", "Astro", "Vanilla JS"],
+    useCases: ["Dashboards", "Landing Pages", "Rapid Prototyping"],
+    tags: ["icons", "svg", "open source", "mcp"],
+  },
 ];
 
 /** Looks up a library by slug, throwing so a stale hard-coded slug fails the build instead of rendering a broken link. */
