@@ -2,7 +2,7 @@ import type { LibraryDetails } from "./types";
 
 export default {
   docsUrl: "https://hugeicons.com/docs",
-  repoUrl: "https://github.com/hugeicons/hugeicons-react",
+  repoUrl: "https://github.com/hugeicons/hugeicons",
   preview: {
     src: "https://hugeicons.com/og_preview.png",
     alt: "Hugeicons icon library official preview",
