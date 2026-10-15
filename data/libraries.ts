@@ -1011,6 +1011,18 @@ export const libraries: Library[] = [
     tags: ["svg", "icons", "icon search", "mcp"],
   },
   {
+    name: "beUI",
+    slug: "beui",
+    addedAt: "2026-10-14T21:39:28.364-04:00",
+    description:
+      "Animated copy-paste React components built with Motion and Tailwind CSS, installed through the shadcn registry.",
+    url: "https://beui.dev",
+    category: "Component Library",
+    stacks: ["React", "Next.js", "Tailwind CSS", "TypeScript"],
+    useCases: ["Landing Pages", "Micro-interactions", "Rapid Prototyping"],
+    tags: ["animated components", "shadcn registry", "motion", "copy paste"],
+  },
+  {
     name: "Hugeicons",
     slug: "hugeicons",
     addedAt: "2026-10-14T18:02:46-04:00",

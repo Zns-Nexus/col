@@ -86,6 +86,7 @@ import lucide_animated from "./lucide-animated.ts";
 import lordicon from "./lordicon.ts";
 import useanimations from "./useanimations.ts";
 import all_svg_icons from "./all-svg-icons.ts";
+import beui from "./beui.ts";
 import hugeicons from "./hugeicons.ts";
 import rune_icons from "./rune-icons.ts";
 
@@ -186,6 +187,7 @@ export const libraryDetails: Record<string, LibraryDetails> = {
   "lordicon": lordicon,
   "useanimations": useanimations,
   "all-svg-icons": all_svg_icons,
+  "beui": beui,
   "hugeicons": hugeicons,
   "rune-icons": rune_icons,
 };
