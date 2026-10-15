@@ -86,6 +86,7 @@ import lucide_animated from "./lucide-animated.ts";
 import lordicon from "./lordicon.ts";
 import useanimations from "./useanimations.ts";
 import all_svg_icons from "./all-svg-icons.ts";
+import svelte_bits from "./svelte-bits.ts";
 
 export type { LibraryDetails };
 
@@ -184,4 +185,5 @@ export const libraryDetails: Record<string, LibraryDetails> = {
   "lordicon": lordicon,
   "useanimations": useanimations,
   "all-svg-icons": all_svg_icons,
+  "svelte-bits": svelte_bits,
 };

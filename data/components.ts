@@ -1660,4 +1660,11 @@ export const componentIndex: ComponentIndex = {
     { name: "SlideToDetonate", url: "https://www.evilbuttons.com/docs/slide-to-detonate" },
     { name: "ThreeDButton", url: "https://www.evilbuttons.com/docs/3d-button" },
   ],
+  "svelte-bits": [
+    { name: "Dock", kind: "full-pattern", summary: "A macOS-style dock whose items scale smoothly based on cursor distance, using spring physics.", dependencies: ["motion"], verifiedAt: "2026-10-14", url: "https://sveltebits.xyz/components/dock" },
+    { name: "Dot Field", kind: "visual-effect", summary: "An interactive dotted canvas background with cursor bulge, glow, sparkle, and wave controls.", verifiedAt: "2026-10-14", url: "https://sveltebits.xyz/backgrounds/dot-field" },
+    { name: "Magic Rings", kind: "visual-effect", summary: "A WebGL2 concentric ring animation with mouse parallax, hover scale, and a click burst.", dependencies: ["three"], verifiedAt: "2026-10-14", url: "https://sveltebits.xyz/animations/magic-rings" },
+    { name: "Shape Grid", kind: "visual-effect", summary: "An animated grid of squares, hexagons, circles, or triangles with a hover trail and configurable scroll direction.", verifiedAt: "2026-10-14", url: "https://sveltebits.xyz/backgrounds/shape-grid" },
+    { name: "Shiny Text", kind: "visual-effect", summary: "An animated gradient sweep across text, with yoyo and direction controls.", verifiedAt: "2026-10-14", url: "https://sveltebits.xyz/text-animations/shiny-text" },
+  ],
 };
