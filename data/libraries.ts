@@ -1010,6 +1010,17 @@ export const libraries: Library[] = [
     useCases: ["Rapid Prototyping", "Landing Pages"],
     tags: ["svg", "icons", "icon search", "mcp"],
   },
+  {
+    name: "Canvas UI",
+    slug: "canvas-ui",
+    addedAt: "2026-10-15T02:04:49.469Z",
+    description: "An open-source library of creative html-in-canvas components that paint live page content through WebGL or WebGPU effects, installed through the shadcn CLI or copied as source.",
+    url: "https://canvasui.dev",
+    category: "3D & WebGL",
+    stacks: ["React", "Vue", "Svelte", "SolidJS", "Vanilla JS", "TypeScript"],
+    useCases: ["Creative & Experimental", "Landing Pages", "Micro-interactions"],
+    tags: ["canvas", "webgl", "webgpu", "shadcn registry", "visual effects"],
+  },
 ];
 
 /** Looks up a library by slug, throwing so a stale hard-coded slug fails the build instead of rendering a broken link. */
