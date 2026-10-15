@@ -86,6 +86,12 @@ import lucide_animated from "./lucide-animated.ts";
 import lordicon from "./lordicon.ts";
 import useanimations from "./useanimations.ts";
 import all_svg_icons from "./all-svg-icons.ts";
+import beui from "./beui.ts";
+import hugeicons from "./hugeicons.ts";
+import rune_icons from "./rune-icons.ts";
+import amicro from "./amicro.ts";
+import svelte_bits from "./svelte-bits.ts";
+import canvas_ui from "./canvas-ui.ts";
 import loading_dev from "./loading-dev.ts";
 
 export type { LibraryDetails };
@@ -185,5 +191,11 @@ export const libraryDetails: Record<string, LibraryDetails> = {
   "lordicon": lordicon,
   "useanimations": useanimations,
   "all-svg-icons": all_svg_icons,
+  "beui": beui,
+  "hugeicons": hugeicons,
+  "rune-icons": rune_icons,
+  "amicro": amicro,
+  "svelte-bits": svelte_bits,
+  "canvas-ui": canvas_ui,
   "loading-dev": loading_dev,
 };
