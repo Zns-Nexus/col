@@ -5,7 +5,7 @@ export default {
   repoUrl: "https://github.com/DavidHDev/svelte-bits",
   pricing: {
     model: "free",
-    summary: "The components are free to use in applications, websites, and products; the Commons Clause condition does not allow selling the software itself.",
+    summary: "Free for personal and commercial applications, websites, and products; selling, sublicensing, or redistributing the components themselves, including bundles and ports, is not permitted.",
     license: "MIT + Commons Clause License Condition v1.0",
     source: "https://github.com/DavidHDev/svelte-bits/blob/main/LICENSE.md",
   },
