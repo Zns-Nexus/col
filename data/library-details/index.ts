@@ -87,6 +87,8 @@ import lordicon from "./lordicon.ts";
 import useanimations from "./useanimations.ts";
 import all_svg_icons from "./all-svg-icons.ts";
 import beui from "./beui.ts";
+import hugeicons from "./hugeicons.ts";
+import rune_icons from "./rune-icons.ts";
 
 export type { LibraryDetails };
 
@@ -186,4 +188,6 @@ export const libraryDetails: Record<string, LibraryDetails> = {
   "useanimations": useanimations,
   "all-svg-icons": all_svg_icons,
   "beui": beui,
+  "hugeicons": hugeicons,
+  "rune-icons": rune_icons,
 };
