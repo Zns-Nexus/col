@@ -74,4 +74,6 @@ export const libraryPreviews: Record<string, LibraryPreview> = {
   "lucide-animated": { src: "https://lucide-animated.com/og.png", width: 1200, height: 630 },
   "useanimations": { src: "https://useanimations.com/images/OGuseAnimationsImage.jpg", width: 1280, height: 720 },
   "all-svg-icons": { src: "https://allsvgicons.com/og.png", width: 1200, height: 630 },
+  "hugeicons": { src: "https://hugeicons.com/og_preview.png", width: 1200, height: 628 },
+  "rune-icons": { src: "https://www.runeicons.com/og-image.png", width: 4800, height: 2520 },
 };
