@@ -1079,6 +1079,17 @@ export const libraries: Library[] = [
     useCases: ["Creative & Experimental", "Landing Pages", "Micro-interactions"],
     tags: ["canvas", "webgl", "webgpu", "shadcn registry", "visual effects"],
   },
+  {
+    name: "loading.dev",
+    slug: "loading-dev",
+    addedAt: "2026-10-15T02:08:10.130Z",
+    description: "A lightweight React library of loading indicators, such as Arc, Classic, and Comet, installable from npm as loading-dev.",
+    url: "https://loading.dev",
+    category: "Component Library",
+    stacks: ["React"],
+    useCases: ["Micro-interactions", "Rapid Prototyping"],
+    tags: ["loading indicators", "spinners", "react"],
+  },
 ];
 
 /** Looks up a library by slug, throwing so a stale hard-coded slug fails the build instead of rendering a broken link. */

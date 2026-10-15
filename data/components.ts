@@ -1683,4 +1683,11 @@ export const componentIndex: ComponentIndex = {
     { name: "VHS", kind: "visual-effect", summary: "Gives page content an analog-tape look with wave distortion, head-switching noise, color bleed, grain, and scan lines.", verifiedAt: "2026-10-14", url: "https://canvasui.dev/docs/components/vhs" },
     { name: "Shatter", kind: "visual-effect", summary: "Fractures content near the pointer into glass-like 3D tiles that rise, tilt, drift, and refract what lies beneath.", verifiedAt: "2026-10-14", url: "https://canvasui.dev/docs/components/shatter" },
   ],
+  "loading-dev": [
+    { name: "Arc", kind: "visual-effect", summary: "A spinner made of a single open stroke that rotates in a circle.", verifiedAt: "2026-10-14", url: "https://loading.dev/spinners/arc" },
+    { name: "Classic", kind: "visual-effect", summary: "A spinner made of twelve bars that fade out around a circle.", verifiedAt: "2026-10-14", url: "https://loading.dev/spinners/classic" },
+    { name: "Comet", kind: "visual-effect", summary: "A full ring whose color fades into a trailing tail as it rotates.", verifiedAt: "2026-10-14", url: "https://loading.dev/spinners/comet" },
+    { name: "Ripple", kind: "visual-effect", summary: "A loader of three circles that pulse outward from the middle.", verifiedAt: "2026-10-14", url: "https://loading.dev/spinners/ripple" },
+    { name: "Wave", kind: "visual-effect", summary: "A loader of five bars that rise and fall in a wave pattern.", verifiedAt: "2026-10-14", url: "https://loading.dev/spinners/wave" },
+  ],
 };
