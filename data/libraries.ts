@@ -1014,7 +1014,7 @@ export const libraries: Library[] = [
     name: "Canvas UI",
     slug: "canvas-ui",
     addedAt: "2026-10-15T02:04:49.469Z",
-    description: "An open-source library of creative html-in-canvas components that paint live page content through WebGL or WebGPU effects, installed through the shadcn CLI or copied as source.",
+    description: "Creative html-in-canvas components with WebGL or WebGPU effects; full HTML effects require Chrome's experimental API via a flag or origin trial, with normal HTML fallbacks elsewhere.",
     url: "https://canvasui.dev",
     category: "3D & WebGL",
     stacks: ["React", "Vue", "Svelte", "SolidJS", "Vanilla JS", "TypeScript"],
