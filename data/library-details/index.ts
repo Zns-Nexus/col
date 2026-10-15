@@ -91,6 +91,7 @@ import hugeicons from "./hugeicons.ts";
 import rune_icons from "./rune-icons.ts";
 import amicro from "./amicro.ts";
 import svelte_bits from "./svelte-bits.ts";
+import canvas_ui from "./canvas-ui.ts";
 
 export type { LibraryDetails };
 
@@ -194,4 +195,5 @@ export const libraryDetails: Record<string, LibraryDetails> = {
   "rune-icons": rune_icons,
   "amicro": amicro,
   "svelte-bits": svelte_bits,
+  "canvas-ui": canvas_ui,
 };

@@ -1675,4 +1675,12 @@ export const componentIndex: ComponentIndex = {
     { name: "Shape Grid", kind: "visual-effect", summary: "An animated grid of squares, hexagons, circles, or triangles with a hover trail and configurable scroll direction.", verifiedAt: "2026-10-14", url: "https://sveltebits.xyz/backgrounds/shape-grid" },
     { name: "Shiny Text", kind: "visual-effect", summary: "An animated gradient sweep across text, with yoyo and direction controls.", verifiedAt: "2026-10-14", url: "https://sveltebits.xyz/text-animations/shiny-text" },
   ],
+  "canvas-ui": [
+    { name: "Glass", kind: "visual-effect", summary: "A lens that follows the cursor and magnifies and distorts the content beneath it.", verifiedAt: "2026-10-14", url: "https://canvasui.dev/docs/components/glass" },
+    { name: "Liquid", kind: "visual-effect", summary: "A fluid simulation that reacts to pointer movement, stirring and warping live page content.", verifiedAt: "2026-10-14", url: "https://canvasui.dev/docs/components/liquid" },
+    { name: "Glitch", kind: "visual-effect", summary: "Periodically tears content into shifted slices with RGB splits and corrupted blocks, then settles back to a clean view.", verifiedAt: "2026-10-14", url: "https://canvasui.dev/docs/components/glitch" },
+    { name: "Particle Reveal", kind: "visual-effect", summary: "Shows page content as grayscale particles, then restores sharp, colored elements as the cursor nears.", verifiedAt: "2026-10-14", url: "https://canvasui.dev/docs/components/particle-reveal" },
+    { name: "VHS", kind: "visual-effect", summary: "Gives page content an analog-tape look with wave distortion, head-switching noise, color bleed, grain, and scan lines.", verifiedAt: "2026-10-14", url: "https://canvasui.dev/docs/components/vhs" },
+    { name: "Shatter", kind: "visual-effect", summary: "Fractures content near the pointer into glass-like 3D tiles that rise, tilt, drift, and refract what lies beneath.", verifiedAt: "2026-10-14", url: "https://canvasui.dev/docs/components/shatter" },
+  ],
 };

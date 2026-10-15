@@ -1068,6 +1068,17 @@ export const libraries: Library[] = [
     useCases: ["Landing Pages", "Micro-interactions", "Creative & Experimental"],
     tags: ["svelte components", "animations", "backgrounds", "text effects"],
   },
+  {
+    name: "Canvas UI",
+    slug: "canvas-ui",
+    addedAt: "2026-10-15T02:04:49.469Z",
+    description: "Creative html-in-canvas components with WebGL or WebGPU effects; full HTML effects require Chrome's experimental API via a flag or origin trial, with normal HTML fallbacks elsewhere.",
+    url: "https://canvasui.dev",
+    category: "3D & WebGL",
+    stacks: ["React", "Vue", "Svelte", "SolidJS", "Vanilla JS", "TypeScript"],
+    useCases: ["Creative & Experimental", "Landing Pages", "Micro-interactions"],
+    tags: ["canvas", "webgl", "webgpu", "shadcn registry", "visual effects"],
+  },
 ];
 
 /** Looks up a library by slug, throwing so a stale hard-coded slug fails the build instead of rendering a broken link. */
