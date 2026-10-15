@@ -1010,6 +1010,17 @@ export const libraries: Library[] = [
     useCases: ["Rapid Prototyping", "Landing Pages"],
     tags: ["svg", "icons", "icon search", "mcp"],
   },
+  {
+    name: "Amicro",
+    slug: "amicro",
+    addedAt: "2026-10-15T01:20:27.875Z",
+    description: "A curated collection of React micro-interactions, transition components, and card layouts powered by Motion and Tailwind CSS.",
+    url: "https://amicro.dev",
+    category: "Animation & Motion",
+    stacks: ["React", "Tailwind CSS", "TypeScript"],
+    useCases: ["Micro-interactions", "Rapid Prototyping", "Creative & Experimental"],
+    tags: ["animated", "transitions", "card layouts", "shadcn registry"],
+  },
 ];
 
 /** Looks up a library by slug, throwing so a stale hard-coded slug fails the build instead of rendering a broken link. */
