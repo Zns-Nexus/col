@@ -1660,4 +1660,12 @@ export const componentIndex: ComponentIndex = {
     { name: "SlideToDetonate", url: "https://www.evilbuttons.com/docs/slide-to-detonate" },
     { name: "ThreeDButton", url: "https://www.evilbuttons.com/docs/3d-button" },
   ],
+  "beui": [
+    { name: "Button", kind: "full-pattern", summary: "Spring-pressed button with variants, sizes, and optional press ripple, plus Stateful, Magnetic, and Metallic variants.", verifiedAt: "2026-10-14", url: "https://beui.dev/components/motion/button", dependencies: ["clsx", "motion", "tailwind-merge"] },
+    { name: "Morphing Modal", kind: "full-pattern", summary: "A single modal panel that morphs its height as you navigate between inner views, with a blur cross-fade on content.", concept: "dialog", verifiedAt: "2026-10-14", url: "https://beui.dev/components/motion/morphing-modal", dependencies: ["clsx", "motion", "tailwind-merge"] },
+    { name: "Dynamic Island", kind: "full-pattern", summary: "An island pill that morphs between live activity views with a bouncy shell resize and blur crossfades.", verifiedAt: "2026-10-14", url: "https://beui.dev/components/blocks/dynamic-island", dependencies: ["clsx", "motion", "tailwind-merge"] },
+    { name: "Animated Toast Stack", kind: "full-pattern", summary: "Stacked toasts with status morphs, swipe dismissal, actions, and layout-aware motion.", verifiedAt: "2026-10-14", url: "https://beui.dev/components/motion/animated-toast-stack", dependencies: ["clsx", "lucide-react", "motion", "tailwind-merge"] },
+    { name: "Tilt Card", kind: "visual-effect", summary: "A card that tilts in 3D perspective on hover, with a glare that tracks the cursor.", verifiedAt: "2026-10-14", url: "https://beui.dev/components/motion/tilt-card", dependencies: ["clsx", "motion", "tailwind-merge"] },
+    { name: "Bottom Sheet", kind: "full-pattern", summary: "A draggable bottom sheet with snap points, inertia, and a glass surface.", verifiedAt: "2026-10-14", url: "https://beui.dev/components/motion/bottom-sheet", dependencies: ["clsx", "motion", "tailwind-merge"] },
+  ],
 };
