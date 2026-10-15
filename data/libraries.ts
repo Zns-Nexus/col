@@ -1057,6 +1057,17 @@ export const libraries: Library[] = [
     useCases: ["Micro-interactions", "Rapid Prototyping", "Creative & Experimental"],
     tags: ["animated", "transitions", "card layouts", "shadcn registry"],
   },
+  {
+    name: "Svelte Bits",
+    slug: "svelte-bits",
+    addedAt: "2026-10-15T01:59:37.681Z",
+    description: "An open-source collection of animated, interactive Svelte components for building memorable websites.",
+    url: "https://sveltebits.xyz",
+    category: "Animation & Motion",
+    stacks: ["Svelte", "SvelteKit", "TypeScript"],
+    useCases: ["Landing Pages", "Micro-interactions", "Creative & Experimental"],
+    tags: ["svelte components", "animations", "backgrounds", "text effects"],
+  },
 ];
 
 /** Looks up a library by slug, throwing so a stale hard-coded slug fails the build instead of rendering a broken link. */
