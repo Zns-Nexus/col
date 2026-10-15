@@ -1660,4 +1660,11 @@ export const componentIndex: ComponentIndex = {
     { name: "SlideToDetonate", url: "https://www.evilbuttons.com/docs/slide-to-detonate" },
     { name: "ThreeDButton", url: "https://www.evilbuttons.com/docs/3d-button" },
   ],
+  "loading-dev": [
+    { name: "Arc", kind: "visual-effect", summary: "A spinner made of a single open stroke that rotates in a circle.", verifiedAt: "2026-10-14", url: "https://loading.dev/spinners/arc" },
+    { name: "Classic", kind: "visual-effect", summary: "A spinner made of twelve bars that fade out around a circle.", verifiedAt: "2026-10-14", url: "https://loading.dev/spinners/classic" },
+    { name: "Comet", kind: "visual-effect", summary: "A full ring whose color fades into a trailing tail as it rotates.", verifiedAt: "2026-10-14", url: "https://loading.dev/spinners/comet" },
+    { name: "Ripple", kind: "visual-effect", summary: "A loader of three circles that pulse outward from the middle.", verifiedAt: "2026-10-14", url: "https://loading.dev/spinners/ripple" },
+    { name: "Wave", kind: "visual-effect", summary: "A loader of five bars that rise and fall in a wave pattern.", verifiedAt: "2026-10-14", url: "https://loading.dev/spinners/wave" },
+  ],
 };
