@@ -93,6 +93,7 @@ import amicro from "./amicro.ts";
 import svelte_bits from "./svelte-bits.ts";
 import canvas_ui from "./canvas-ui.ts";
 import loading_dev from "./loading-dev.ts";
+import hextaui from "./hextaui.ts";
 
 export type { LibraryDetails };
 
@@ -198,4 +199,5 @@ export const libraryDetails: Record<string, LibraryDetails> = {
   "svelte-bits": svelte_bits,
   "canvas-ui": canvas_ui,
   "loading-dev": loading_dev,
+  "hextaui": hextaui,
 };
