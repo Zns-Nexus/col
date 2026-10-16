@@ -1090,6 +1090,17 @@ export const libraries: Library[] = [
     useCases: ["Micro-interactions", "Rapid Prototyping"],
     tags: ["loading indicators", "spinners", "react"],
   },
+  {
+    name: "HextaUI",
+    slug: "hextaui",
+    addedAt: "2026-10-15T20:15:36-04:00",
+    description: "Open-source React components and hooks built on Base UI and Tailwind CSS v4, installed through the shadcn CLI, with AI chat components and loading, empty, and error states handled.",
+    url: "https://hextaui.com",
+    category: "Component Library",
+    stacks: ["React", "Next.js", "Tailwind CSS", "TypeScript"],
+    useCases: ["Dashboards", "Accessibility-first", "Rapid Prototyping"],
+    tags: ["base ui", "shadcn registry", "copy paste", "ai chat", "hooks"],
+  },
 ];
 
 /** Looks up a library by slug, throwing so a stale hard-coded slug fails the build instead of rendering a broken link. */
