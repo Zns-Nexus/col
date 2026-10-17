@@ -17,15 +17,26 @@ const headline = headlineLines.map((line, lineIndex) => {
   return line.map((word, wordIndex) => ({ word, order: start + wordIndex }));
 });
 
-/** A still frame is the default; CSS enables the GIF when motion is allowed. */
+/** Decorative looping video with a still frame when animation is hidden. */
 export function HeroBackdrop() {
   return (
     <>
       <label className={styles.motionControl}>
         <input type="checkbox" />
-        Pause background
+        Hide animation
       </label>
-      <div className={styles.heroImage} aria-hidden />
+      <div className={styles.heroImage} aria-hidden>
+        <video
+          src="/alexandria-1-1600x1068.mp4"
+          poster="/alexandria-1-1600x1068-still.webp"
+          autoPlay
+          loop
+          muted
+          playsInline
+          width={1600}
+          height={1068}
+        />
+      </div>
     </>
   );
 }

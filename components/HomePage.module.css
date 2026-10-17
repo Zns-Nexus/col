@@ -28,13 +28,13 @@
 .scene[data-scene-index="0"] { display: grid; place-items: center; min-height: var(--hero-height); padding-block: 96px; }
 .scene[data-scene-index="1"] > .section { border-top: 0; }
 .marker { display: none; }
-.heroImage { position: absolute; inset: 0; background: url("/alexandria-2-640x427-still.webp") center / cover no-repeat; opacity: .45; pointer-events: none; }
+.heroImage { position: absolute; inset: 0; background: url("/alexandria-1-1600x1068-still.webp") center / cover no-repeat; opacity: .45; pointer-events: none; }
+.heroImage video { width: 100%; height: 100%; object-fit: cover; }
+/* shortcut: hiding motion may leave video decoding; add playback control if offscreen decoding becomes costly. */
+.backdrop:has(:checked) .heroImage video { display: none; }
 :global(html.light) .heroImage { opacity: .4; }
 .motionControl { position: absolute; right: var(--gutter); bottom: 24px; z-index: 2; display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: 13px; cursor: pointer; }
 .motionControl input { width: 16px; height: 16px; }
-@media (prefers-reduced-motion: no-preference) {
-  .backdrop:not(:has(:checked)) .heroImage { background-image: url("/alexandria-2-640x427.gif"); }
-}
 .heroCopy { display: flex; flex-direction: column; align-items: center; text-align: center; }
 .heroCopy > :not(h1) { animation: rise .9s var(--ease-out) .5s both; }
 .heroCopy > :nth-child(3) { animation-delay: .6s; }
@@ -163,7 +163,6 @@
 @keyframes rise { from { opacity: 0; transform: translateY(16px); } }
 @keyframes blur-in { from { opacity: 0; filter: blur(4px); transform: translateY(.12em); } }
 @media (prefers-reduced-motion: reduce) {
-  .motionControl { display: none; }
   .word, .heroCopy > * { animation: none; }
   .button, .starLink, .arrowSwap svg, .starLink > svg, .rollChar, .node, .cellTitle svg, .chips a { transition: none; }
 }
@@ -218,7 +217,7 @@
   .sectionHeading { margin-bottom: 24px; }
   /* Use the still frame behind later scenes, with the hero control out of the tab order. */
   .stage:not([data-scene="0"]) .backdrop { opacity: .14; scale: 1.06; pointer-events: none; }
-  .stage:not([data-scene="0"]) .heroImage { background-image: url("/alexandria-2-640x427-still.webp"); }
+  .stage:not([data-scene="0"]) .heroImage video { display: none; }
   .stage:not([data-scene="0"]) .motionControl { visibility: hidden; }
   /* Details fits one screen as a four-column bento: search, directory and sources on top; install, saved and Col MCP below. */
   .bento { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
