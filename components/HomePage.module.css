@@ -22,7 +22,7 @@
 :global(html.light) .backdrop { background: var(--lib-panel); }
 /* Fade the artwork into the panel colour at the bottom of the hero. */
 .backdrop::after { content: ""; position: absolute; inset: auto 0 0; z-index: 1; height: 22%; background: linear-gradient(to bottom, transparent, var(--lib-panel)); pointer-events: none; }
-/* Scene content sits above the artwork; empty space leaves the pause control reachable. */
+/* Scene content sits above the artwork. */
 .scene { position: relative; z-index: 1; padding-inline: var(--gutter); pointer-events: none; }
 .scene > * { pointer-events: auto; }
 .scene[data-scene-index="0"] { display: grid; place-items: center; min-height: var(--hero-height); padding-block: 96px; }
@@ -30,11 +30,7 @@
 .marker { display: none; }
 .heroImage { position: absolute; inset: 0; background: url("/alexandria-1-1600x1068-still.webp") center / cover no-repeat; opacity: .45; pointer-events: none; }
 .heroImage video { width: 100%; height: 100%; object-fit: cover; }
-/* shortcut: hiding motion may leave video decoding; add playback control if offscreen decoding becomes costly. */
-.backdrop:has(:checked) .heroImage video { display: none; }
 :global(html.light) .heroImage { opacity: .4; }
-.motionControl { position: absolute; right: var(--gutter); bottom: 24px; z-index: 2; display: flex; align-items: center; gap: 8px; min-height: 44px; font-size: 13px; cursor: pointer; }
-.motionControl input { width: 16px; height: 16px; }
 .heroCopy { display: flex; flex-direction: column; align-items: center; text-align: center; }
 .heroCopy > :not(h1) { animation: rise .9s var(--ease-out) .5s both; }
 .heroCopy > :nth-child(3) { animation-delay: .6s; }
@@ -215,10 +211,8 @@
   .scene > .section { width: 100%; margin-block: auto; padding: 0; border-top: 0; }
   .scene > .footer { width: 100%; }
   .sectionHeading { margin-bottom: 24px; }
-  /* Use the still frame behind later scenes, with the hero control out of the tab order. */
+  /* Dim the continuing video behind later scenes. */
   .stage:not([data-scene="0"]) .backdrop { opacity: .14; scale: 1.06; pointer-events: none; }
-  .stage:not([data-scene="0"]) .heroImage video { display: none; }
-  .stage:not([data-scene="0"]) .motionControl { visibility: hidden; }
   /* Details fits one screen as a four-column bento: search, directory and sources on top; install, saved and Col MCP below. */
   .bento { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
   .cell { padding: 18px; }
