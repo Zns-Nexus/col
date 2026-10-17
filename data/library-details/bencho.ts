@@ -7,9 +7,9 @@ export default {
     alt: "Bencho home page preview showing the orbit of interactive UI blocks",
   },
   pricing: {
-    model: "free",
-    summary: "The blocks are free to copy, with no paid tier.",
-    license: "MIT",
-    source: "https://bencho.dev/licence",
+    model: "freemium",
+    summary: "About 40 blocks are free and MIT licensed; Pro unlocks every block and sound with full source plus the Bencho MCP, at €79 a year or a €99 one-time Forever plan for the first 200 members.",
+    license: "MIT (free blocks); Bencho Pro licence (Pro blocks)",
+    source: "https://bencho.dev/pricing",
   },
 } satisfies LibraryDetails;
