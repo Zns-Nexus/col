@@ -28,6 +28,7 @@ test("homepage keeps its four sections, search shortcuts, and new-tab library li
     assert.ok(link[0].includes('rel="noopener noreferrer"'));
   }
   assert.ok(markup.includes('href="https://github.com/Zns-Nexus/col/issues/new"'));
+  assert.match(markup, /<label\b[^>]*>\s*<input\b[^>]*type="checkbox"[^>]*\/>\s*Pause background\s*<\/label>/, "The looping hero background needs a labeled native pause control");
 });
 
 test("homepage components only use classes the CSS module defines", () => {
