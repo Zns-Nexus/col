@@ -28,6 +28,11 @@ test("homepage keeps its four sections, search shortcuts, and new-tab library li
     assert.ok(link[0].includes('rel="noopener noreferrer"'));
   }
   assert.ok(markup.includes('href="https://github.com/Zns-Nexus/col/issues/new"'));
+  const video = markup.match(/<video\b[^>]*>/)?.[0] ?? "";
+  assert.ok(video.includes('src="/alexandria-1-1600x1068.mp4"'));
+  for (const attribute of ["autoPlay", "loop", "muted", "playsInline"]) {
+    assert.match(video, new RegExp(`\\s${attribute}(?:[\\s=>])`, "i"));
+  }
 });
 
 test("homepage components only use classes the CSS module defines", () => {
