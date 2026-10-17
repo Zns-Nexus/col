@@ -32,7 +32,7 @@ export const libraryPreviews: Record<string, LibraryPreview> = {
   "uselayouts": { src: "https://uselayouts.com/og.jpg", width: 1200, height: 630 },
   "nexvyn-ui": { src: "https://ui.nexvyn.dev/opengraph-image.png", width: 1200, height: 630 },
   "spell-ui": { src: "https://spell.sh/og", width: 1200, height: 628 },
-  "bencho": { src: "https://bencho.dev/share-cover-hex.png", width: 1200, height: 630 },
+  "bencho": { src: "https://bencho.dev/share-cover-ring.png", width: 2400, height: 1260 },
   "obsidian-ui": { src: "https://cdn-new.obsidianui.dev/og-image.png?v=3", width: 1917, height: 1078 },
   "ark-ui": { src: "https://ark-ui.com/og-image.png", width: 2400, height: 1260 },
   "park-ui": { src: "https://park-ui.com/opengraph-image.png?opengraph-image.95355333.png", width: 2400, height: 1260 },

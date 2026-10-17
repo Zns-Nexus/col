@@ -3,8 +3,8 @@ import type { LibraryDetails } from "./types";
 export default {
   docsUrl: "https://bencho.dev",
   preview: {
-    src: "https://bencho.dev/share-cover-orbit.png",
-    alt: "Bencho home page preview showing the orbit of interactive UI blocks",
+    src: "https://bencho.dev/share-cover-ring.png",
+    alt: "Bencho logo surrounded by interactive UI blocks, including a chart, an image compare slider and a music player",
   },
   pricing: {
     model: "freemium",
